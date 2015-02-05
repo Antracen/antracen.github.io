@@ -1,1 +1,605 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WassWeb</title>
+</head>
+
+<body background = "Wall.png">
+<h1><font size="24" color="white">Klicka på knapparna för att köra funktionen.</font></h1>
+ <font color="white"><h2 id="Utskrift"></h2></font>
+
+<button onclick="Function1()">Kollar om ett ord är 5 tecken.</button>
+<button onclick="Function2()">Siffersumma.</button>
+<button onclick="Function3()">Räknar ut medelvärde av tal.</button>
+<button onclick="Function4()">Gör ett ord baklänges.</button>
+<button onclick="Function5()">Miniräknare.</button>
+<button onclick="Function6()">Omvandlar valuta.</button>
+<button onclick="Function7()">Lägg till en rätt på en meny.</button>
+<button onclick="Function8()">Skapa en dator.</button>
+<button onclick="Function9()">Palindromkollare.</button>
+<button onclick="Function10()">Hänga gubbe.</button>
+
+<h3></h3>
+<img src="java.png" alt="Java" height="122" width="122">
+
+<canvas id="myCanvas" width="200" height="100"
+style="border:1px solid #000000;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.rect(0, 0, 200, 100);
+ctx.fillStyle = "white";
+ctx.fill();
+</script> 
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.beginPath();
+ctx.arc(95,50,40,0,2*Math.PI);
+ctx.stroke();
+</script> 
+
+<script><!--3-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(125,50);
+ctx.lineTo(135,50);
+ctx.stroke();
+</script>
+
+<script><!--9-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(55,50);
+ctx.lineTo(65,50);
+ctx.stroke();
+</script>
+
+<script><!--12-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(95,20);
+ctx.lineTo(95,10);
+ctx.stroke();
+</script>
+
+<script><!--6-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(95,90);
+ctx.lineTo(95,80);
+ctx.stroke();
+</script>
+
+<script><!--1-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(115,15);
+ctx.lineTo(110,25);
+ctx.stroke();
+</script>
+
+<script><!--2-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(130,30);
+ctx.lineTo(120,35);
+ctx.stroke();
+</script>
+
+<script><!--11-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(75,15);
+ctx.lineTo(80,25);
+ctx.stroke();
+</script>
+
+<script><!--10-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,30);
+ctx.lineTo(70,35);
+ctx.stroke();
+</script>
+
+<script><!--8-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,70);
+ctx.lineTo(70,65);
+ctx.stroke();
+</script>
+
+<script><!--7-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(75,85);
+ctx.lineTo(80,75);
+ctx.stroke();
+</script>
+
+<script><!--5-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(115,85);
+ctx.lineTo(110,75);
+ctx.stroke();
+</script>
+
+<script><!--4-->
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(130,70);
+ctx.lineTo(120,65);
+ctx.stroke();
+</script>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.font = "9px Arial";
+ctx.fillStyle = "black";
+ctx.fillText("Analog klocka",143,97);
+</script>
+
+<script><!--timvisare-->
+var x = 0;
+var datum = new Date();
+var timme = datum.getHours();
+
+if(timme === 12 || timme === 0){
+ x = 95;
+}
+
+if(timme === 1 || timme === 13){
+ x = 105;
+}
+
+if(timme === 2 || timme === 14){
+ x = 112;
+}
+
+if(timme === 3 || timme === 15){
+ x = 115;
+}
+
+if(timme === 4 || timme === 16){
+ x = 112;
+}
+
+if(timme === 5 || timme === 17){
+ x = 105;
+}
+
+if(timme === 6 || timme === 18){
+ x = 95;
+}
+
+if(timme === 7 || timme === 19){
+ x = 85;
+}
+
+if(timme === 8 || timme === 20){
+ x = 78;
+}
+
+if(timme === 9 || timme === 21){
+ x = 75;
+}
+
+if(timme === 10 || timme === 22){
+ x = 78;
+}
+
+if(timme === 11 || timme === 23){
+ x = 85;
+}
+
+var y = 0;
+var datum = new Date();
+var timme = datum.getHours();
+
+if(timme === 12 || timme === 0){
+ y = 30;
+}
+
+if(timme === 1 || timme === 13){
+ y = 33;
+}
+
+if(timme === 2 || timme === 14){
+ y = 40;
+}
+
+if(timme === 3 || timme === 15){
+ y = 50;
+}
+
+if(timme === 4 || timme === 16){
+ y = 60;
+}
+
+if(timme === 5 || timme === 17){
+ y = 67;
+}
+
+if(timme === 6 || timme === 18){
+ y = 70;
+}
+
+if(timme === 7 || timme === 19){
+ y = 67;
+}
+
+if(timme === 8 || timme === 20){
+ y = 60;
+}
+
+if(timme === 9 || timme === 21){
+ y = 50;
+}
+
+if(timme === 10 || timme === 22){
+ y = 40;
+}
+
+if(timme === 11 || timme === 23){
+ y = 33;
+}
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(95,50);
+ctx.lineTo(x,y);
+ctx.stroke();
+</script>
+
+<font color="white"><h4>Miniräknare</h4>
+
+<form>
+Siffra 1:<br>
+<input type="number" name="s1" id="s1" value="">
+<br>
+Räknesätt:<br>
+<input type="text" name="rs" id="rs" value="">
+<br>
+Siffra 2:<br>
+<input type="number" name="s2" id="s2" value="">
+<br>
+<br>
+<input type="button" name="button" id="Utskriftmini" value="Räkna" onclick=(Function5b(this.form))>
+</form> 
+</font>
+
+
+<script>
+function Function1(){
+var ord = prompt("Skriv ditt ord");
+function fem(ord){
+if(ord.length==5){
+  return "Ordet är 5 tecken.";
+}
+else{
+  return "Ordet är inte 5 tecken.";
+}
+}
+
+document.getElementById("Utskrift").innerHTML = fem(ord);
+}
+</script>
+
+<script>
+function Function2(){
+
+var tal = prompt("Skriv ett tresiffrigt tal.");
+function siffersumma (tal){
+var ental=tal%10;
+var tiotal=0.1*((tal%100)-ental);
+var hundratal=0.01*(tal-ental-tiotal*10);
+  if(hundratal<0){
+    hundratal=0;
+  }
+var sum = (ental+tiotal+hundratal);
+return "Siffersumman är " + sum;
+}
+
+document.getElementById("Utskrift").innerHTML = siffersumma(tal);
+}
+</script>
+
+<script>
+function Function3(){
+
+var tal=prompt("Skriv in några tal, mellanslag mellan varje.");
+
+function medelvärde(tal){
+var array = tal.split(' ');
+var totalvärde=0;
+for(var i=0; i<array.length; i++){
+  totalvärde=totalvärde+valueofstring(array[i]);
+}
+var medel=totalvärde/array.length;
+return "Medelvärdet är " + medel;
+}
+
+function valueofstring (str){
+var value= parseInt(str);
+  return (value);
+}
+
+
+document.getElementById("Utskrift").innerHTML = medelvärde(tal);
+}
+</script>
+
+<script>
+function Function4(){
+var str = prompt("Skriv ditt ord.");
+
+function bakfram(str) {
+ var backwards = str.split("");
+ backwards = backwards.reverse();
+ backwards = backwards.join("");
+ return (str+ " baklänges är "+backwards);
+}
+
+document.getElementById("Utskrift").innerHTML = bakfram(str);
+}
+</script>
+
+<script>
+function Function5(){
+var ber = prompt("Skriv en beräkning med två tal och ett räknesätt (med mellanslag!)").split(" ");
+function räknare(ber){
+var Räkna = {};
+
+  Räkna["+"] = function(a, b){
+   return a + b;
+  };
+
+  Räkna["-"] = function(a, b){
+   return a - b;
+  };
+
+  Räkna["/"] = function(a, b){
+   return a / b;
+  };
+
+  Räkna["*"] = function(a, b){
+   return a * b;
+  };
+
+ber[0]*=1; 
+ber[2] *=1;
+return("Svar: " + Räkna [ber[1]](ber[0], ber[2]));
+}
+
+document.getElementById("Utskrift").innerHTML = räknare(ber);
+}
+</script>
+
+<script>
+function Function5b(form){
+var s1 = document.getElementById("s1").value;
+s1*=1;
+var rs = document.getElementById("rs").value;
+var s2 = document.getElementById("s2").value;
+s2*=1;
+function räknat(s1, rs, s2){
+
+var Räkna = {};
+
+  Räkna["+"] = function(a, b){
+   return a + b;
+  };
+
+  Räkna["-"] = function(a, b){
+   return a - b;
+  };
+
+  Räkna["/"] = function(a, b){
+   return a / b;
+  };
+
+  Räkna["*"] = function(a, b){
+   return a * b;
+  };
+return("Svar: " + Räkna [rs](s1, s2));
+}
+document.getElementById("Utskriftmini").value = räknat(s1, rs, s2);
+}
+</script>
+
+<script>
+function Function6(){
+var svar = prompt("Hur många SEK vill du växla och till vilken valuta? (EUR, DKK, USD eller NOK)").split(" ");
+function omvandla(svar){
+var Valuta = {EU: 9.8, NK: 1.1, US: 8.7, DK: 1.3};
+  
+Valuta["EUR"] = function(a){
+   return (a + " SEK = " + (a/Valuta.EU).toFixed(1) + " EUR.");
+  };
+
+Valuta["USD"] = function(a){
+   return (a + " SEK = " + (a/Valuta.US).toFixed(1) + " USD.");
+  };
+
+Valuta["NOK"] = function(a){
+   return (a + " SEK = " + (a/Valuta.NK).toFixed(1) + " NOK.");
+  };
+
+Valuta["DKK"] = function(a){
+   return (a + " SEK = " + (a/Valuta.DK).toFixed(1) + " DKK.");
+  };
+
+  
+svar[0]*=1;
+return (Valuta[svar[1]](svar[0]));
+}
+
+document.getElementById("Utskrift").innerHTML = omvandla(svar);
+}
+</script>
+
+<script>
+function Function7(){
+
+var KorvOnline = {Hamburgare: "28 kr", Läsk: "10 kr", Kebab: "27 kr"};
+KorvOnline["Korv med bröd"] = "15 kr";
+var mat = prompt("Vilken maträtt vill du lägga till och hur mycket kostar den? Separera mat och pris med +").split("+");
+
+if(mat[0] in KorvOnline){
+  console.log(mat[0] + " är redan med!");}
+else{
+    KorvOnline[ mat[0] ] = mat[1];
+}
+
+for(var i in KorvOnline){
+  console.log(i + ":" +KorvOnline[i]);
+}
+
+var KorvOnlineString = '';
+for (var i in KorvOnline) {
+  KorvOnlineString += i + ': ' + KorvOnline[i]+'; ';
+}
+
+document.getElementById("Utskrift").innerHTML = KorvOnlineString;
+}
+</script>
+
+<script>
+function Function8(){
+
+var Dator = {Processor: "", Internminne: "", Operativsystem: ""};
+
+for(var i in Dator){
+ Dator[i] = prompt("Vilket värde på " + i);
+}
+
+var Datorprint = '';
+for (var i in Dator) {
+  Datorprint += i + ': ' + Dator[i]+'; ';
+}
+
+document.getElementById("Utskrift").innerHTML = Datorprint;
+}
+</script>
+
+<script>
+function Function9(){
+
+var input = prompt("Skriv ett ord eller en mening så kollar programmet om det är en palindrom.");
+input = input.replace(/\s+/g, '');
+input = input.replace(/\,/g, '');
+input = input.replace(/\./g, '');
+input = input.replace(/\!/g, '');
+input = input.replace(/\?/g, '');
+input = input.replace(/\"/g, '');
+input = input.replace(/\:/g, '');
+input = input.replace(/\;/g, '');
+input = input.replace(/\-/g, '');
+input = input.toLowerCase();
+
+var baklänges = ((((input.split("")).reverse()).join("")));
+
+var svar = "";
+var antalöverens = 0;
+
+for(var i = 0; i<input.length; i++){
+ if(input.charAt(i) == baklänges.charAt(i)){
+  antalöverens += 1;
+ }
+}
+
+if(antalöverens == input.length){
+ svar+=("Ordet eller meningen är en palindrom.");
+}
+
+else{
+  svar+=("Ordet eller meningen är inte en palindrom.");
+}
+
+document.getElementById("Utskrift").innerHTML = svar;
+}
+</script>
+
+<script>
+function Function10(){
+
+var hm = {
+  
+  
+  ord : "",
+  
+  
+  gissat : [],
+  
+  
+  
+  miss : "",
+  
+  
+  init : function(ord){
+  this.ord = ord;
+   ord = ord.split("");
+    for(var i = 0; i<ord.length; i++){
+     this.gissat.push("-");
+    }
+  },
+  
+  
+  
+  spela : function(g){
+     for(var i = 0; i<this.ord.length; i++){
+       if(this.ord.charAt(i) === g){
+        this.gissat[i] = g;
+       }
+     }
+    
+    if(this.ord.indexOf(g) === -1 && this.miss.indexOf(g) === -1){
+     this.miss = this.miss + g;
+    }
+    
+    return (this.gissat).join("");
+   },
+  
+  
+
+  klart : function(){
+    if(this.ord === (this.gissat).join("")){
+     return true;
+    }
+  }
+  
+  
+};
+
+var initiering = prompt("Skriv ordet som ska gissas.");
+initiering = initiering.toLowerCase();
+hm.init(initiering);
+alert("Du får missa 10 bokstäver innan du förlorar.");
+
+while(!hm.klart() && hm.miss.length<10){
+  var s = prompt("Gissat: " + hm.gissat.join("") + "    Missat: " + hm.miss);
+  s = s.toLowerCase();
+  hm.spela(s);
+}
+
+if(hm.klart()){
+ alert("Grattis du vann!");
+}
+else{
+ alert("Tyvärr, du förlorade...");
+}
+document.getElementById("Utskrift").innerHTML = Function10();
+}
+</script>
+</body>
+</html>
+
