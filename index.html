@@ -260,6 +260,279 @@ ctx.lineTo(x,y);
 ctx.stroke();
 </script>
 
+<script>
+var x = 95;
+var datum = new Date();
+var minut = datum.getMinutes();
+
+if(minut === 0){
+ x+=0;
+}
+
+if(minut === 1 || minut === 29){
+ x+=4;
+}
+
+if(minut === 2 || minut === 28){
+ x+=8;
+}
+
+if(minut === 3 || minut === 27){
+ x+=12;
+}
+
+if(minut === 4 || minut === 26){
+ x+=16;
+}
+
+if(minut === 5 || minut === 25){
+ x+=20;
+}
+
+if(minut === 6 || minut === 24){
+ x+=23;
+}
+
+if(minut === 7 || minut === 23){
+ x+=27;
+}
+
+if(minut === 8 || minut === 22){
+ x+=30;
+}
+
+if(minut === 9 || minut === 21){
+ x+=32;
+}
+
+if(minut === 10 || minut === 20){
+ x+=35;
+}
+
+if(minut === 11 || minut === 19){
+ x+=37;
+}
+
+if(minut === 12 || minut === 18){
+ x+=38;
+}
+
+if(minut === 13 || minut === 17){
+ x+=39;
+}
+
+if(minut === 14  || minut === 16){
+ x+=40;
+}
+
+if(minut === 15){
+ x+=40;
+}
+
+if(minut === 59  || minut === 31){
+ x-=4;
+}
+
+if(minut === 58  || minut === 32){
+ x-=8;
+}
+
+if(minut === 57  || minut === 33){
+ x-=12;
+}
+
+if(minut === 56  || minut === 34){
+ x-=16;
+}
+
+if(minut === 55  || minut === 35){
+ x-=20;
+}
+
+if(minut === 54  || minut === 36){
+ x-=23;
+}
+
+if(minut === 53  || minut === 37){
+ x-=27;
+}
+
+if(minut === 52  || minut === 38){
+ x-=30;
+}
+
+if(minut === 51  || minut === 39){
+ x-=32;
+}
+
+if(minut === 50  || minut === 40){
+ x-=35;
+}
+
+if(minut === 49  || minut === 41){
+ x-=37;
+}
+
+if(minut === 48  || minut === 42){
+ x-=38;
+}
+
+if(minut === 47  || minut === 43){
+ x-=39;
+}
+
+if(minut === 46  || minut === 44){
+ x-=40;
+}
+
+if(minut === 45){
+ x-=40;
+}
+
+
+
+var y = 50;
+var datum = new Date();
+var minut = datum.getMinutes();
+
+if(minut === 0){
+ y -= 40;
+}
+
+if(minut === 1 || minut === 59){
+ y -= 40;
+}
+
+if(minut === 2 || minut === 58){
+ y -= 39;
+}
+
+if(minut === 3 || minut === 57){
+ y -= 38;
+}
+
+if(minut === 4 || minut === 56){
+ y -= 37;
+}
+
+if(minut === 5 || minut === 55){
+ y -= 35;
+}
+
+if(minut === 6 || minut === 54){
+ y -= 32;
+}
+
+if(minut === 7 || minut === 53){
+ y -= 30;
+}
+
+if(minut === 8 || minut === 52){
+ y -= 27;
+}
+
+if(minut === 9 || minut === 51){
+ y -= 24;
+}
+
+if(minut === 10 || minut === 50){
+ y -= 20;
+}
+
+if(minut === 11 || minut === 49){
+ y -= 16;
+}
+
+if(minut === 12 || minut === 48){
+ y -= 12;
+}
+
+if(minut === 13 || minut === 47){
+ y -= 8;
+}
+
+if(minut === 14 || minut === 46){
+ y -= 4;
+}
+
+if(minut === 15){
+ y -= 0;
+}
+
+
+
+
+if(minut === 30){
+ y += 40;
+}
+
+if(minut === 29 || minut === 31){
+ y += 40;
+}
+
+if(minut === 28 || minut === 32){
+ y += 39;
+}
+
+if(minut === 27 || minut === 33){
+ y += 38;
+}
+
+if(minut === 26 || minut === 34){
+ y += 37;
+}
+
+if(minut === 25 || minut === 35){
+ y += 35;
+}
+
+if(minut === 24 || minut === 36){
+ y += 32;
+}
+
+if(minut === 23 || minut === 37){
+ y += 30;
+}
+
+if(minut === 22 || minut === 38){
+ y += 27;
+}
+
+if(minut === 21 || minut === 39){
+ y += 24;
+}
+
+if(minut === 20 || minut === 40){
+ y += 20;
+}
+
+if(minut === 19 || minut === 41){
+ y += 16;
+}
+
+if(minut === 18 || minut === 42){
+ y += 12;
+}
+
+if(minut === 17 || minut === 43){
+ y += 8;
+}
+
+if(minut === 16 || minut === 44){
+ y += 4;
+}
+
+if(minut === 45){
+ y += 0;
+}
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.moveTo(95,50);
+ctx.lineTo(x,y);
+ctx.stroke();
+</script>
+
 <font color="white"><h4>Miniräknare</h4>
 
 <form>
