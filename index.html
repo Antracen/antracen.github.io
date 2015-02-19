@@ -5,7 +5,7 @@
   <title>WassWeb</title>
 </head>
 
-<body background = "Wall.png">
+<body background = "Wall.png" onload="Dagensdatum()">
 <h1><font size="24" color="white">Klicka på knapparna för att köra funktionen.</font></h1>
  <font color="white"><h2 id="Utskrift"></h2></font>
 
@@ -19,6 +19,7 @@
 <button onclick="Function8()">Skapa en dator.</button>
 <button onclick="Function9()">Palindromkollare.</button>
 <button onclick="Function10()">Hänga gubbe.</button>
+<button onclick="Function11()">Är min dator på?</button>
 
 <h3></h3>
 <img src="java.png" alt="Java" height="122" width="122">
@@ -873,6 +874,38 @@ else{
 document.getElementById("Utskrift").innerHTML = Function10();
 }
 </script>
+
+<script>
+function Function11(){
+document.getElementById("Utskrift").innerHTML = "Datorn är på.";
+}
+</script>
+
+<script>
+function Dagensdatum(){
+
+switch (new Date().getDay()) {
+case 1 : dag = "Måndag";
+ break; 
+case 2 : dag = "Tisdag";
+ break;
+case 3 : dag = "Onsdag";
+ break;
+case 4 : dag = "Torsdag";
+ break;
+case 5 : dag = "Fredag";
+ break;
+case 6 : dag = "Lördag";
+ break;
+case 0 : dag = "Söndag";
+ break;
+}
+
+document.getElementById("datum").innerHTML = "Idag är det " + dag;
+}
+</script>
+
+<font color = "white" size="4"><h5 id = "datum"></h5></font>
 </body>
 </html>
 
