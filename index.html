@@ -33,7 +33,7 @@ Your browser does not support the HTML5 canvas tag.
 </canvas>
 
 <canvas id="canvas2" width="300" height="200"
-style="border:1px solid #000000;">
+style="border:1px solid #FAF7F8;">
 Your browser does not support the HTML5 canvas tag.
 </canvas>   
 
@@ -1072,9 +1072,9 @@ function init() {
 
 function draw() {
   clear();
-  ctx.fillStyle = "#FAF7F8";
+  ctx.fillStyle = "#000000";
   rect(0,0,WIDTH,HEIGHT);
-  ctx.fillStyle = "#444444";
+  ctx.fillStyle = "#FAF7F8";
   ctx.beginPath();
   ctx.arc(x, y, 7, 0, Math.PI*2, true);
   ctx.fill();
