@@ -22,7 +22,10 @@
 <button onclick="Function11()">Är min dator på?</button>
 
 <h3></h3>
-<img src="java.png" alt="Java" height="122" width="122">
+<canvas id="canvas" width="200" height="100"
+style="border:1px solid #000000;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>   
 
 <canvas id="myCanvas" width="200" height="100"
 style="border:1px solid #000000;">
@@ -153,105 +156,177 @@ ctx.fillText("Analog klocka",143,97);
 var x = 0;
 var datum = new Date();
 var timme = datum.getHours();
+var minut = datum.getMinutes();
 
 if(timme === 12 || timme === 0){
- x = 95;
+if(minut>=30){
+x=105;
+}
+ else{x = 95;}
 }
 
 if(timme === 1 || timme === 13){
- x = 105;
+if(minut>=30){
+x=112;
+}
+ else{x = 105;}
 }
 
 if(timme === 2 || timme === 14){
- x = 112;
+if(minut>=30){
+x=115;
+}
+ else{x = 112;}
 }
 
 if(timme === 3 || timme === 15){
- x = 115;
+if(minut>=30){
+x=112;
+}
+ else{x = 115;}
 }
 
 if(timme === 4 || timme === 16){
- x = 112;
+if(minut>=30){
+x=105;
+}
+ else{x = 112;}
 }
 
 if(timme === 5 || timme === 17){
- x = 105;
+if(minut>=30){
+x=95;
+}
+ else{x = 105;}
 }
 
 if(timme === 6 || timme === 18){
- x = 95;
+if(minut>=30){
+x=85;
+}
+ else{x = 95;}
 }
 
 if(timme === 7 || timme === 19){
- x = 85;
+if(minut>=30){
+x=78;
+}
+ else{x = 85;}
 }
 
 if(timme === 8 || timme === 20){
- x = 78;
+if(minut>=30){
+x=75;
+}
+ else{x = 78;}
 }
 
 if(timme === 9 || timme === 21){
- x = 75;
+if(minut>=30){
+x=78;
+}
+ else{x = 75;}
 }
 
 if(timme === 10 || timme === 22){
- x = 78;
+if(minut>=30){
+x=85;
+}
+ else{x = 78;}
 }
 
 if(timme === 11 || timme === 23){
- x = 85;
+if(minut>=30){
+x=95;
+}
+ else{x = 85;}
 }
 
 var y = 0;
 var datum = new Date();
-var timme = datum.getHours();
 
 if(timme === 12 || timme === 0){
  y = 30;
+if(minut>=30){
+y=33;
+}
 }
 
 if(timme === 1 || timme === 13){
  y = 33;
+if(minut>=30){
+y=40;
+}
 }
 
 if(timme === 2 || timme === 14){
  y = 40;
+if(minut>=30){
+y=50;
+}
 }
 
 if(timme === 3 || timme === 15){
  y = 50;
+if(minut>=30){
+y=60;
+}
 }
 
 if(timme === 4 || timme === 16){
  y = 60;
+if(minut>=30){
+y=67;
+}
 }
 
 if(timme === 5 || timme === 17){
  y = 67;
+if(minut>=30){
+y=70;
+}
 }
 
 if(timme === 6 || timme === 18){
  y = 70;
+if(minut>=30){
+y=67;
+}
 }
 
 if(timme === 7 || timme === 19){
  y = 67;
+if(minut>=30){
+y=60;
+}
 }
 
 if(timme === 8 || timme === 20){
  y = 60;
+if(minut>=30){
+y=50;
+}
 }
 
 if(timme === 9 || timme === 21){
  y = 50;
+if(minut>=30){
+y=40;
+}
 }
 
 if(timme === 10 || timme === 22){
  y = 40;
+if(minut>=30){
+y=33;
+}
 }
 
 if(timme === 11 || timme === 23){
  y = 33;
+if(minut>=30){
+y=30;
+}
 }
 
 var c = document.getElementById("myCanvas");
@@ -875,6 +950,9 @@ document.getElementById("Utskrift").innerHTML = Function10();
 }
 </script>
 
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js">
+</script>
+
 <script>
 function Function11(){
 document.getElementById("Utskrift").innerHTML = "Datorn är på.";
@@ -903,6 +981,58 @@ case 0 : dag = "Söndag";
 
 document.getElementById("datum").innerHTML = "Idag är det " + dag;
 }
+</script>
+<script>
+$(function(){
+
+    var c=document.getElementById("canvas");
+    var ctx=c.getContext("2d");
+    ctx.fillStyle="red";
+
+    var xkord=95;
+    var ykord=55;
+
+    draw();
+
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
+ctx.beginPath();
+ctx.arc(xkord,ykord,10,0,2*Math.PI);
+ctx.stroke();
+ctx.fill(); 
+};
+
+
+function keyDownHandler(event){  
+   
+var key=event.which;
+
+if(key>46){return;}
+
+
+switch(key){
+    
+case 37: xkord -= 1;
+break;
+   
+case 38: ykord -= 1;
+break;
+    
+case 40: ykord += 1;
+break;
+    
+case 39: xkord += 1;
+break;
+
+default:
+break;
+};
+
+draw();
+}
+  
+window.addEventListener("keydown", keyDownHandler, true);
+}); 
 </script>
 
 <font color = "white" size="4"><h5 id = "datum"></h5></font>
