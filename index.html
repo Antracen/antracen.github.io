@@ -5,7 +5,7 @@
   <title>WassWeb</title>
 </head>
 
-<body background = "Wall.png" onload="Dagensdatum()">
+<body background = "Wall.png" onload="Dagensdatum();">
 <h1><font size="24" color="white">Klicka på knapparna för att köra funktionen.</font></h1>
  <font color="white"><h2 id="Utskrift"></h2></font>
 
@@ -31,6 +31,11 @@ Your browser does not support the HTML5 canvas tag.
 style="border:1px solid #000000;">
 Your browser does not support the HTML5 canvas tag.
 </canvas>
+
+<canvas id="canvas2" width="300" height="200"
+style="border:1px solid #000000;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>   
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -1033,6 +1038,57 @@ draw();
   
 window.addEventListener("keydown", keyDownHandler, true);
 }); 
+</script>
+
+<script type="text/javascript">
+var c;  
+var ctx;
+var x = 50;
+var y = 50;
+var dx = 2;
+var dy = 3;
+var WIDTH = 300;
+var HEIGHT = 200; 
+
+
+function rect(x,y,w,h) {
+  ctx.beginPath();
+  ctx.rect(x,y,w,h);
+  ctx.closePath();
+  ctx.fill();
+}
+
+ 
+function clear() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+function init() {
+  c = document.getElementById("canvas2");
+  ctx = c.getContext("2d");
+  return setInterval(draw, 30);
+}
+
+
+function draw() {
+  clear();
+  ctx.fillStyle = "#FAF7F8";
+  rect(0,0,WIDTH,HEIGHT);
+  ctx.fillStyle = "#444444";
+  ctx.beginPath();
+  ctx.arc(x, y, 7, 0, Math.PI*2, true);
+  ctx.fill();
+
+  if (x+7 + dx > WIDTH || x-7 + dx < 0)
+    dx = -dx;
+  if (y+7 + dy > HEIGHT || y-7 + dy < 0)
+    dy = -dy;
+
+  x += dx;
+  y += dy;
+}
+
+init();
 </script>
 
 <font color = "white" size="4"><h5 id = "datum"></h5></font>
