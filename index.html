@@ -22,10 +22,6 @@
 <button onclick="Function11()">Är min dator på?</button>
 
 <h3></h3>
-<canvas id="canvas" width="200" height="100"
-style="border:1px solid #000000;">
-Your browser does not support the HTML5 canvas tag.
-</canvas>   
 
 <canvas id="myCanvas" width="200" height="100"
 style="border:1px solid #000000;">
@@ -35,7 +31,7 @@ Your browser does not support the HTML5 canvas tag.
 <canvas id="canvas2" width="300" height="200"
 style="border:1px solid #FAF7F8;">
 Your browser does not support the HTML5 canvas tag.
-</canvas>   
+</canvas>
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -614,24 +610,6 @@ ctx.lineTo(x,y);
 ctx.stroke();
 </script>
 
-<font color="white"><h4>Miniräknare</h4>
-
-<form>
-Siffra 1:<br>
-<input type="number" name="s1" id="s1" value="">
-<br>
-Räknesätt:<br>
-<input type="text" name="rs" id="rs" value="">
-<br>
-Siffra 2:<br>
-<input type="number" name="s2" id="s2" value="">
-<br>
-<br>
-<input type="button" name="button" id="Utskriftmini" value="Räkna" onclick=(Function5b(this.form))>
-</form> 
-</font>
-
-
 <script>
 function Function1(){
 var ord = prompt("Skriv ditt ord");
@@ -987,48 +965,113 @@ case 0 : dag = "Söndag";
 document.getElementById("datum").innerHTML = "Idag är det " + dag;
 }
 </script>
+
 <script>
-$(function(){
+var c;  
+var ctx;
+var ett = 0;
+var två = 0;
+var x = 50;
+var y = 50;
+var paddel1 = 50;
+var paddel2 = 50;
+var dx = 5;
+var dy = 3;
+var WIDTH = 300;
+var HEIGHT = 200; 
+ 
+function init() {
+  c = document.getElementById("canvas2");
+  ctx = c.getContext("2d");
+  return setInterval(draw, 40);
+}
 
-    var c=document.getElementById("canvas");
-    var ctx=c.getContext("2d");
-    ctx.fillStyle="red";
 
-    var xkord=95;
-    var ykord=55;
+function draw() {
+  
+  if(x>WIDTH){
+   ett += 1;
+   var pongstring = " Spelare 1: " + ett + " Spelare 2: " + två;
+   document.getElementById("Utskrift").innerHTML = pongstring;
+   dx*=-1;
+   x=150;
+   y=50;
+  }
 
-    draw();
+  if(x<0){
+   två += 1;
+   var pongstring = " Spelare 1: " + ett + " Spelare 2: " + två;
+   document.getElementById("Utskrift").innerHTML = pongstring;
+   dx*=-1;
+   x=150;
+   y=50;
+  }
+  
+  ctx.fillStyle = "#000000";
+  ctx.beginPath();
+  ctx.rect(0,0,WIDTH,HEIGHT);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.fillStyle = "#FAF7F8";
+  ctx.beginPath();
+  ctx.rect(WIDTH/2,0,2,HEIGHT);
+  ctx.closePath();
+  ctx.fill();
 
-function draw(){
-ctx.clearRect(0,0,c.width,c.height);
-ctx.beginPath();
-ctx.arc(xkord,ykord,10,0,2*Math.PI);
-ctx.stroke();
-ctx.fill(); 
-};
+  
+  ctx.fillStyle = "#FAF7F8";
+  ctx.beginPath();
+  ctx.arc(x, y, 7, 0, Math.PI*2, true);
+  ctx.fill();
+  
+  ctx.fillStyle = "#FAF7F8";
+  ctx.beginPath();
+  ctx.rect(1,paddel1,4,80);
+  ctx.fill();
+
+  ctx.fillStyle = "#FAF7F8";
+  ctx.beginPath();
+  ctx.rect(295,paddel2,4,80);
+  ctx.fill();
 
 
+  if (x+7 + dx > WIDTH)
+    if(y+7 > paddel2 && y-7 < paddel2+80)
+    dx = -dx;
+
+  if (x-7 + dx < 0)
+    if(y+7 > paddel1 && y-7 < paddel1+80)
+    dx = -dx;
+        
+  if (y+7 + dy > HEIGHT)
+    dy = -dy;
+  
+  if (y-7 + dy < 0)
+    dy = -dy;
+
+  x += dx;
+  y += dy;
+}
+  
 function keyDownHandler(event){  
    
 var key=event.which;
 
-if(key>46){return;}
-
-
 switch(key){
     
-case 37: xkord -= 1;
-break;
-   
-case 38: ykord -= 1;
+case 38: paddel2 -= 5;
 break;
     
-case 40: ykord += 1;
+case 40: paddel2 += 5;
 break;
     
-case 39: xkord += 1;
+case 83: paddel1 += 5;
 break;
-
+    
+case 87: paddel1 -= 5;
+break;
+ 
 default:
 break;
 };
@@ -1037,57 +1080,6 @@ draw();
 }
   
 window.addEventListener("keydown", keyDownHandler, true);
-}); 
-</script>
-
-<script type="text/javascript">
-var c;  
-var ctx;
-var x = 50;
-var y = 50;
-var dx = 2;
-var dy = 3;
-var WIDTH = 300;
-var HEIGHT = 200; 
-
-
-function rect(x,y,w,h) {
-  ctx.beginPath();
-  ctx.rect(x,y,w,h);
-  ctx.closePath();
-  ctx.fill();
-}
-
- 
-function clear() {
-  ctx.clearRect(0, 0, WIDTH, HEIGHT);
-}
-
-function init() {
-  c = document.getElementById("canvas2");
-  ctx = c.getContext("2d");
-  return setInterval(draw, 30);
-}
-
-
-function draw() {
-  clear();
-  ctx.fillStyle = "#000000";
-  rect(0,0,WIDTH,HEIGHT);
-  ctx.fillStyle = "#FAF7F8";
-  ctx.beginPath();
-  ctx.arc(x, y, 7, 0, Math.PI*2, true);
-  ctx.fill();
-
-  if (x+7 + dx > WIDTH || x-7 + dx < 0)
-    dx = -dx;
-  if (y+7 + dy > HEIGHT || y-7 + dy < 0)
-    dy = -dy;
-
-  x += dx;
-  y += dy;
-}
-
 init();
 </script>
 
