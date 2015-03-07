@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +31,7 @@ Your browser does not support the HTML5 canvas tag.
 </canvas>
 
 <canvas id="canvas2" width="300" height="200"
-style="border:1px solid #FAF7F8;">
+style="border:1px solid #FAF7F8;" onclick="PONG();">
 Your browser does not support the HTML5 canvas tag.
 </canvas>
 
@@ -41,6 +42,38 @@ ctx.rect(0, 0, 200, 100);
 ctx.fillStyle = "white";
 ctx.fill();
 </script> 
+
+<script>
+var c = document.getElementById("canvas2");
+var ctx = c.getContext("2d");
+ctx.rect(0, 0, 300, 200);
+ctx.fillStyle = "green";
+ctx.fill();
+</script> 
+
+<script>
+var c = document.getElementById("canvas2");
+var ctx = c.getContext("2d");
+ctx.font = "30px Arial";
+ctx.fillStyle = "white";
+ctx.fillText("PONG",10,30);
+</script>
+
+<script>
+var c = document.getElementById("canvas2");
+var ctx = c.getContext("2d");
+ctx.rect(225, 160, 70, 35);
+ctx.strokeStyle = 'white';
+ctx.stroke();
+</script> 
+
+<script>
+var c = document.getElementById("canvas2");
+var ctx = c.getContext("2d");
+ctx.font = "20px Arial";
+ctx.fillStyle = "white";
+ctx.fillText("Spela",235,185);
+</script>
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -960,6 +993,7 @@ document.getElementById("datum").innerHTML = "Idag är det " + dag;
 </script>
 
 <script>
+function PONG(){
 var c;  
 var ctx;
 var ett = 0;
@@ -1105,9 +1139,9 @@ draw();
   
 window.addEventListener("keydown", keyDownHandler, true);
 init();
+}
 </script>
 
 <font color = "white" size="4"><h5 id = "datum"></h5></font>
 </body>
 </html>
-
