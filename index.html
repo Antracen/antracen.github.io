@@ -991,8 +991,6 @@ function draw() {
   
   if(x>WIDTH){
    ett += 1;
-   var pongstring = " Spelare 1: " + ett + " Spelare 2: " + två;
-   document.getElementById("Utskrift").innerHTML = pongstring;
    dx*=-1;
    x=150;
    y=50;
@@ -1000,24 +998,57 @@ function draw() {
 
   if(x<0){
    två += 1;
-   var pongstring = " Spelare 1: " + ett + " Spelare 2: " + två;
-   document.getElementById("Utskrift").innerHTML = pongstring;
    dx*=-1;
    x=150;
    y=50;
   }
   
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#006400";
   ctx.beginPath();
   ctx.rect(0,0,WIDTH,HEIGHT);
   ctx.closePath();
   ctx.fill();
   
+  ctx.font = "25px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText(ett,15,25); 
+
+  ctx.font = "25px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText(två,270,25);   
+  
+  ctx.font = "10px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("A S D",10,190);
+  
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("⇦⇨",270,186); 
+
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("⇧",278,183);    
+  
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("⇩",278,190);
+  
+  ctx.font = "10px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("W",18,180);  
+
+  
   ctx.fillStyle = "#FAF7F8";
   ctx.beginPath();
-  ctx.rect(WIDTH/2,0,2,HEIGHT);
+  ctx.rect(WIDTH/2-1,0,2,HEIGHT);
   ctx.closePath();
   ctx.fill();
+  
+  ctx.beginPath();
+  ctx.arc(WIDTH/2, HEIGHT/2, 12, 0, Math.PI*2, true);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#FAF7F8';
+  ctx.stroke();
 
   
   ctx.fillStyle = "#FAF7F8";
