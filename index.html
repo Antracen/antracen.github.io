@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,6 +31,9 @@ Your browser does not support the HTML5 canvas tag.
 <canvas id="canvas2" width="300" height="200"
 style="border:1px solid #FAF7F8;" onclick="PONG();">
 Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<canvas id="hmc" height =400 width = 200 style="border:1px solid #000000">
 </canvas>
 
 <script>
@@ -908,6 +909,14 @@ var hm = {
    ord = ord.split("");
     for(var i = 0; i<ord.length; i++){
      this.gissat.push("-");
+   var c = document.getElementById("hmc");
+   var ctx = c.getContext("2d");
+   ctx.clearRect ( 0 , 0 , 200, 400 );
+   var c = document.getElementById("hmc");
+   var ctx = c.getContext("2d");
+   ctx.rect(0, 0, 200, 400);
+   ctx.fillStyle = "white";
+   ctx.fill(); 
     }
   },
   
@@ -943,8 +952,127 @@ initiering = initiering.toLowerCase();
 hm.init(initiering);
 alert("Du får missa 10 bokstäver innan du förlorar.");
 
+
+function tiofel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.beginPath();
+ctx.arc(60,150,20,0,2*Math.PI);
+ctx.stroke();
+ }
+  
+function niofel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,170);
+ctx.lineTo(60,220);
+ctx.stroke();
+}
+
+function åttafel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,170);
+ctx.lineTo(30,200);
+ctx.stroke();
+}  
+
+function sjufel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,170);
+ctx.lineTo(90,200);
+ctx.stroke();
+}
+
+function sexfel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,220);
+ctx.lineTo(30,250);
+ctx.stroke();
+}
+
+function femfel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,220);
+ctx.lineTo(90,250);
+ctx.stroke();
+}
+
+function fyrafel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(60,130);
+ctx.lineTo(60,90);
+ctx.stroke();
+}
+
+function trefel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(160,90);
+ctx.lineTo(60,90);
+ctx.stroke();
+}
+
+function tvåfel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.moveTo(160,90);
+ctx.lineTo(160,283);
+ctx.stroke();
+}
+
+function ettfel(){
+var c = document.getElementById("hmc");
+var ctx = c.getContext("2d");
+ctx.beginPath();
+ctx.arc(100,420,150,0,2*Math.PI);
+ctx.stroke();
+}
+
 while(!hm.klart() && hm.miss.length<10){
-  var s = prompt("Gissat: " + hm.gissat.join("") + "    Missat: " + hm.miss);
+  if(hm.miss.length==1){
+   ettfel();
+  }
+
+  if(hm.miss.length==2){
+   tvåfel();
+  }
+
+  if(hm.miss.length==3){
+   trefel();
+  }
+
+  if(hm.miss.length==4){
+   fyrafel();
+  }
+
+  if(hm.miss.length==5){
+   femfel();
+  }
+
+  if(hm.miss.length==6){
+   sexfel();
+  }
+
+  if(hm.miss.length==7){
+   sjufel();
+  }
+
+  if(hm.miss.length==8){
+   åttafel();
+  }
+
+  if(hm.miss.length==9){
+   niofel();
+  }
+  var s = "test";
+  while(s.length>1){
+  s = prompt("Gissat: " + hm.gissat.join("") + "    Missat: " + hm.miss);
+  }
   s = s.toLowerCase();
   hm.spela(s);
 }
@@ -953,6 +1081,7 @@ if(hm.klart()){
  alert("Grattis du vann!");
 }
 else{
+ tiofel();
  alert("Tyvärr, du förlorade...");
 }
 document.getElementById("Utskrift").innerHTML = Function10();
