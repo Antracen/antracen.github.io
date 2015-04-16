@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,7 +44,17 @@ ctx.rect(0, 0, 200, 100);
 ctx.fillStyle = "white";
 ctx.fill();
 </script> 
+  
+<button id="knapp">Klicka!</button>
 
+<style>
+    #knapp{
+    position:absolute;
+    top:500px;
+    left:500px;
+    }
+</style>
+  
 <script>
 var c = document.getElementById("canvas2");
 var ctx = c.getContext("2d");
@@ -1271,6 +1282,18 @@ init();
 }
 </script>
 
+<script>
+$(function(){
+    $("#knapp").on({"mouseenter":function(){
+            $("#knapp").animate({
+                left:(Math.random()*400)+"px",
+                top:(Math.random()*400)+"px",
+            },1000);
+        }
+    });
+});
+</script>
+  
 <font color = "white" size="4"><h5 id = "datum"></h5></font>
 </body>
 </html>
