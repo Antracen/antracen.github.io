@@ -10,14 +10,7 @@
 <h1><font size="24" color="white">Klicka på knapparna för att köra funktionen.</font></h1>
  <font color="white"><h2 id="Utskrift"></h2></font>
 
-<button onclick="Function1()">Kollar om ett ord är fem tecken.</button>
-<button onclick="Function2()">Siffersumma.</button>
-<button onclick="Function3()">Räknar ut medelvärde av tal.</button>
-<button onclick="Function4()">Skriver ett ord baklänges.</button>
 <button onclick="Function5()">Miniräknare.</button>
-<button onclick="Function6()">Omvandlar valuta.</button>
-<button onclick="Function7()">Lägg till en rätt på en meny.</button>
-<button onclick="Function8()">Skapa en dator.</button>
 <button onclick="Function9()">Palindromkollare.</button>
 <button onclick="Function10()">Hänga gubbe.</button>
 <button onclick="Function11()">Är min dator på?</button>
@@ -657,81 +650,6 @@ ctx.stroke();
 </script>
 
 <script>
-function Function1(){
-var ord = prompt("Skriv ditt ord");
-function fem(ord){
-if(ord.length==5){
-  return "Ordet är 5 tecken.";
-}
-else{
-  return "Ordet är inte 5 tecken.";
-}
-}
-
-document.getElementById("Utskrift").innerHTML = fem(ord);
-}
-</script>
-
-<script>
-function Function2(){
-
-var tal = prompt("Skriv ett tresiffrigt tal.");
-function siffersumma (tal){
-var ental=tal%10;
-var tiotal=0.1*((tal%100)-ental);
-var hundratal=0.01*(tal-ental-tiotal*10);
-  if(hundratal<0){
-    hundratal=0;
-  }
-var sum = (ental+tiotal+hundratal);
-return "Siffersumman är " + sum;
-}
-
-document.getElementById("Utskrift").innerHTML = siffersumma(tal);
-}
-</script>
-
-<script>
-function Function3(){
-
-var tal=prompt("Skriv in några tal, mellanslag mellan varje.");
-
-function medelvärde(tal){
-var array = tal.split(' ');
-var totalvärde=0;
-for(var i=0; i<array.length; i++){
-  totalvärde=totalvärde+valueofstring(array[i]);
-}
-var medel=totalvärde/array.length;
-return "Medelvärdet är " + medel;
-}
-
-function valueofstring (str){
-var value= parseInt(str);
-  return (value);
-}
-
-
-document.getElementById("Utskrift").innerHTML = medelvärde(tal);
-}
-</script>
-
-<script>
-function Function4(){
-var str = prompt("Skriv ditt ord.");
-
-function bakfram(str) {
- var backwards = str.split("");
- backwards = backwards.reverse();
- backwards = backwards.join("");
- return (str+ " baklänges är "+backwards);
-}
-
-document.getElementById("Utskrift").innerHTML = bakfram(str);
-}
-</script>
-
-<script>
 function Function5(){
 var ber = prompt("Skriv en beräkning med två tal och ett räknesätt (med mellanslag!)").split(" ");
 function räknare(ber){
@@ -791,81 +709,6 @@ var Räkna = {};
 return("Svar: " + Räkna [rs](s1, s2));
 }
 document.getElementById("Utskriftmini").value = räknat(s1, rs, s2);
-}
-</script>
-
-<script>
-function Function6(){
-var svar = prompt("Hur många SEK vill du växla och till vilken valuta? (EUR, DKK, USD eller NOK)").split(" ");
-function omvandla(svar){
-var Valuta = {EU: 9.8, NK: 1.1, US: 8.7, DK: 1.3};
-  
-Valuta["EUR"] = function(a){
-   return (a + " SEK = " + (a/Valuta.EU).toFixed(1) + " EUR.");
-  };
-
-Valuta["USD"] = function(a){
-   return (a + " SEK = " + (a/Valuta.US).toFixed(1) + " USD.");
-  };
-
-Valuta["NOK"] = function(a){
-   return (a + " SEK = " + (a/Valuta.NK).toFixed(1) + " NOK.");
-  };
-
-Valuta["DKK"] = function(a){
-   return (a + " SEK = " + (a/Valuta.DK).toFixed(1) + " DKK.");
-  };
-
-  
-svar[0]*=1;
-return (Valuta[svar[1]](svar[0]));
-}
-
-document.getElementById("Utskrift").innerHTML = omvandla(svar);
-}
-</script>
-
-<script>
-function Function7(){
-
-var KorvOnline = {Hamburgare: "28 kr", Läsk: "10 kr", Kebab: "27 kr"};
-KorvOnline["Korv med bröd"] = "15 kr";
-var mat = prompt("Vilken maträtt vill du lägga till och hur mycket kostar den? Separera mat och pris med +").split("+");
-
-if(mat[0] in KorvOnline){
-  console.log(mat[0] + " är redan med!");}
-else{
-    KorvOnline[ mat[0] ] = mat[1];
-}
-
-for(var i in KorvOnline){
-  console.log(i + ":" +KorvOnline[i]);
-}
-
-var KorvOnlineString = '';
-for (var i in KorvOnline) {
-  KorvOnlineString += i + ': ' + KorvOnline[i]+'; ';
-}
-
-document.getElementById("Utskrift").innerHTML = KorvOnlineString;
-}
-</script>
-
-<script>
-function Function8(){
-
-var Dator = {Processor: "", Internminne: "", Operativsystem: ""};
-
-for(var i in Dator){
- Dator[i] = prompt("Vilket värde på " + i);
-}
-
-var Datorprint = '';
-for (var i in Dator) {
-  Datorprint += i + ': ' + Dator[i]+'; ';
-}
-
-document.getElementById("Utskrift").innerHTML = Datorprint;
 }
 </script>
 
