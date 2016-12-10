@@ -29,12 +29,14 @@
 <script>
   function clicked(){
     var num = parseInt(localStorage.getItem("number"));
-    if(num === null){
-      num = 0;
+    if(!num){
+      localStorage.setItem("number", 0);
+      test();
+    } else{
+      num = num + 1;
+      localStorage.setItem("number", num);
+      test();
     }
-    num = num + 1;
-    localStorage.setItem("number", num);
-    test();
   }
 </script>
 
