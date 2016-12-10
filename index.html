@@ -28,8 +28,8 @@
 </script>
 <script>
   function clicked(){
-    localStorage.setItem("number", 9);
-    var num = localStorage.getItem("number");
+    localStorage.setItem("number", "9");
+    var num = parseInt(localStorage.getItem("number"));
     num = num + 1;
     localStorage.setItem("number", num);
     test();
