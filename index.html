@@ -29,7 +29,7 @@
 <script>
   function clicked(){
     var num = parseInt(localStorage.getItem("number"));
-    if(!num){
+    if(!num && num != 0){
       localStorage.setItem("number", 0);
       test();
     } else{
