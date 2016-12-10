@@ -8,7 +8,7 @@
 <body onload="test();">
 <h1><font size="24" color="black">Under konstruktion.</font></h1>
   
-<button id="knapp">Klicka!</button>
+<button id="knapp" onclick="clicked()">Klicka!</button>
 
 <style>
     #knapp{
@@ -23,21 +23,17 @@
 
 <script>
   function test(){
+    document.getElementById("result").innerHTML = localStorage.getItem("number");
+  }
+</script>
+<script>
+  function clicked(){
+    localStorage.setItem("number", "4");
+    test();
   }
 </script>
 
-<iframe src="text.txt"></iframe>
-<script>
-$(function(){
-    $("#knapp").on({"mouseenter":function(){
-            $("#knapp").animate({
-                left:(Math.random()*400)+"px",
-                top:(Math.random()*400)+"px",
-            },1000);
-        }
-    });
-});
-</script>
+<div id="result"></div>
   
 </body>
 </html>
