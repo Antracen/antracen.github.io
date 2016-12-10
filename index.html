@@ -5,7 +5,7 @@
   <title>Wass</title>
 </head>
 
-<body bgcolor="2d2d2d" onload="Dagensdatum();">
+<body bgcolor="2d2d2d" onload="test();">
 <h1><font size="24" color="white">Under konstruktion.</font></h1>
   
 <button id="knapp">Klicka!</button>
@@ -22,27 +22,10 @@
 </script>
 
 <script>
-function Dagensdatum(){
-
-switch (new Date().getDay()) {
-case 1 : dag = "Måndag";
- break; 
-case 2 : dag = "Tisdag";
- break;
-case 3 : dag = "Onsdag";
- break;
-case 4 : dag = "Torsdag";
- break;
-case 5 : dag = "Fredag";
- break;
-case 6 : dag = "Lördag";
- break;
-case 0 : dag = "Söndag";
- break;
-}
-
-document.getElementById("datum").innerHTML = "Idag är det " + dag;
-}
+  function test(){
+    var w = window.open('text.txt');
+    w.print();
+  }
 </script>
 
 <script>
@@ -57,6 +40,5 @@ $(function(){
 });
 </script>
   
-<font color = "white" size="4"><h5 id = "datum"></h5></font>
 </body>
 </html>
