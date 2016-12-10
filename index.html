@@ -23,14 +23,19 @@
 
 <script>
   function test(){
-    document.getElementById("result").innerHTML = "Knappen har klickats " + localStorage.getItem("number") + " gånger.";
+    var times = localStorage.getItem("number");
+    if(!num && num != 0){
+      document.getElementById("result").innerHTML = "Knappen har klickats 0 gånger.";
+    } else{
+      document.getElementById("result").innerHTML = "Knappen har klickats " + times + " gånger.";
+    }
   }
 </script>
 <script>
   function clicked(){
     var num = parseInt(localStorage.getItem("number"));
     if(!num && num != 0){
-      localStorage.setItem("number", 0);
+      localStorage.setItem("number", 1);
       test();
     } else{
       num = num + 1;
