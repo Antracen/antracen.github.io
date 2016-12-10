@@ -28,7 +28,10 @@
 </script>
 <script>
   function clicked(){
-    localStorage.setItem("number", "4");
+    localStorage.setItem("number", 9);
+    var num = localStorage.getItem("number");
+    num = num + 1;
+    localStorage.setItem("number", num);
     test();
   }
 </script>
