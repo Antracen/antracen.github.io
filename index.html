@@ -29,6 +29,9 @@
 <script>
   function clicked(){
     var num = parseInt(localStorage.getItem("number"));
+    if(num == null){
+      num = 0;
+    }
     num = num + 1;
     localStorage.setItem("number", num);
     test();
