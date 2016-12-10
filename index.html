@@ -23,12 +23,11 @@
 
 <script>
   function test(){
-    document.getElementById("result").innerHTML = localStorage.getItem("number");
+    document.getElementById("result").innerHTML = "Knappen har klickats " + localStorage.getItem("number") + " gånger.";
   }
 </script>
 <script>
   function clicked(){
-    localStorage.setItem("number", "9");
     var num = parseInt(localStorage.getItem("number"));
     num = num + 1;
     localStorage.setItem("number", num);
