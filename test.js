@@ -1,3 +1,7 @@
+function setup() {
+  createCanvas(640, 360);
+}
+
 function test(){
   fill(255);
   stroke(255);
