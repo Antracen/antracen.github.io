@@ -4,48 +4,17 @@
   <meta charset="utf-8">
   <title>Wass</title>
 </head>
-
-<body onload="test();">
+  
+<script src="libraries/p5.js" type="text/javascript"></script>
+<script src="libraries/p5.dom.js" type="text/javascript"></script>
+<script src="libraries/p5.sound.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script src="test.js" type="text/javascript"></script>
 <h1><font size="24" color="black">Under konstruktion.</font></h1>
   
-<button id="knapp" onclick="clicked()">Klicka!</button>
 
-<style>
-    #knapp{
-    position:absolute;
-    top:500px;
-    left:500px;
-    }
-</style>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery.min.js">
-</script>
 
-<script>
-  function test(){
-    var times = localStorage.getItem("number");
-    if(!times && times != 0){
-      document.getElementById("result").innerHTML = "Knappen har klickats 0 gånger.";
-    } else{
-      document.getElementById("result").innerHTML = "Knappen har klickats " + times + " gånger.";
-    }
-  }
-</script>
-<script>
-  function clicked(){
-    var num = parseInt(localStorage.getItem("number"));
-    if(!num && num != 0){
-      localStorage.setItem("number", 1);
-      test();
-    } else{
-      num = num + 1;
-      localStorage.setItem("number", num);
-      test();
-    }
-  }
-</script>
-
-<div id="result"></div>
-  
+<body>
 </body>
 </html>
