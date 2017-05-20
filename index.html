@@ -10,7 +10,7 @@
 	<body>
 		<table id="posts">
 		</table>
-		<textarea id="post" cols="40" rows="5" placeholder="inlägg"></textarea><br>
+		<textarea id="post" cols="40" rows="5" placeholder="inlägg" onkeydown="if(event.keyCode == 13) test()"></textarea><br>
       	<button onclick="test()">Skicka</button>
 		<script>
 			function test(){
