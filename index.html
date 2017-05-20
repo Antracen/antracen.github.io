@@ -3,6 +3,7 @@
 	<head>
 		<title> Firebase </title>
 		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
 		<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	</head>
@@ -15,7 +16,7 @@
 			function test(){
 				var messagesFirebase = firebase.database().ref("Messages");
 				var timestamp = Date.now();
-				messagesFirebase.push().set($("#post").val());
+				messagesFirebase.push().set({name: firebase.auth().currentUser.displayName, text: $("#post").val()});
 				$("#post").val("");
 			}
 		</script>
@@ -41,7 +42,7 @@
 			document.getElementById("posts").innerHTML = "";
 			messages.forEach(function(messageObj) {
 				var message = messageObj.val();
-				$("#posts").append($("<tr><td>" + message + "</td></tr>"));
+				$("#posts").append($("<tr><td>" + message.name + ":</td><td>" + message.text + "</td></tr>"));
 			});
 		});
 	</script>
