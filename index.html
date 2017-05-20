@@ -33,10 +33,11 @@
 		};
 		firebase.initializeApp(config);
 		var provider = new firebase.auth.GoogleAuthProvider();
-		var user = firebase.auth().currentUser;
-		if(!user){
- 			firebase.auth().signInWithPopup(provider);
- 		}
+		firebase.auth().getRedirectResult().then(function(result){
+        	if(!result.user){
+          		firebase.auth().signInWithRedirect(provider);
+        	}
+    	});
  		var messageBase = firebase.database().ref("Messages");
 		messageBase.on('value', function(messages){
 			document.getElementById("posts").innerHTML = "";
