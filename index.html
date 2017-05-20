@@ -5,22 +5,45 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
-		<script>
-  			// Initialize Firebase
-  			var config = {
-				apiKey: "AIzaSyCjeHOX51O3SvprOXrroBS-sTUnCb3cEew",
-				authDomain: "testbase-67d7c.firebaseapp.com",
-				databaseURL: "https://testbase-67d7c.firebaseio.com",
-				projectId: "testbase-67d7c",
-				storageBucket: "testbase-67d7c.appspot.com",
-				messagingSenderId: "1098036968130"
-  			};
- 			firebase.initializeApp(config);
- 			var provider = new firebase.auth.GoogleAuthProvider();
- 			firebase.auth().signInWithRedirect(provider);
-		</script>
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	</head>
 	<body>
+		<table id="posts">
+		</table>
+		<textarea id="post" cols="40" rows="5" placeholder="inlägg"></textarea><br>
+      	<button onclick="test()">Skicka</button>
+		<script>
+			function test(){
+				var messagesFirebase = firebase.database().ref("Messages");
+				var timestamp = Date.now();
+				messagesFirebase.push().set($("#post").val());
+				$("#post").val("");
+			}
+		</script>
 	</body>
-	
+	<script>
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyCjeHOX51O3SvprOXrroBS-sTUnCb3cEew",
+			authDomain: "testbase-67d7c.firebaseapp.com",
+			databaseURL: "https://testbase-67d7c.firebaseio.com",
+			projectId: "testbase-67d7c",
+			storageBucket: "testbase-67d7c.appspot.com",
+			messagingSenderId: "1098036968130"
+		};
+		firebase.initializeApp(config);
+		var provider = new firebase.auth.GoogleAuthProvider();
+		var user = firebase.auth().currentUser;
+		if(!user){
+ 			firebase.auth().signInWithPopup(provider);
+ 		}
+ 		var messageBase = firebase.database().ref("Messages");
+		messageBase.on('value', function(messages){
+			document.getElementById("posts").innerHTML = "";
+			messages.forEach(function(messageObj) {
+				var message = messageObj.val();
+				$("#posts").append($("<tr><td>" + message + "</td></tr>"));
+			});
+		});
+	</script>
 </html>
