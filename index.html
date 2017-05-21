@@ -48,6 +48,8 @@
 				$("#posts").append($("<tr><td>" + message.name + ":</td><td>" + message.text + "</td></tr>"));
 			});
 			document.getElementById("posts").scrollTop = document.getElementById("posts").scrollHeight;
+			var alert = new Audio('alert.wav');
+			alert.play();
 		});
 	</script>
 </html>
