@@ -3,14 +3,15 @@
 	<head>
 		<title> Firebase </title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="style.css">
 		<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	</head>
 	<body>
-		<table id="posts">
+		<hide style="overflow:hidden; width: 100%;">
+		<table id="posts" style="display: block; height: 250px; overflow:auto; padding-right:20px; width: 100%;">
 			<tr><td>Loading, please wait...</td></tr>
 		</table>
+		</hide>
 		<textarea id="post" cols="40" rows="5" placeholder="inlägg" onkeydown="if(event.keyCode == 13) test()"></textarea><br>
       	<button onclick="test()">Skicka</button>
 		<script>
@@ -46,6 +47,7 @@
 				var message = messageObj.val();
 				$("#posts").append($("<tr><td>" + message.name + ":</td><td>" + message.text + "</td></tr>"));
 			});
+			document.getElementById("posts").scrollTop = document.getElementById("posts").scrollHeight;
 		});
 	</script>
 </html>
