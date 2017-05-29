@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -42,7 +41,24 @@
     		});
 
 			playerBase = firebase.database().ref("Player");
-			firebase.database().ref("Player/" + playerNum).set({playerNum:playerNum, x: xPos, y: yPos});
+
+			playerBase.once("value", function(players){
+				ctx.fillStyle = "white";
+    			ctx.fillRect(0,0,canvas.width,canvas.height);
+				players.forEach(function(playerObj) {
+					player = playerObj.val();
+					var color = chooseColor(player.playerNum);
+					ctx.fillStyle = color;
+					ctx.fillRect(player.x*pixelSize, player.y*pixelSize, pixelSize, pixelSize);
+				});
+			});
+
+			firebase.database().ref("Player/"+playerNum).once("value", function(player){
+					player = player.val();
+					xPos = player.x;
+					yPos = player.y;
+			});
+
 			playerBase.on('value', function(players){
 				ctx.fillStyle = "white";
     			ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -86,6 +102,11 @@
 			var key = keys.shift();
 			if(48 <= key && key <= 57){
 				playerNum = key - 48;
+				firebase.database().ref("Player/"+playerNum).once("value", function(player){
+					player = player.val();
+					xPos = player.x;
+					yPos = player.y;
+				});
 			}
 			switch(key){
 				case 37:
