@@ -33,11 +33,6 @@
 				messagingSenderId: "1098036968130"
 			};
 			firebase.initializeApp(config);
-			var provider = new firebase.auth.GoogleAuthProvider();
-			firebase.auth().getRedirectResult().then(function(result){
-        		if(!result.user){
-          			firebase.auth().signInWithRedirect(provider);
-        		}
     		});
 
 			playerBase = firebase.database().ref("Player");
