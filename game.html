@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Martin Wass </title>
+		<meta charset="utf-8">
+		<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	</head>
+	<body>
+		Move with arrow keys. Change player with 1/2.
+		<canvas id="canvas" width="400" height="400"></canvas>
+	</body>
+	<script>
+		xPos = 0;
+		yPos = 0;
+		pixelSize = 20;
+		keys = [];
+		playerNum = 1;
+
+		window.onload = function(){
+			// Initialize game
+			canvas = document.getElementById("canvas");
+			ctx = canvas.getContext("2d");
+			document.addEventListener("keydown", keyboard);
+			setInterval(move, 1000/20);
+
+			config = {
+				apiKey: "AIzaSyCjeHOX51O3SvprOXrroBS-sTUnCb3cEew",
+				authDomain: "testbase-67d7c.firebaseapp.com",
+				databaseURL: "https://testbase-67d7c.firebaseio.com",
+				projectId: "testbase-67d7c",
+				storageBucket: "testbase-67d7c.appspot.com",
+				messagingSenderId: "1098036968130"
+			};
+			firebase.initializeApp(config);
+			var provider = new firebase.auth.GoogleAuthProvider();
+			firebase.auth().getRedirectResult().then(function(result){
+        		if(!result.user){
+          			firebase.auth().signInWithRedirect(provider);
+        		}
+    		});
+
+			playerBase = firebase.database().ref("Player");
+			firebase.database().ref("Player/" + playerNum).set({x: xPos, y: yPos});
+			playerBase.on('value', function(players){
+				ctx.fillStyle = "white";
+    			ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = "black";
+				players.forEach(function(playerObj) {
+					player = playerObj.val();
+					console.log("Drawing, color:" + ctx.fillStyle + ", player:" + player.x + "," + "player.y");
+					ctx.fillRect(player.x*pixelSize, player.y*pixelSize, pixelSize, pixelSize);
+				});
+			});
+		}
+
+		function move(){
+			oldX = xPos;
+			oldY = yPos;
+			switch(keys.shift()){
+				case 37:
+					xPos--;
+				    break;
+				case 38:
+					yPos--;
+				    break;
+				case 39:
+					xPos++;
+				    break;
+				case 40:
+					yPos++;
+				    break;
+				case 49:
+					playerNum = 1;
+					break;
+				case 50:
+					playerNum = 2;
+					break;
+			}
+			if(xPos < 0)
+				xPos = 0;
+			if(yPos < 0)
+				yPos = 0;
+			if(xPos > 19)
+				xPos = 19;
+			if(yPos > 19)
+				yPos = 19;
+			if(oldX != xPos || oldY != yPos){
+				firebase.database().ref("Player/" + playerNum).set({x: xPos, y: yPos});
+			}
+		}
+
+		function keyboard(evt){
+			switch(evt.keyCode){
+				case 37:
+					keys.push(37);
+				    break;
+				case 38:
+					keys.push(38);
+				    break;
+				case 39:
+					keys.push(39);
+				    break;
+				case 40:
+					keys.push(40);
+				    break;
+				case 49:
+					keys.push(49);
+					break;
+				case 50:
+					keys.push(50);
+					break;
+			}
+		}
+	</script>
+</html>
