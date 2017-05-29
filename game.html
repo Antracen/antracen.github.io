@@ -123,7 +123,7 @@
 			if(xPos > canvas.width/pixelSize-1)
 				xPos = canvas.width/pixelSize-1;
 			if(yPos > canvas.height/pixelSize-1)
-				canvas.height/pixelSize-1;
+				yPos = canvas.height/pixelSize-1;
 			if(oldX != xPos || oldY != yPos){
 				firebase.database().ref("Player/" + playerNum).set({playerNum: playerNum, x: xPos, y: yPos});
 			}
