@@ -8,7 +8,7 @@
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	</head>
 	<body>
-		Move with arrow keys. Change player with 1/2.
+		Move with arrow keys. Change player with 1,2,3,4,5,6,7,8,9,0.
 		<canvas id="canvas" width="400" height="400"></canvas>
 	</body>
 	<script>
@@ -58,6 +58,10 @@
 		function move(){
 			oldX = xPos;
 			oldY = yPos;
+			var key = keys.shift();
+			if(48 <= key <= 57){
+				playerNum = key - 48;
+			}
 			switch(keys.shift()){
 				case 37:
 					xPos--;
@@ -71,12 +75,6 @@
 				case 40:
 					yPos++;
 				    break;
-				case 49:
-					playerNum = 1;
-					break;
-				case 50:
-					playerNum = 2;
-					break;
 			}
 			if(xPos < 0)
 				xPos = 0;
@@ -110,6 +108,30 @@
 					break;
 				case 50:
 					keys.push(50);
+					break;
+				case 51:
+					keys.push(51);
+					break;
+				case 52:
+					keys.push(52);
+					break;
+				case 53:
+					keys.push(53);
+					break;
+				case 54:
+					keys.push(54);
+					break;
+				case 55:
+					keys.push(55);
+					break;
+				case 56:
+					keys.push(56);
+					break;
+				case 57:
+					keys.push(57);
+					break;
+				case 48:
+					keys.push(48);
 					break;
 			}
 		}
