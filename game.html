@@ -14,7 +14,7 @@
 	<script>
 		xPos = 0;
 		yPos = 0;
-		pixelSize = 20;
+		pixelSize = 5;
 		keys = [];
 		playerNum = 1;
 
@@ -42,27 +42,52 @@
     		});
 
 			playerBase = firebase.database().ref("Player");
-			firebase.database().ref("Player/" + playerNum).set({x: xPos, y: yPos});
+			firebase.database().ref("Player/" + playerNum).set({playerNum:playerNum, x: xPos, y: yPos});
 			playerBase.on('value', function(players){
 				ctx.fillStyle = "white";
     			ctx.fillRect(0,0,canvas.width,canvas.height);
-				ctx.fillStyle = "black";
 				players.forEach(function(playerObj) {
 					player = playerObj.val();
-					console.log("Drawing, color:" + ctx.fillStyle + ", player:" + player.x + "," + "player.y");
+					var color = chooseColor(player.playerNum);
+					ctx.fillStyle = color;
 					ctx.fillRect(player.x*pixelSize, player.y*pixelSize, pixelSize, pixelSize);
 				});
 			});
+		}
+
+		function chooseColor(x){
+			switch(x){
+				case 0:
+					return "black";
+				case 1:
+					return "red";
+				case 2:
+					return "green";
+				case 3:
+					return "blue";
+				case 4:
+					return "orange";
+				case 5:
+					return "pink";
+				case 6:
+					return "grey";
+				case 7:
+					return "yellow";
+				case 8:
+					return "brown";
+				case 9:
+					return "cyan";
+			}
 		}
 
 		function move(){
 			oldX = xPos;
 			oldY = yPos;
 			var key = keys.shift();
-			if(48 <= key <= 57){
+			if(48 <= key && key <= 57){
 				playerNum = key - 48;
 			}
-			switch(keys.shift()){
+			switch(key){
 				case 37:
 					xPos--;
 				    break;
@@ -80,12 +105,12 @@
 				xPos = 0;
 			if(yPos < 0)
 				yPos = 0;
-			if(xPos > 19)
-				xPos = 19;
-			if(yPos > 19)
-				yPos = 19;
+			if(xPos > canvas.width/pixelSize-1)
+				xPos = canvas.width/pixelSize-1;
+			if(yPos > canvas.height/pixelSize-1)
+				canvas.height/pixelSize-1;
 			if(oldX != xPos || oldY != yPos){
-				firebase.database().ref("Player/" + playerNum).set({x: xPos, y: yPos});
+				firebase.database().ref("Player/" + playerNum).set({playerNum: playerNum, x: xPos, y: yPos});
 			}
 		}
 
