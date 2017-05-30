@@ -1,0 +1,161 @@
+<canvas id="canvas" width="1150", height="500"></canvas>
+
+<script>
+
+	//TODO
+		// Fix so you lose speed in uphill. Remove bounce?
+	var background;
+	var player;
+	var canvas;
+	var ctx;
+
+	window.onload = function(){
+		//Canvas
+		canvas = document.getElementById("canvas");
+		ctx=canvas.getContext("2d");
+		// Objects
+		player = new Player();
+		background = new Background();
+		// Key listeners
+		document.addEventListener("keydown", keydown);
+		document.addEventListener("keyup", keyup);
+		// Game loop
+    	setInterval(game,1000/30);
+	}
+
+	function Player(){
+
+		this.radius = 2;
+		this.position = {x:0, y:0};
+		this.speedvector = [1,0];
+		this.backupspeed = [1,0];
+		this.gravity = 1;
+		this.forceDown = false;
+		this.forceActive = false;
+
+		// Draws player to canvas
+		this.render = function(){
+			ctx.fillStyle = "red";
+			ctx.beginPath();
+			ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);
+			ctx.fill();
+		}
+
+		// Updates player position.
+		this.update = function(){
+
+			if(this.forceDown){
+				this.position.y = 9999;
+			}
+
+			this.position.x += this.speedvector[0];
+			this.position.y += this.speedvector[1];
+			this.speedvector[1] += this.gravity;
+
+			// Terminal velocity
+			if(this.speedvector[1] > 20){
+				//this.speedvector[1] = 20;
+			}
+
+			if(this.position.x >= canvas.width){
+				this.position.x = 0;
+			}
+
+			if(this.position.y >= background.y(this.position.x + background.x)){
+				this.position.y = background.y(this.position.x + background.x);
+				// Use vectors to determine new x+y speeds on slope.
+
+				// Make it go faster when downhill.
+				var slope = background.slope(this.position.x + background.x);
+
+				if(slope < 0){
+					slope = Math.abs(slope);
+					this.speedvector[1] += slope*this.speedvector[1]/(slope+1);	
+					
+					// Force down hill with angle alpha = speedvector[1]*sin(alpha)
+					var speedDownHill = Math.sqrt(this.speedvector[1]* slope/(1+slope*slope));
+					// x and y component
+					var xSpeedDownHill = speedDownHill/Math.sqrt((1+slope*slope));
+					var ySpeedDownHill = speedDownHill* slope/Math.sqrt((1+slope*slope));
+
+					this.speedvector[0] += 0.1*xSpeedDownHill;
+					this.speedvector[1] = ySpeedDownHill;
+				}
+			}
+		}
+	}
+
+	function Background(){
+		this.x = 0;
+		this.holewidth = 0.005;
+		this.holeheight = 180;
+		this.offsetheight = 300;
+		this.offsetwidth = 800;
+
+		this.y = function(x){
+			return this.offsetheight+this.holeheight*Math.sin(this.holewidth*(x+this.offsetwidth));
+		}
+
+		this.slope = function(x){
+			return (-1)*this.holeheight*this.holewidth*Math.cos(this.holewidth*(x+this.offsetwidth));
+		}
+
+		this.render = function(){
+			ctx.fillStyle = "black";
+			for(i = 0; i < canvas.width; i++){
+				ctx.fillRect(i, this.y(i+this.x), 1, 1);
+			}
+		}
+	}
+
+	function updateState(){
+		player.update();
+	}
+
+	function render(){
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		background.render();
+		player.render();
+	}
+
+	function game(){
+		updateState();
+		render();
+		debug();
+	}
+
+	function debug(){
+		document.getElementById("debug").innerHTML= "Speed:"+player.speedvector;
+	}
+
+	function keydown(evt){
+		switch(evt.keyCode){
+			case 37: //left
+				player.speedvector[0]--;
+				break;
+			case 38: //up
+				player.y = 0;
+				break;
+			case 39: //right
+				player.speedvector[0]++;
+				break;
+			case 40: //down
+				player.speedvector[0] = 0;
+				break;
+			case 32: //space
+				player.forceDown = true;
+				break;
+		}
+	}
+
+	function keyup(evt){
+		switch(evt.keyCode){
+			case 32: //space
+				player.forceDown = false;
+				break;
+		}
+	}
+</script>
+<p id="debug"></p>
