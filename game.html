@@ -87,6 +87,28 @@
 					return "brown";
 				case 9:
 					return "cyan";
+				case 10:
+					return "purple";
+				case 11:
+					return "crimson";
+				case 12:
+					return "darkgreen";
+				case 13:
+					return "darkblue";
+				case 14:
+					return "darkcyan";
+				case 15:
+					return "darkred";
+				case 16:
+					return "darksalmon";
+				case 17:
+					return "goldenrod";
+				case 18:
+					return "lime";
+				case 19:
+					return "magenta";
+				case 20:
+					return "maroon";
 			}
 		}
 
@@ -114,6 +136,28 @@
 				    break;
 				case 40:
 					yPos++;
+				    break;
+				case 187:
+					playerNum++;
+					if(playerNum > 20){
+						playerNum = 20;
+					}
+					firebase.database().ref("Player/"+playerNum).once("value", function(player){
+						player = player.val();
+						xPos = player.x;
+						yPos = player.y;
+					});
+				    break;
+				case 189:
+					playerNum--;
+					if(playerNum < 0){
+						playerNum = 0;
+					}
+					firebase.database().ref("Player/"+playerNum).once("value", function(player){
+						player = player.val();
+						xPos = player.x;
+						yPos = player.y;
+					});
 				    break;
 			}
 			if(xPos < 0)
@@ -172,6 +216,12 @@
 					break;
 				case 48:
 					keys.push(48);
+					break;
+				case 187:
+					keys.push(187);
+					break;
+				case 189:
+					keys.push(189);
 					break;
 			}
 		}
