@@ -1,0 +1,97 @@
+<canvas id="canvas" width="500" height="500"></canvas><br>
+Press middle of cross to calibrate.
+<script>
+
+	var mouseOffsetX;
+	var mouseOffsetY;
+	var calibrated;
+	var interval;
+	var drawing;
+	var canvas;
+	var ctx;
+	var points;
+
+	window.onload = function(){
+		//Canvas
+		canvas = document.getElementById("canvas");
+		ctx=canvas.getContext("2d");
+		// Key listeners
+		document.addEventListener("keydown", keydown);
+		document.addEventListener("mousedown", mouseDown);
+		document.addEventListener("mouseup", mouseUp);
+		document.addEventListener("mousemove", mouseMove);
+		points = []; 
+		calibrated = false;
+		drawing = false;
+		draw();
+	}
+	function Complex(a, b){
+		this.a = a;
+		this.b = b;
+	}
+	function complexadd(a, b){
+		return new Complex(a.a+b.a, a.b+b.b);
+	}
+	function complexmult(a,b){
+		return new Complex(a.a*b.a - a.b*b.b, a.a*b.b+a.b*b.a);
+	}
+	function draw(){
+		ctx.fillStyle = "white";
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.fillStyle = "red";
+		ctx.fillRect(0, canvas.height/2 - 1, canvas.width, 1);
+		ctx.fillRect(canvas.width/2 - 1, 0, 1, canvas.height);
+		ctx.fillStyle = "black";
+		for(var i in points){
+			ctx.fillRect(canvas.width/2+points[i].a, canvas.height/2+points[i].b, 2, 2);
+		}
+	}
+
+	function keydown(evt){
+		switch(evt.keyCode){
+			case 39: // right
+				for(var i in points){
+					points[i] = complexmult(points[i], new Complex(Math.cos(0.01*Math.PI), Math.sin(0.01*Math.PI)));
+				}
+				break;
+			case 37: // right
+				for(var i in points){
+					points[i] = complexmult(points[i], new Complex(Math.cos(-0.01*Math.PI), Math.sin(-0.01*Math.PI)));
+				}
+				break;
+			case 38: // up
+				for(var i in points){
+					points[i] = complexmult(points[i], new Complex(1.01, 0));
+				}
+				break;
+			case 40: // up
+				for(var i in points){
+					points[i] = complexmult(points[i], new Complex(0.99, 0));
+				}
+				break;
+		}
+		draw();
+	}
+	
+	function mouseDown(evt){
+		if(!calibrated){
+			mouseOffsetX = evt.screenX;
+			mouseOffsetY = evt.screenY;
+			calibrated = true;
+		} else {
+			drawing = true;
+		}
+	}
+
+	function mouseMove(evt){
+		if(drawing){
+			points.push(new Complex(evt.screenX-mouseOffsetX, evt.screenY-mouseOffsetY));
+			draw();
+		}
+	}
+
+	function mouseUp(evt){
+		drawing = false;
+	}
+	
+</script>
