@@ -116,7 +116,6 @@ Control with space.
 	function game(){
 		updateState();
 		render();
-		debug();
 	}
 
 	function keydown(evt){
@@ -133,7 +132,7 @@ Control with space.
 			case 40: //down
 				break;
 			case 32: //space
-				player.gravity = 2;
+				player.gravity = 3;
 				break;
 		}
 	}
@@ -146,4 +145,3 @@ Control with space.
 		}
 	}
 </script>
-<p id="debug"></p>
