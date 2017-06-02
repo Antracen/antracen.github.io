@@ -95,10 +95,10 @@
 		}
 
 		this.update = function(){
-			var maxX = level.pixels.x;
+			var maxX = level.pixels.x-1;
 			var minX = 0;
 			this.x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-			var maxY = level.pixels.y;
+			var maxY = level.pixels.y-1;
 			var minY = 0;
 			this.y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 		}
