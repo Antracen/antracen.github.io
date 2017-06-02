@@ -16,6 +16,8 @@ Control with space.
 		background = new Background();
 		// Key listeners
 		document.addEventListener("keydown", keydown);
+		document.addEventListener("mousedown", mousedown);
+		document.addEventListener("mouseup", mouseup);
 		document.addEventListener("keyup", keyup);
 		// Game loop
     	setInterval(game,1000/30);
@@ -143,5 +145,11 @@ Control with space.
 				player.gravity = 1;
 				break;
 		}
+	}
+	function mousedown(evt){
+		player.gravity = 3;
+	}
+	function mouseup(evt){
+		player.gravity = 1;
 	}
 </script>
