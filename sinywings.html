@@ -71,7 +71,7 @@ Control with space.
 				this.xSpeed -= this.gravity * slope/((1+slope*slope)*(1+slope*slope));
 				
 				if(this.xSpeed > 10 && background.slope(this.x) > 0 && background.slopeslope(this.x) < 0){
-					this.ySpeed = this.xSpeed*-1;
+					this.ySpeed = 1.3*this.xSpeed*-1;
 					this.xSpeed -= 0.1*this.xSpeed;
 					this.inAir = true;
 				}
