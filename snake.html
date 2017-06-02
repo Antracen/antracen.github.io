@@ -45,12 +45,12 @@
 
 		this.update = function(){
 			// Update position
-			this.x += this.xSpeed * level.pixelSize;
-			this.y += this.ySpeed * level.pixelSize;			
+			this.x += this.xSpeed;
+			this.y += this.ySpeed;			
 
 			// Screen wrapping
-			this.x = mod(this.x, level.pixelSize * level.pixels.x);
-			this.y = mod(this.y, level.pixelSize * level.pixels.y);
+			this.x = mod(this.x, level.pixels.x);
+			this.y = mod(this.y, level.pixels.y);
 
 			this.collision();
 
@@ -64,7 +64,7 @@
 			for(var i in this.body){
 				if(this.x == this.body[i].x && this.y == this.body[i].y){
 					this.size = 1;
-				} else if(this.x == apple.x*level.pixelSize && this.y == apple.y*level.pixelSize){
+				} else if(this.x == apple.x && this.y == apple.y){
 					this.grow();
 					apple.update();
 				}
@@ -79,7 +79,7 @@
 			ctx.fillStyle = this.color;
 			for(var i in this.body){
 				var bodyPart = this.body[i];
-				ctx.fillRect(bodyPart.x+1, bodyPart.y+1, level.pixelSize-1, level.pixelSize-1);
+				ctx.fillRect(level.pixelSize*bodyPart.x+1, level.pixelSize*bodyPart.y+1, level.pixelSize-1, level.pixelSize-1);
 			}
 		}
 	}
@@ -107,9 +107,9 @@
 	function initialize(){
 		if(!initialized){
 			// Objects
-			level = new Level("black", 10);
+			level = new Level("739218", 10);
 			snake = new Snake("white", canvas.width/2, canvas.height/2, 0, 0, 1);
-			apple = new Apple("red");
+			apple = new Apple("white");
 			keys = [];
 			initialized = true;
 		}
