@@ -1,9 +1,7 @@
-<canvas id="canvas" width="1150", height="500"></canvas>
-
+<canvas id="canvas" width="1150", height="600"></canvas>
+Control with space.
 <script>
 
-	//TODO
-		// Fix so you lose speed in uphill. Remove bounce?
 	var background;
 	var player;
 	var canvas;
@@ -25,85 +23,80 @@
 
 	function Player(){
 
-		this.radius = 2;
-		this.position = {x:0, y:0};
-		this.speedvector = [1,0];
-		this.backupspeed = [1,0];
+		this.inAir = true;
+		this.radius = 3;
+		this.x = 0;
+		this.y = 0;
+		this.xSpeed = 0;
+		this.ySpeed = 0;
 		this.gravity = 1;
-		this.forceDown = false;
-		this.forceActive = false;
 
 		// Draws player to canvas
 		this.render = function(){
 			ctx.fillStyle = "red";
 			ctx.beginPath();
-			ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);
+			ctx.arc(40, this.y, this.radius, 0, 2*Math.PI);
 			ctx.fill();
 		}
 
 		// Updates player position.
 		this.update = function(){
-
-			if(this.forceDown){
-				this.position.y = 9999;
+			if(this.xSpeed < 1){
+				this.xSpeed = 1;
 			}
 
-			this.position.x += this.speedvector[0];
-			this.position.y += this.speedvector[1];
-			this.speedvector[1] += this.gravity;
+			this.x += this.xSpeed;
+			this.y += this.ySpeed;
 
-			// Terminal velocity
-			if(this.speedvector[1] > 20){
-				//this.speedvector[1] = 20;
-			}
+			this.ySpeed += this.gravity;
 
-			if(this.position.x >= canvas.width){
-				this.position.x = 0;
-			}
+			if(this.y >= background.y(this.x)){
 
-			if(this.position.y >= background.y(this.position.x + background.x)){
-				this.position.y = background.y(this.position.x + background.x);
-				// Use vectors to determine new x+y speeds on slope.
+				var slope = background.slope(this.x);
 
-				// Make it go faster when downhill.
-				var slope = background.slope(this.position.x + background.x);
+				if(this.inAir){
+					if(this.xSpeed >= 0){
+						if(slope >= 0){
+							this.xSpeed -= 3*this.ySpeed * slope/((1+slope*slope)*(1+slope*slope));
+						} else{
+							this.xSpeed -= this.ySpeed * slope/((1+slope*slope)*(1+slope*slope));
+						}
+					}
+					this.inAir = false;
+				}
 
-				if(slope < 0){
-					slope = Math.abs(slope);
-					this.speedvector[1] += slope*this.speedvector[1]/(slope+1);	
-					
-					// Force down hill with angle alpha = speedvector[1]*sin(alpha)
-					var speedDownHill = Math.sqrt(this.speedvector[1]* slope/(1+slope*slope));
-					// x and y component
-					var xSpeedDownHill = speedDownHill/Math.sqrt((1+slope*slope));
-					var ySpeedDownHill = speedDownHill* slope/Math.sqrt((1+slope*slope));
+				this.ySpeed = 9999;
+				this.y = background.y(this.x);
 
-					this.speedvector[0] += 0.1*xSpeedDownHill;
-					this.speedvector[1] = ySpeedDownHill;
+				this.xSpeed -= this.gravity * slope/((1+slope*slope)*(1+slope*slope));
+				
+				if(this.xSpeed > 10 && background.slope(this.x) > 0 && background.slopeslope(this.x) < 0){
+					this.ySpeed = this.xSpeed*-1;
+					this.xSpeed -= 0.1*this.xSpeed;
+					this.inAir = true;
 				}
 			}
 		}
 	}
 
 	function Background(){
-		this.x = 0;
-		this.holewidth = 0.005;
-		this.holeheight = 180;
-		this.offsetheight = 300;
-		this.offsetwidth = 800;
 
 		this.y = function(x){
-			return this.offsetheight+this.holeheight*Math.sin(this.holewidth*(x+this.offsetwidth));
+			return 400+130*Math.sin(0.008*x);
 		}
 
 		this.slope = function(x){
-			return (-1)*this.holeheight*this.holewidth*Math.cos(this.holewidth*(x+this.offsetwidth));
+			return (-1)*130*0.008*Math.cos(0.008*x);
+		}
+
+		this.slopeslope = function(x){
+			return 130*0.01*0.008*Math.sin(0.008*x);
 		}
 
 		this.render = function(){
-			ctx.fillStyle = "black";
+			ctx.fillStyle = "green";
 			for(i = 0; i < canvas.width; i++){
-				ctx.fillRect(i, this.y(i+this.x), 1, 1);
+				ctx.fillRect(i, Math.floor(this.y(i - 40 + player.x)), 1, 999);
 			}
 		}
 	}
@@ -113,7 +106,7 @@
 	}
 
 	function render(){
-		ctx.fillStyle = "white";
+		ctx.fillStyle = "#8fb4ef";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		background.render();
@@ -126,26 +119,21 @@
 		debug();
 	}
 
-	function debug(){
-		document.getElementById("debug").innerHTML= "Speed:"+player.speedvector;
-	}
-
 	function keydown(evt){
 		switch(evt.keyCode){
 			case 37: //left
-				player.speedvector[0]--;
+				player.xSpeed -= 2;
 				break;
 			case 38: //up
-				player.y = 0;
+				player.ySpeed -= 10;
 				break;
 			case 39: //right
-				player.speedvector[0]++;
+				player.xSpeed += 2;
 				break;
 			case 40: //down
-				player.speedvector[0] = 0;
 				break;
 			case 32: //space
-				player.forceDown = true;
+				player.gravity = 2;
 				break;
 		}
 	}
@@ -153,7 +141,7 @@
 	function keyup(evt){
 		switch(evt.keyCode){
 			case 32: //space
-				player.forceDown = false;
+				player.gravity = 1;
 				break;
 		}
 	}
