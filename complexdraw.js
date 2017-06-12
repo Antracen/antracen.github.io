@@ -1,10 +1,12 @@
 var complex;
+var img;
 
 function setup(){
 		// Canvas
 		createCanvas(500, 500);
 		// Other
 		points = [];
+		img = loadImage("cow.png");
 }
 
 function update(){
@@ -63,8 +65,10 @@ function update(){
 function draw(){
 	update();
 	background("white");
-	var img = loadImage("cow.png");
-	image(img, 100, 100);
+	image(img, canvas.width/2 - img.width/2, canvas.height/2 - img.height/2);
+	for(var i in points){
+		points[i].render();
+	}
 }
 
 function Complex(a, b){
