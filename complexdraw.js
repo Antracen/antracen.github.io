@@ -90,7 +90,7 @@ function keyPressed(){
 	// Mirror
 	if (keyCode === 32) {
 		for(var i in points){
-			points[i] = complexmult(points[i], new Complex(-1, 0));
+			points[i].b *= -1;
 		}
 	}
 }
