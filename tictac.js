@@ -26,7 +26,7 @@ Grid.prototype.render = function(){
 
 function PlayerObject(){
 	this.player = 1;
-	this.difficulty = 3;
+	this.difficulty = 2;
 	// O = -1, nothing = 0, X = 1
 	this.players = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	this.render();
