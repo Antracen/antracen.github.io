@@ -1,3 +1,3 @@
 # My github site.
 
-Currently testing googles "Firebase" database.
+Here I will upload projects i do in Javascript.

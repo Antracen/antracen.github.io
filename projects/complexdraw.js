@@ -3,17 +3,18 @@ var complex;
 function setup(){
 		// Canvas
 		createCanvas(500, 500);
-		// Other
+		// Objects
 		points = [];
 }
 
 function update(){
-	
+
+	// Draw with mouse
 	if(mouseIsPressed){
 		points.push(new Complex(mouseX - canvas.width/2, mouseY - canvas.height/2));
 	}
 
-	// Rotate
+	// Rotate image
 	if(keyIsDown(RIGHT_ARROW)){
 		for(var i in points){
 			points[i] = complexmult(points[i], new Complex(Math.cos(0.01*Math.PI), Math.sin(0.01*Math.PI)));
@@ -25,7 +26,7 @@ function update(){
 		}
 	}
 
-	// Scale
+	// Scale image (zoom)
 	if(keyIsDown(UP_ARROW)){
 		for(var i in points){
 			points[i] = complexmult(points[i], new Complex(1.01, 0));
@@ -37,7 +38,7 @@ function update(){
 		}
 	}
 
-	// Move
+	// Move image (translate)
 	if(keyIsDown(87)){
 		for(var i in points){
 			points[i] = complexadd(points[i], new Complex(0, -1));
@@ -60,6 +61,7 @@ function update(){
 	}
 }
 
+// Draw background and all points
 function draw(){
 	update();
 	background("white");
@@ -68,6 +70,7 @@ function draw(){
 	}
 }
 
+// Complex number
 function Complex(a, b){
 	this.a = a;
 	this.b = b;
@@ -78,16 +81,18 @@ function Complex(a, b){
 	}
 }
 
+// Addition of two complex numbers
 function complexadd(a, b){
 	return new Complex(a.a+b.a, a.b+b.b);
 }
 
+// Multiply two complex numbers
 function complexmult(a,b){
 	return new Complex(a.a*b.a - a.b*b.b, a.a*b.b+a.b*b.a);
 }
 
 function keyPressed(){
-	// Mirror
+	// Mirror image along Y-axis
 	if (keyCode === 32) {
 		for(var i in points){
 			points[i].b *= -1;

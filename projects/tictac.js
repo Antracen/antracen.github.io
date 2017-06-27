@@ -212,6 +212,7 @@ function drawGrid(x, y){
 	}
 }
 
+// Update game every time we press mouse.
 function mousePressed(){
 	if(checkWin()){
 		return;
@@ -228,6 +229,7 @@ function mousePressed(){
 }
 
 function keyPressed(){
+	// Change difficulty.
 	if(keyCode >= 48 && keyCode <= 53){
 		diff = keyCode - 48;
 		players.difficulty = diff;

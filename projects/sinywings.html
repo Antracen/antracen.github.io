@@ -43,19 +43,24 @@ Control with space.
 
 		// Updates player position.
 		this.update = function(){
+			// Always keep x-speed positive and at least 1.
 			if(this.xSpeed < 1){
 				this.xSpeed = 1;
 			}
 
+			// Update position
 			this.x += this.xSpeed;
 			this.y += this.ySpeed;
 
+			// Let gravity affect player.
 			this.ySpeed += this.gravity;
 
+			// Ground collision check.
 			if(this.y >= background.y(this.x)){
 
 				var slope = background.slope(this.x);
 
+				// Hill affects player speed.
 				if(this.inAir){
 					if(this.xSpeed >= 0){
 						if(slope >= 0){
@@ -72,6 +77,7 @@ Control with space.
 
 				this.xSpeed -= this.gravity * slope/((1+slope*slope)*(1+slope*slope));
 				
+				// If player goes quickly in X-direction and hill is descending, we fly away.
 				if(this.xSpeed > 10 && background.slope(this.x) > 0 && background.slopeslope(this.x) < 0){
 					this.ySpeed = 1.3*this.xSpeed*-1;
 					this.xSpeed -= 0.1*this.xSpeed;
@@ -87,10 +93,12 @@ Control with space.
 			return 400+130*Math.sin(0.008*x);
 		}
 
+		// First derivative gives us slope.
 		this.slope = function(x){
 			return (-1)*130*0.008*Math.cos(0.008*x);
 		}
 
+		// Second derivative
 		this.slopeslope = function(x){
 			return 130*0.01*0.008*Math.sin(0.008*x);
 		}
@@ -103,10 +111,12 @@ Control with space.
 		}
 	}
 
+	// Update player positions.
 	function updateState(){
 		player.update();
 	}
 
+	// Clear screen. Draw background. Draw player.
 	function render(){
 		ctx.fillStyle = "#8fb4ef";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -115,6 +125,7 @@ Control with space.
 		player.render();
 	}
 
+	// Update game state, then render.
 	function game(){
 		updateState();
 		render();
@@ -122,17 +133,6 @@ Control with space.
 
 	function keydown(evt){
 		switch(evt.keyCode){
-			case 37: //left
-				player.xSpeed -= 2;
-				break;
-			case 38: //up
-				player.ySpeed -= 10;
-				break;
-			case 39: //right
-				player.xSpeed += 2;
-				break;
-			case 40: //down
-				break;
 			case 32: //space
 				player.gravity = 3;
 				break;

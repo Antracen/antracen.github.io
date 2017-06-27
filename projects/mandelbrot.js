@@ -3,6 +3,7 @@ var xMax;
 var yMin;
 var yMax;
 
+// Create canvas, set Mandelbrot limits, draw Mandelbrot set.
 function setup(){
 	canvas = createCanvas(500, 300);
 	xMin = -2.5;
@@ -12,9 +13,11 @@ function setup(){
 	go();
 }
 
+// Complex number.
 function Complex(a, b){
 	this.a = a;
 	this.b = b;
+	// z^2
 	this.square = function(){
 		this.newA = this.a*this.a - this.b*this.b;
 		this.newB = 2*this.a*this.b;
@@ -25,14 +28,15 @@ function Complex(a, b){
 	this.value = function(){
 		return this.a*this.a+this.b*this.b
 	}
+	// Add a complex number to this number.
 	this.add = function(complexNum){
 		this.a += complexNum.a;
 		this.b += complexNum.b;
 	}
 }
 
+// Draw the image.
 function go(){
-	console.log("GO");
 	for(var px = 0; px < canvas.width; px++){
 		for(var py = 0; py < canvas.height; py++){
 			var c = new Complex(map(px, 0, canvas.width, xMin, xMax), map(py, 0, canvas.height, yMin, yMax));

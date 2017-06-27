@@ -12,21 +12,21 @@
 			<tr><td>Loading, please wait...</td></tr>
 		</table>
 		</hide>
-		<textarea id="post" cols="40" rows="5" placeholder="inlägg" onkeydown="if(event.keyCode == 13) test()"></textarea><br>
-      	<button onclick="test()">Skicka</button>
+		<textarea id="post" cols="40" rows="5" placeholder="inlägg" onkeydown="if(event.keyCode == 13) send()"></textarea><br>
+      	<button onclick="send()">Skicka</button>
 		<script>
-			function test(){
+			// Send message to the Firebase database.
+			function send(){
 				var messagesFirebase = firebase.database().ref("Messages");
 				var timestamp = Date.now();
 				messagesFirebase.push().set({name: firebase.auth().currentUser.displayName, text: $("#post").val()});
 				$("#post").val("");
 			}
 		</script>
-		<br>
-		Firebase multiplayer game test: <a href="game.html">Game</a>
 	</body>
 	<script>
 		// Initialize Firebase
+		// Credentials
 		var config = {
 			apiKey: "AIzaSyCjeHOX51O3SvprOXrroBS-sTUnCb3cEew",
 			authDomain: "testbase-67d7c.firebaseapp.com",
@@ -36,12 +36,14 @@
 			messagingSenderId: "1098036968130"
 		};
 		firebase.initializeApp(config);
+		// Login with Google-authorizations using page redirect.
 		var provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().getRedirectResult().then(function(result){
         	if(!result.user){
           		firebase.auth().signInWithRedirect(provider);
         	}
     	});
+		// Every time Firebase database changes we fetch all messages.
  		var messageBase = firebase.database().ref("Messages");
 		messageBase.on('value', function(messages){
 			document.getElementById("posts").innerHTML = "";
