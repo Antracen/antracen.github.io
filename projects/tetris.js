@@ -1,29 +1,22 @@
-// TODO
-// Blocks can rotate through walls.
-// Tetris check.
-
 var block;
 var level;
 var gameOver;
 
 function setup(){
 	createCanvas(100,200); // Pixels 10*10
-	block = new Block(Math.floor(Math.random()*7));
+	block = new Block();
 	level = new Level();
-	blocks = [];
-	blocks.push(block);
 	gameOver = false;
 	frameRate(15);
 }
 
 function draw(){
 	if(!gameOver){
-		background(0);
 		block.update();
+		level.update();
+		level.render();
+		block.render();
 		check_keys();
-		for(var i in blocks){
-			blocks[i].render();
-		}
 	}
 }
 
@@ -40,11 +33,52 @@ function check_keys(){
 }
 
 function Level(){
-	level = [];
+	this.level = [];
 	for(var i = 0; i < 20; i++){
-		level[i] = [];
-		for(var j = 0; j < 20; j++){
-			level[i].push(color("black"));
+		this.level[i] = [];
+		for(var j = 0; j < 10; j++){
+			this.level[i].push([0, "black"]);
+		}
+	}
+
+	this.check_tetris = function(){
+		for(var i = 0; i < 20; i++){
+			var tetris = true;
+			for(var j = 0; j < 10; j++){
+				if(this.level[i][j][0] == 0){
+					tetris = false;
+					break;
+				}
+			}
+			if(tetris == true){
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	this.break_row = function(row){
+		this.level.splice(row, 1);
+		var empty_row = [];
+		for(var i = 0; i < 10; i++){
+			empty_row.push([0, "black"]);
+		}
+		this.level.unshift(empty_row);
+	}
+
+	this.update = function(){
+		var check_tetris = this.check_tetris();
+		if(check_tetris != -1){
+			this.break_row(check_tetris);
+		}
+	}
+
+	this.render = function(){
+		for(var i = 0; i < this.level.length; i++){
+			for(var j = 0; j < this.level[i].length; j++){
+				fill(color((this.level[i][j])[1]));
+				rect(j*10, i*10, 10, 10);
+			}
 		}
 	}
 }
@@ -55,6 +89,7 @@ function Block(type){
 	this.block;
 	this.color;
 	this.top_left = [4, 0];
+	this.type = Math.floor(Math.random()*7);
 	switch(this.type){
 		case 0:
 			this.block = [[1,1],[1,1]];
@@ -88,84 +123,79 @@ function Block(type){
 
 	this.move_X = function(dir){
 		this.top_left[0] += dir;
-		if(this.top_left[0] < 0){
-			this.top_left[0] = 0;
-		}
-		if(this.top_left[0] + this.block[0].length >= 10){
-			this.top_left[0] = 10 - this.block[0].length;
-		}
-		if(this.block_collision(this.block)){
+		if(this.collision()){
 			this.top_left[0] -= dir;
 		}
 	}
 
 	this.move_down = function(){
 		this.top_left[1] += 1;
-		if(this.block_collision(this.block)){
+		if(this.collision()){
 			this.top_left[1] -= 1;
-			block = new Block(Math.floor(Math.random()*7));
-			blocks.push(block);
-		} else{
-			if(this.top_left[1] + this.block.length > 20){
-				this.top_left[1] = 20 - this.block.length;
-				block = new Block(Math.floor(Math.random()*7));
-				blocks.push(block);
-			}
+			this.new_block();
 		}
 	}
 
 	this.drop = function(){
-		while(this.top_left[1] + this.block.length < 20){
-			this.top_left[1] += 1;
-			if(this.block_collision(this.block)){
-				this.top_left[1] -= 1;
-				block = new Block(Math.floor(Math.random()*7));
-				blocks.push(block);
-				return;
-			}
+		this.top_left[1] += 1;
+		if(this.collision()){
+			this.top_left[1] -= 1;
+			this.new_block();
+			return;
 		}
-		block = new Block(Math.floor(Math.random()*7));
-		blocks.push(block);
+		this.drop();
 	}
 
-	// Return true if the block is in collision with any other block.
-	this.block_collision = function(my_block){
-		// Check all but self in blocks.
-		for(var i = 0; i < blocks.length-1; i++){
-			var potential_collide = false;
-			// If left side is to the left of other blocks right side and right side is to the right of other blocks right side.
-			if(this.top_left[0] < blocks[i].top_left[0]+blocks[i].block[0].length && this.top_left[0]+my_block[0].length > blocks[i].top_left[0]){
-				// Same for height
-				if(this.top_left[1] < blocks[i].top_left[1]+blocks[i].block.length && this.top_left[1]+my_block.length > blocks[i].top_left[1]){
-					potential_collide = true;
+	this.collision = function(){
+		if(this.top_left[0] < 0){
+			return true;
+		}
+		if(this.top_left[0] + this.block[0].length > 10){
+			return true;
+		}
+		if(this.top_left[1] + this.block.length > 20){
+			return true;
+		}
+
+		var block_coords = [];
+		for(var i = 0; i < this.block.length; i++){
+			for(var j = 0; j < this.block[i].length; j++){
+				if(this.block[i][j] == 0){
+					continue;
+				}
+				block_coords.push([this.top_left[0]+j, this.top_left[1]+i]);
+			}
+		}
+		var other_coords = [];
+		for(var i = 0; i < 20; i++){
+			for(var j = 0; j < 10; j++){
+				if(level.level[i][j][0] == 1){
+					other_coords.push([j, i]);
 				}
 			}
-			if(potential_collide == true){
-				// For all in current block.
-				for(var j = 0; j < my_block.length; j++){
-					for(var k = 0; k < my_block[j].length; k++){
-						if(my_block[j][k] == 0){
-							continue;
-						}
-						var posX = this.top_left[0] + k;
-						var posY = this.top_left[1] + j;
-							for(var l = 0; l < blocks[i].block.length; l++){
-								for(var m = 0; m < blocks[i].block[l].length; m++){
-									if(blocks[i].block[l][m] == 0){
-										continue;
-									}
-									var posX2 = blocks[i].top_left[0] + m;
-									var posY2 = blocks[i].top_left[1] + l;
-									if(posX == posX2 && posY == posY2){
-										return true;
-									}
-								}
-							}
-					}
+		}
+		for(var i = 0; i < block_coords.length; i++){
+			for(var j = 0; j < other_coords.length; j++){
+				if(block_coords[i][0] == other_coords[j][0] && block_coords[i][1] == other_coords[j][1]){
+					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	this.new_block = function(){
+		// Add block to level and delete block.
+		for(var i = 0; i < this.block.length; i++){
+			for(var j = 0; j < this.block[i].length; j++){
+				if(this.block[i][j] == 0){
+					continue;
+				}
+				level.level[this.top_left[1]+i][this.top_left[0]+j][0] = 1;
+				level.level[this.top_left[1]+i][this.top_left[0]+j][1] = this.color;
+			}
+		}
+		block = new Block();
 	}
 
 	this.rotate = function(){
@@ -176,23 +206,14 @@ function Block(type){
 				new_block[i].push(this.block[j][i]);
 			}
 		}
-		if(!this.block_collision(new_block)){
-			this.block = new_block;
+		var old_block = this.block;
+		this.block = new_block;
+		if(this.collision()){
+			this.block = old_block;
 		}
-	}
-
-	// Check if we have a completed row.
-	this.tetris = function(){
-		return false;
 	}
 
 	this.update = function(){
-		if(this.block_collision(this.block)){
-			alert("GAME OVER!");
-			gameOver = true;
-			blocks = [];
-			gameOver = false;
-		}
 		if(this.frame == 3){
 			this.move_down();
 			this.frame = 0;
