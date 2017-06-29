@@ -8,7 +8,7 @@ var wallType = {
 }
 
 function setup(){
-	createCanvas(500,500);
+	canvas = createCanvas(500,500);
 	level = new Level(50,50);
 	level.addWallsRandom();
 	pathfinder = new PathFinder();
