@@ -202,6 +202,7 @@ function Block(type){
 		if(block.collision() == true){
 			alert("GAME OVER. SCORE: " + score);
 			level = new Level();
+			score = 0;
 		}
 	}
 
