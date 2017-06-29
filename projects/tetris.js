@@ -1,12 +1,14 @@
 var block;
 var level;
 var gameOver;
+var score;
 
 function setup(){
 	createCanvas(100,200); // Pixels 10*10
 	block = new Block();
 	level = new Level();
 	gameOver = false;
+	score = 0;
 	frameRate(15);
 }
 
@@ -51,6 +53,7 @@ function Level(){
 				}
 			}
 			if(tetris == true){
+				score++;
 				return i;
 			}
 		}
@@ -197,8 +200,8 @@ function Block(type){
 		}
 		block = new Block();
 		if(block.collision() == true){
-			alert("GAME OVER");
-			gameOver = true;
+			alert("GAME OVER. SCORE: " + score);
+			level = new Level();
 		}
 	}
 
