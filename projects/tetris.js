@@ -120,11 +120,6 @@ function Block(type){
 			this.color = "yellow";
 			break;
 	}
-	
-	if(this.collision() == true){
-		alert("GAME OVER");
-		gameOver = true;
-	}
 
 	this.move_X = function(dir){
 		this.top_left[0] += dir;
@@ -201,6 +196,10 @@ function Block(type){
 			}
 		}
 		block = new Block();
+		if(block.collision() == true){
+			alert("GAME OVER");
+			gameOver = true;
+		}
 	}
 
 	this.rotate = function(){
