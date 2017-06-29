@@ -8,8 +8,10 @@ var wallType = {
 }
 
 function setup(){
-	createCanvas(500,500);
-	level = new Level(50,50);
+	var canvasWidth = 500;
+	var canvasHeight = 500;
+	createCanvas(canvasWidth, canvasHeight);
+	level = new Level(50,50,canvasWidth,canvasHeight);
 	level.addWallsRandom();
 	pathfinder = new PathFinder();
 	frameRate(100);
@@ -22,11 +24,11 @@ function draw(){
 	}
 }
 
-function Level(sizeX, sizeY){
+function Level(sizeX, sizeY, canvasWidth, canvasHeight){
 	this.sizeX = sizeX;
 	this.sizeY = sizeY;
-	this.pixelSizeX = floor(canvas.width/this.sizeX);
-	this.pixelSizeY = floor(canvas.height/this.sizeY);
+	this.pixelSizeX = floor(canvasWidth/this.sizeX);
+	this.pixelSizeY = floor(canvasHeight/this.sizeY);
 	this.start = [0,0];
 	this.end = [this.sizeX-1, this.sizeY-1];
 
