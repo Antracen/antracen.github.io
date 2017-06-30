@@ -1,7 +1,8 @@
-// TODO not random walls and not set start / end.
+// TODO Add reset button (only reset player or reset both).
 
 var level;
 var pathfinder;
+var numClicks;
 
 var wallType = {
 	EMPTY: 0,
@@ -9,6 +10,8 @@ var wallType = {
 }
 
 function setup(){
+	alert("First click on grid sets starting point. Second sets goal. After that you can place walls with mouse or by pressing \"R\" to place randomly. Then press space to start pathfinder");
+	numClicks = 0;
 	// Make canvas.
 	var canvasWidth = 500;
 	var canvasHeight = 500;
@@ -18,25 +21,18 @@ function setup(){
 	var pixelsY = 50
 	level = new Level(pixelsX,pixelsY,canvasWidth,canvasHeight);
 	level.initializeLevel();
-	// Add walls to level and available transitions from each spot on grid (which way you can move from a given position).
-	level.addWallsRandom();
-	level.addTransitions();
-	// Render level.
 	level.render();
-	// Make pathfinder.
-	pathfinder = new PathFinder();
-	// Find and render path.
-	pathfinder.findPath();
-	pathfinder.render();
 }
 
 function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
+	this.canvasWidth = canvasWidth;
+	this.canvasHeight = canvasHeight;
 	this.pixelsX = pixelsX;
 	this.pixelsY = pixelsY;
-	this.pixelSizeX = floor(canvasWidth/this.pixelsX);
-	this.pixelSizeY = floor(canvasHeight/this.pixelsY);
-	this.start = 0;
-	this.end = this.pixelsX*this.pixelsY-1;
+	this.pixelSizeX = floor(this.canvasWidth/this.pixelsX);
+	this.pixelSizeY = floor(this.canvasHeight/this.pixelsY);
+	this.start = -1;
+	this.end = -1;
 	this.level = []; // Keeps values [Walltype, eucledian distance to end].
 	this.transitions = {}; // transitions = {x: [places you can go from x]}.
 
@@ -63,16 +59,20 @@ function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
 		}
 	}
 
+	this.addWall = function(pos){
+		// Do not add walls on start or end.
+		if(!(pos == this.start) && !(pos == this.end)){
+			this.level[pos][0] = wallType.WALL;
+		}
+	}
+
 	// Scatter walls randomly across level.
 	this.addWallsRandom = function(){
 		// Higher density = less walls are placed.
 		var density = 5;
 		for(var i = 0; i < this.level.length/density; i++){
 			var randomPos = floor(random(this.pixelsX*this.pixelsY));
-			// Do not add walls on start or end.
-			if(!(randomPos == this.start) && !(randomPos == this.end)){
-				this.level[randomPos][0] = wallType.WALL;
-			}
+			this.addWall(randomPos);
 		}
 	}
 
@@ -80,6 +80,9 @@ function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
 	this.addTransition = function(){
 		if(arguments.length > 0){
 			var from = arguments[0];
+			if(this.level[from][1] == wallType.WALL){
+				return;
+			}
 			this.transitions[from] = [];
 			for(var i = 1; i < arguments.length; i++) {
 				var to = arguments[i];
@@ -191,6 +194,11 @@ function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
 					squareColor = "black";
 					break;
 			}
+			if(i == this.start){
+				squareColor = "green";
+			} else if(i == this.end){
+				squareColor = "red";
+			}
 			this.drawRect(i, squareColor);
 		}
 	}
@@ -251,7 +259,6 @@ function PathFinder(){
 				var gScore = this.gScore[current]+1;
 				if(gScore >= this.gScore[neighbor]){
 					// We found a way to a node which is inefficient and therefore not interesting.
-					console.log("MEH");
 					continue;
 				}
 				// We found a fast way to a node. Go to the node. Note where we came from. Note score. Note fscore.
@@ -278,5 +285,59 @@ function PathFinder(){
 		for(var i = 0; i < this.solution.length; i++){
 			level.drawRect(this.solution[i], "green");
 		}
+	}
+}
+
+function getPos(mx, my){
+	if(mx < 0 || my < 0 || mx >= level.canvasWidth || my >= level.canvasHeight){
+		return -1;
+	}
+	var x = floor(map(mx, 0, level.canvasWidth, 0, level.pixelsX));
+	var y = floor(map(my, 0, level.canvasHeight, 0, level.pixelsY));
+	return(x + y*level.pixelsX);
+}
+
+function mousePressed(){
+	var position = getPos(mouseX, mouseY);
+	if(position != -1){
+		numClicks++;
+		if(numClicks == 1){
+			level.start = position;
+			level.render();
+		} else if(numClicks == 2){
+			level.end = position;
+			level.render;
+		} else{
+			level.addWall(position);
+			level.render();
+		}
+	}
+}
+
+function mouseDragged() {
+	if(numClicks > 2){
+		var position = getPos(mouseX, mouseY);
+		if(position != -1){
+			level.addWall(position);
+			level.render();
+		}
+	}
+}
+
+function keyPressed(){
+	if(keyCode == 32 && numClicks >= 2){
+		// Add to level available transitions from each spot on grid (which way you can move from a given position).
+		level.addTransitions();
+		// Make pathfinder.
+		pathfinder = new PathFinder();
+		// Find and render path.
+		console.log("FINDING PATH");
+		pathfinder.findPath();
+		pathfinder.render();
+	}
+	if(keyCode == 82 && numClicks >= 2){
+		console.log("ADD RANDOM");
+		level.addWallsRandom();
+		level.render();
 	}
 }
