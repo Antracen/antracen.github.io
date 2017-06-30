@@ -1,273 +1,213 @@
+// TODO not random walls and not set start / end.
+
 var level;
 var pathfinder;
-var move;
 
 var wallType = {
 	EMPTY: 0,
 	WALL: 1
 }
 
-var direction = {
-	UP: 0,
-	DOWN: 1,
-	LEFT: 2,
-	RIGHT: 3
-}
-
 function setup(){
+	// Make canvas.
 	var canvasWidth = 500;
 	var canvasHeight = 500;
 	createCanvas(canvasWidth, canvasHeight);
-	level = new Level(50,50,canvasWidth,canvasHeight);
+	// Make level.
+	var pixelsX = 50;
+	var pixelsY = 50
+	level = new Level(pixelsX,pixelsY,canvasWidth,canvasHeight);
 	level.initializeLevel();
+	// Add walls to level and available transitions from each spot on grid (which way you can move from a given position).
 	level.addWallsRandom();
-	level.render();
 	level.addTransitions();
+	// Render level.
+	level.render();
+	// Make pathfinder.
 	pathfinder = new PathFinder();
+	// Find and render path.
 	pathfinder.findPath();
 	pathfinder.render();
 }
 
-function Level(sizeX, sizeY, canvasWidth, canvasHeight){
-	this.sizeX = sizeX;
-	this.sizeY = sizeY;
-	this.pixelSizeX = floor(canvasWidth/this.sizeX);
-	this.pixelSizeY = floor(canvasHeight/this.sizeY);
+function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
+	this.pixelsX = pixelsX;
+	this.pixelsY = pixelsY;
+	this.pixelSizeX = floor(canvasWidth/this.pixelsX);
+	this.pixelSizeY = floor(canvasHeight/this.pixelsY);
 	this.start = 0;
-	this.end = this.sizeX*this.sizeY-1;
-	this.level = [];
-	this.transitions = {};
+	this.end = this.pixelsX*this.pixelsY-1;
+	this.level = []; // Keeps values [Walltype, eucledian distance to end].
+	this.transitions = {}; // transitions = {x: [places you can go from x]}.
 
+	// Get X coordinate of place in level.
+	this.getX = function(gridValue){
+		return gridValue % this.pixelsX;
+	}
+
+	// Get Y coordinate of place in level.
+	this.getY = function(gridValue){
+		return floor(gridValue/this.pixelsX);
+	}
+
+	// Fill level[] with values.
 	this.initializeLevel = function(){
-		for(var i = 0; i < this.sizeX*this.sizeY; i++){
-			var y = floor(i/this.sizeX);
-			var x = i % this.sizeX;
-			var endY = floor(this.end/this.sizeX);
-			var endX = this.end % this.sizeX;
-			// hValue is pythagoras theorem to end.
-			var hValue = sqrt((x-endX)*(x-endX) + (y-endY)*(y-endY));
+		for(var i = 0; i < this.pixelsX*this.pixelsY; i++){
+			var y = this.getY(i);
+			var x = this.getX(i);
+			var endY = this.getY(this.end);
+			var endX = this.getX(this.end);
+			// h-value is distance to the end calculated with Pythagorean theorem.
+			var hValue = sqrt((x-endX)*(x-endX)+(y-endY)*(y-endY));
 			this.level.push([wallType.EMPTY, hValue]);
 		}
 	}
 
+	// Scatter walls randomly across level.
 	this.addWallsRandom = function(){
-		for(var i = 0; i < this.level.length/5; i++){
-			var randomPos = floor(random(this.sizeX*this.sizeY));
-			if(!(randomPos == 0) && !(randomPos == this.sizeY*this.sizeX-1)){
+		// Higher density = less walls are placed.
+		var density = 5;
+		for(var i = 0; i < this.level.length/density; i++){
+			var randomPos = floor(random(this.pixelsX*this.pixelsY));
+			// Do not add walls on start or end.
+			if(!(randomPos == this.start) && !(randomPos == this.end)){
 				this.level[randomPos][0] = wallType.WALL;
 			}
 		}
 	}
 
+	// Add transition from first argument to all others.
+	this.addTransition = function(){
+		if(arguments.length > 0){
+			var from = arguments[0];
+			this.transitions[from] = [];
+			for(var i = 1; i < arguments.length; i++) {
+				var to = arguments[i];
+				if(this.level[to][0] != wallType.WALL){
+					this.transitions[from].push(to);
+				}
+			}
+		}
+	}
+
+	// For every level position add which level positions are reachable.
 	this.addTransitions = function(){
 		// CENTER PIECES - up down left right transitions
 		// FOR EVERY COLUMN EXCEPT EDGES
-		for(var i = 1; i < this.sizeX-1; i++){
+		for(var i = 1; i < this.pixelsX-1; i++){
 			// FOR EVERY ROW EXCEPT EDGES
-			for(var j = 1; j < this.sizeY-1; j++){
-				var pos = i+j*this.sizeX;
-				
-				this.transitions[pos] = [];
-				var up = pos-this.sizeX;
-				var down = pos+this.sizeX;
+			for(var j = 1; j < this.pixelsY-1; j++){
+				var pos = i+j*this.pixelsX;
+				var up = pos-this.pixelsX;
+				var down = pos+this.pixelsX;
 				var left = pos-1;
 				var right = pos+1;
-				if(this.level[up][0] != wallType.WALL){
-					this.transitions[pos].push(up);
-				}
-				if(this.level[down][0] != wallType.WALL){
-					this.transitions[pos].push(down);
-				}
-				if(this.level[left][0] != wallType.WALL){
-					this.transitions[pos].push(left);
-				}
-				if(this.level[right][0] != wallType.WALL){
-					this.transitions[pos].push(right);
-				}
+				this.addTransition(pos, up, down, left, right);
 			}
 		}
 
 		// TOP EDGES - left right down transitions
 		// FOR EVERY COLUMN EXCEPT CORNERS
-		for(var i = 1; i < this.sizeX-1; i++){
+		for(var i = 1; i < this.pixelsX-1; i++){
 			// FOR FIRST ROW
 			var j = 0;
-			var pos = i + j*this.sizeX;
-			
-			this.transitions[pos] = [];
-			var down = pos+this.sizeX;
+			var pos = i + j*this.pixelsX;
+			var down = pos+this.pixelsX;
 			var left = pos-1;
 			var right = pos+1;
-			if(this.level[down][0] != wallType.WALL){
-				this.transitions[pos].push(down);
-			}
-			if(this.level[left][0] != wallType.WALL){
-				this.transitions[pos].push(left);
-			}
-			if(this.level[right][0] != wallType.WALL){
-				this.transitions[pos].push(right);
-			}
+			this.addTransition(pos, down, left, right);
 		}
 		// BOTTOM EDGES - left right up transitions
-		for(var i = 1; i < this.sizeX-1; i++){
+		for(var i = 1; i < this.pixelsX-1; i++){
 			// For last row
-			var j = this.sizeY-1;
-			var pos = i + j*this.sizeX;
-			
-			this.transitions[pos] = [];
-			var up = pos-this.sizeX;
+			var j = this.pixelsY-1;
+			var pos = i + j*this.pixelsX;
+			var up = pos-this.pixelsX;
 			var left = pos-1;
 			var right = pos+1;
-			if(this.level[up][0] != wallType.WALL){
-				this.transitions[pos].push(up);
-			}
-			if(this.level[left][0] != wallType.WALL){
-				this.transitions[pos].push(left);
-			}
-			if(this.level[right][0] != wallType.WALL){
-				this.transitions[pos].push(right);
-			}
+			this.addTransition(pos, up, left, right);
 		}
 		// LEFT EDGE - add up down right transitions
 		// FOR FIRST COLUMN
 		var i = 0;
 		// FOR ALL ROWS EXCEPT CORNERS
-		for(var j = 1; j < this.sizeY-1; j++){
-			var pos = i + j*this.sizeX;
-			
-			this.transitions[pos] = [];
-			var up = pos-this.sizeX;
-			var down = pos+this.sizeX;
+		for(var j = 1; j < this.pixelsY-1; j++){
+			var pos = i + j*this.pixelsX;
+			var up = pos-this.pixelsX;
+			var down = pos+this.pixelsX;
 			var right = pos+1;
-			if(this.level[up][0] != wallType.WALL){
-				this.transitions[pos].push(up);
-			}
-			if(this.level[down][0] != wallType.WALL){
-				this.transitions[pos].push(down);
-			}
-			if(this.level[right][0] != wallType.WALL){
-				this.transitions[pos].push(right);
-			}
+			this.addTransition(pos, up, down, right);
 		}
 		// RIGHT EDGE - add up down left transitions
 		// FOR LAST COLUMN
-		var i = this.sizeX-1;
+		var i = this.pixelsX-1;
 		// FOR ALL ROWS EXCEPT CORNERS
-		for(var j = 1; j < this.sizeY-1; j++){
-			var pos = i + j*this.sizeX;
-			
-			this.transitions[pos] = [];
-			var up = pos-this.sizeX;
-			var down = pos+this.sizeX;
+		for(var j = 1; j < this.pixelsY-1; j++){
+			var pos = i + j*this.pixelsX;
+			var up = pos-this.pixelsX;
+			var down = pos+this.pixelsX;
 			var left = pos-1;
-			if(this.level[up][0] != wallType.WALL){
-				this.transitions[pos].push(up);
-			}
-			if(this.level[down][0] != wallType.WALL){
-				this.transitions[pos].push(down);
-			}
-			if(this.level[left][0] != wallType.WALL){
-				this.transitions[pos].push(left);
-			}
+			this.addTransition(pos, up, down, left);
 		}
 		// CORNERS
 		// TOP LEFT
 		var pos = 0;
-		
-		this.transitions[pos] = [];
+		var down = pos + this.pixelsX;
 		var right = pos+1;
-		var down = pos + this.sizeX;
-		if(this.level[right][0] != wallType.WALL){
-			this.transitions[pos].push(right);
-		}
-		if(this.level[down][0] != wallType.WALL){
-			this.transitions[pos].push(down);
-		}
+		this.addTransition(pos, down, right);
 		// BOTTOM LEFT
-		var pos = 0+(this.sizeY-1)*this.sizeX;
-		
-		this.transitions[pos] = [];
+		var pos = 0+(this.pixelsY-1)*this.pixelsX;
+		var up = pos - this.pixelsX;
 		var right = pos+1;
-		var up = pos - this.sizeX;
-		if(this.level[right][0] != wallType.WALL){
-			this.transitions[pos].push(right);
-		}
-		if(this.level[up][0] != wallType.WALL){
-			this.transitions[pos].push(up);
-		}
+		this.addTransition(pos, up, right);
 		// TOP RIGHT
-		var pos = this.sizeX-1;
-		
-		this.transitions[pos] = [];
+		var pos = this.pixelsX-1;
+		var down = pos+this.pixelsX;
 		var left = pos-1;
-		var down = pos+this.sizeX;
-		if(this.level[left][0] != wallType.WALL){
-			this.transitions[pos].push(left);
-		}
-		if(this.level[down][0] != wallType.WALL){
-			this.transitions[pos].push(down);
-		}
+		this.addTransition(pos, down, left);
 		// BOTTOM RIGHT
-		var pos = this.sizeX-1 + (this.sizeY-1)*this.sizeX;
-		
-		this.transitions[pos] = [];
+		var pos = this.pixelsX-1 + (this.pixelsY-1)*this.pixelsX;
+		var up = pos-this.pixelsX;
 		var left = pos-1;
-		var up = pos-this.sizeX;
-		if(this.level[left][0] != wallType.WALL){
-			this.transitions[pos].push(left);
-		}
-		if(this.level[up][0] != wallType.WALL){
-			this.transitions[pos].push(up);
-		}
-
+		this.addTransition(pos, up, left);
 	}
 
-	this.renderPos = function(i){
-		var x = i % this.sizeX;
-		var y = floor(i/this.sizeX);
-		fill(color("green"));
+	// Draw a level rectangle.
+	this.drawRect = function(position, squareColor){
+		fill(color(squareColor));
+		var x = this.getX(position);
+		var y = this.getY(position);
 		rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
 	}
 
 	this.render = function(){
+		var squareColor = "";
 		for(var i = 0; i < this.level.length; i++){
 			switch(this.level[i][0]){
 				case wallType.EMPTY:
-					fill(255);
+					squareColor = "white";
 					break;
 				case wallType.WALL:
-					fill(0);
+					squareColor = "black";
 					break;
 			}
-			var x = i % this.sizeX;
-			var y = floor(i/this.sizeX);
-			rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
+			this.drawRect(i, squareColor);
 		}
 	}
 }
 
 function PathFinder(){
-
-	this.solution = [];
-	this.closedSet = new Set();
-	this.openSet = new Set();
-	this.openSet.add(level.start);
-	this.cameFrom = {};
-	this.gScore = {};
+	this.solution = []; // solution = [grids making up the shortest path to level.end]
+	this.closedSet = new Set(); // Evaluated level squares.
+	this.openSet = new Set(); // Squares not yet evaluated.
+	this.openSet.add(level.start); // start is to be evaluated.
+	this.cameFrom = {}; // For each node, how did you get to that node?
+	this.gScore = {}; // Cost to go from start to this node.
 	this.gScore[level.start] = 0;
-	this.fScore = {};
+	this.fScore = {}; // f-score = g-score + h-score. Cost to go to node + estimated cost to go to level.end.
 	this.fScore[level.start] = level.level[level.start][2];
 
-	this.render = function(){
-		for(var i = 0; i < this.solution.length; i++){
-			fill(color("green"));
-			var y = floor(this.solution[i] / level.sizeX);
-			var x = this.solution[i] % level.sizeX;
-			rect(x * level.pixelSizeX, y * level.pixelSizeY, level.pixelSizeX, level.pixelSizeY);
-		}
-	}
-
-	// Choose the value in openset with smallest fScore.
+	// Choose the value in openset with smallest f-score.
 	this.minimizeF = function(){
 		var minF = Infinity;
 		var ret = 0;
@@ -281,40 +221,62 @@ function PathFinder(){
 		return ret;
 	}
 
+	// Find shortest path from level.start to level.end
+	// Path will be stored in this.solution
 	this.findPath = function(){
+		// While there are nodes to be evaluated.
 		while(this.openSet.length != 0){
+			// Evaluate the node which has the smallest f-value.
 			var current = this.minimizeF();
 			if(current == level.end){
+				// We are finished.
 				this.makeSolution();
 				return;
 			}
+			// Current is no longer in the to be evaluated. It is instead placed in the closed set (nodes evaluated).
 			this.openSet.delete(current);
 			this.closedSet.add(current);
-			// For each neighbor.
+			// For each neighbor of current.
 			for(var i = 0; i < level.transitions[current].length; i++){
-				if(this.closedSet.has(level.transitions[current][i])){
+				var neighbor = level.transitions[current][i];
+				if(this.closedSet.has(neighbor)){
+					// Don't evaluate anything twice.
 					continue;
 				}
-				if(!(this.openSet.has(level.transitions[current][i]))){
-					this.openSet.add(level.transitions[current][i]);
+				if(!(this.openSet.has(neighbor))){
+					// Add not evaluated nodes into the "to be evaluated" closed set.
+					this.openSet.add(neighbor);
 				}
+				// The cost of getting from current to next is current cost+1.
 				var gScore = this.gScore[current]+1;
-				if(gScore >= this.gScore[level.transitions[current][i]]){
+				if(gScore >= this.gScore[neighbor]){
+					// We found a way to a node which is inefficient and therefore not interesting.
+					console.log("MEH");
 					continue;
 				}
-				this.cameFrom[level.transitions[current][i]] = current;
-				this.gScore[level.transitions[current][i]] = gScore;
-				this.fScore[level.transitions[current][i]] = this.gScore[level.transitions[current][i]] + level.level[level.transitions[current][i]][1];
+				// We found a fast way to a node. Go to the node. Note where we came from. Note score. Note fscore.
+				this.cameFrom[neighbor] = current;
+				this.gScore[neighbor] = gScore;
+				this.fScore[neighbor] = this.gScore[neighbor] + level.level[neighbor][1];
 			}
 		}
 	}
 
+	// Create solution array.
 	this.makeSolution = function(){
+		// We are at end. From which position did we come? Go backwards until we are at start.
 		var current = level.end;
 		this.solution.push(current);
 		while(current in this.cameFrom){
 			current = this.cameFrom[current];
 			this.solution.push(current);
+		}
+	}
+
+	// Render player path
+	this.render = function(){
+		for(var i = 0; i < this.solution.length; i++){
+			level.drawRect(this.solution[i], "green");
 		}
 	}
 }
