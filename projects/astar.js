@@ -7,21 +7,25 @@ var wallType = {
 	WALL: 1
 }
 
+var direction = {
+	UP: 0,
+	DOWN: 1,
+	LEFT: 2,
+	RIGHT: 3
+}
+
 function setup(){
 	var canvasWidth = 500;
 	var canvasHeight = 500;
 	createCanvas(canvasWidth, canvasHeight);
 	level = new Level(50,50,canvasWidth,canvasHeight);
+	level.initializeLevel();
 	level.addWallsRandom();
-	pathfinder = new PathFinder();
-	frameRate(100);
-}
-
-function draw(){
 	level.render();
-	if(pathfinder.findPath()){
-		noLoop();
-	}
+	level.addTransitions();
+	pathfinder = new PathFinder();
+	pathfinder.findPath();
+	pathfinder.render();
 }
 
 function Level(sizeX, sizeY, canvasWidth, canvasHeight){
@@ -29,134 +33,288 @@ function Level(sizeX, sizeY, canvasWidth, canvasHeight){
 	this.sizeY = sizeY;
 	this.pixelSizeX = floor(canvasWidth/this.sizeX);
 	this.pixelSizeY = floor(canvasHeight/this.sizeY);
-	this.start = [0,0];
-	this.end = [this.sizeX-1, this.sizeY-1];
-
+	this.start = 0;
+	this.end = this.sizeX*this.sizeY-1;
 	this.level = [];
-	for(var row = 0; row < this.sizeX; row++){
-		this.column = [];
-		for(var column = 0; column < this.sizeY; column++){
-			this.column.push(wallType.EMPTY);
+	this.transitions = {};
+
+	this.initializeLevel = function(){
+		for(var i = 0; i < this.sizeX*this.sizeY; i++){
+			var y = floor(i/this.sizeX);
+			var x = i % this.sizeX;
+			var endY = floor(this.end/this.sizeX);
+			var endX = this.end % this.sizeX;
+			// hValue is pythagoras theorem to end.
+			var hValue = sqrt((x-endX)*(x-endX) + (y-endY)*(y-endY));
+			this.level.push([wallType.EMPTY, hValue]);
 		}
-		this.level.push(this.column);
 	}
 
 	this.addWallsRandom = function(){
-		for(var i = 0; i < this.sizeX*this.sizeY/5; i++){
-			var randomX = floor(random(this.sizeX));
-			var randomY = floor(random(this.sizeY));
-			if(!(randomY == 0 && randomX == 0) && !(randomY == this.sizeY-1 && randomX == this.sizeX-1)){
-				this.level[randomX][randomY] = wallType.WALL;
+		for(var i = 0; i < this.level.length/5; i++){
+			var randomPos = floor(random(this.sizeX*this.sizeY));
+			if(!(randomPos == 0) && !(randomPos == this.sizeY*this.sizeX-1)){
+				this.level[randomPos][0] = wallType.WALL;
 			}
 		}
 	}
 
-	this.render = function(){
-		for(var x = 0; x < this.level.length; x++){
-			for(var y = 0; y < this.level[x].length; y++){
-				switch(this.level[x][y]){
-					case wallType.EMPTY:
-						fill(255);
-						break;
-					case wallType.WALL:
-						fill(0);
-						break;
+	this.addTransitions = function(){
+		// CENTER PIECES - up down left right transitions
+		// FOR EVERY COLUMN EXCEPT EDGES
+		for(var i = 1; i < this.sizeX-1; i++){
+			// FOR EVERY ROW EXCEPT EDGES
+			for(var j = 1; j < this.sizeY-1; j++){
+				var pos = i+j*this.sizeX;
+				
+				this.transitions[pos] = [];
+				var up = pos-this.sizeX;
+				var down = pos+this.sizeX;
+				var left = pos-1;
+				var right = pos+1;
+				if(this.level[up][0] != wallType.WALL){
+					this.transitions[pos].push(up);
 				}
-				rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
+				if(this.level[down][0] != wallType.WALL){
+					this.transitions[pos].push(down);
+				}
+				if(this.level[left][0] != wallType.WALL){
+					this.transitions[pos].push(left);
+				}
+				if(this.level[right][0] != wallType.WALL){
+					this.transitions[pos].push(right);
+				}
 			}
+		}
+
+		// TOP EDGES - left right down transitions
+		// FOR EVERY COLUMN EXCEPT CORNERS
+		for(var i = 1; i < this.sizeX-1; i++){
+			// FOR FIRST ROW
+			var j = 0;
+			var pos = i + j*this.sizeX;
+			
+			this.transitions[pos] = [];
+			var down = pos+this.sizeX;
+			var left = pos-1;
+			var right = pos+1;
+			if(this.level[down][0] != wallType.WALL){
+				this.transitions[pos].push(down);
+			}
+			if(this.level[left][0] != wallType.WALL){
+				this.transitions[pos].push(left);
+			}
+			if(this.level[right][0] != wallType.WALL){
+				this.transitions[pos].push(right);
+			}
+		}
+		// BOTTOM EDGES - left right up transitions
+		for(var i = 1; i < this.sizeX-1; i++){
+			// For last row
+			var j = this.sizeY-1;
+			var pos = i + j*this.sizeX;
+			
+			this.transitions[pos] = [];
+			var up = pos-this.sizeX;
+			var left = pos-1;
+			var right = pos+1;
+			if(this.level[up][0] != wallType.WALL){
+				this.transitions[pos].push(up);
+			}
+			if(this.level[left][0] != wallType.WALL){
+				this.transitions[pos].push(left);
+			}
+			if(this.level[right][0] != wallType.WALL){
+				this.transitions[pos].push(right);
+			}
+		}
+		// LEFT EDGE - add up down right transitions
+		// FOR FIRST COLUMN
+		var i = 0;
+		// FOR ALL ROWS EXCEPT CORNERS
+		for(var j = 1; j < this.sizeY-1; j++){
+			var pos = i + j*this.sizeX;
+			
+			this.transitions[pos] = [];
+			var up = pos-this.sizeX;
+			var down = pos+this.sizeX;
+			var right = pos+1;
+			if(this.level[up][0] != wallType.WALL){
+				this.transitions[pos].push(up);
+			}
+			if(this.level[down][0] != wallType.WALL){
+				this.transitions[pos].push(down);
+			}
+			if(this.level[right][0] != wallType.WALL){
+				this.transitions[pos].push(right);
+			}
+		}
+		// RIGHT EDGE - add up down left transitions
+		// FOR LAST COLUMN
+		var i = this.sizeX-1;
+		// FOR ALL ROWS EXCEPT CORNERS
+		for(var j = 1; j < this.sizeY-1; j++){
+			var pos = i + j*this.sizeX;
+			
+			this.transitions[pos] = [];
+			var up = pos-this.sizeX;
+			var down = pos+this.sizeX;
+			var left = pos-1;
+			if(this.level[up][0] != wallType.WALL){
+				this.transitions[pos].push(up);
+			}
+			if(this.level[down][0] != wallType.WALL){
+				this.transitions[pos].push(down);
+			}
+			if(this.level[left][0] != wallType.WALL){
+				this.transitions[pos].push(left);
+			}
+		}
+		// CORNERS
+		// TOP LEFT
+		var pos = 0;
+		
+		this.transitions[pos] = [];
+		var right = pos+1;
+		var down = pos + this.sizeX;
+		if(this.level[right][0] != wallType.WALL){
+			this.transitions[pos].push(right);
+		}
+		if(this.level[down][0] != wallType.WALL){
+			this.transitions[pos].push(down);
+		}
+		// BOTTOM LEFT
+		var pos = 0+(this.sizeY-1)*this.sizeX;
+		
+		this.transitions[pos] = [];
+		var right = pos+1;
+		var up = pos - this.sizeX;
+		if(this.level[right][0] != wallType.WALL){
+			this.transitions[pos].push(right);
+		}
+		if(this.level[up][0] != wallType.WALL){
+			this.transitions[pos].push(up);
+		}
+		// TOP RIGHT
+		var pos = this.sizeX-1;
+		
+		this.transitions[pos] = [];
+		var left = pos-1;
+		var down = pos+this.sizeX;
+		if(this.level[left][0] != wallType.WALL){
+			this.transitions[pos].push(left);
+		}
+		if(this.level[down][0] != wallType.WALL){
+			this.transitions[pos].push(down);
+		}
+		// BOTTOM RIGHT
+		var pos = this.sizeX-1 + (this.sizeY-1)*this.sizeX;
+		
+		this.transitions[pos] = [];
+		var left = pos-1;
+		var up = pos-this.sizeX;
+		if(this.level[left][0] != wallType.WALL){
+			this.transitions[pos].push(left);
+		}
+		if(this.level[up][0] != wallType.WALL){
+			this.transitions[pos].push(up);
+		}
+
+	}
+
+	this.renderPos = function(i){
+		var x = i % this.sizeX;
+		var y = floor(i/this.sizeX);
+		fill(color("green"));
+		rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
+	}
+
+	this.render = function(){
+		for(var i = 0; i < this.level.length; i++){
+			switch(this.level[i][0]){
+				case wallType.EMPTY:
+					fill(255);
+					break;
+				case wallType.WALL:
+					fill(0);
+					break;
+			}
+			var x = i % this.sizeX;
+			var y = floor(i/this.sizeX);
+			rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
 		}
 	}
 }
 
 function PathFinder(){
-	this.path = [[0,0]];
-	this.visited = [];
-	this.failed = [];
+
+	this.solution = [];
+	this.closedSet = new Set();
+	this.openSet = new Set();
+	this.openSet.add(level.start);
+	this.cameFrom = {};
+	this.gScore = {};
+	this.gScore[level.start] = 0;
+	this.fScore = {};
+	this.fScore[level.start] = level.level[level.start][2];
 
 	this.render = function(){
-		for(var i = 0; i < this.path.length; i++){
+		for(var i = 0; i < this.solution.length; i++){
 			fill(color("green"));
-			rect(this.path[i][0] * level.pixelSizeX, this.path[i][1] * level.pixelSizeY, level.pixelSizeX, level.pixelSizeY);
+			var y = floor(this.solution[i] / level.sizeX);
+			var x = this.solution[i] % level.sizeX;
+			rect(x * level.pixelSizeX, y * level.pixelSizeY, level.pixelSizeX, level.pixelSizeY);
 		}
 	}
 
-	// Check if position is in this.visited and therefore should not be visited again.
-	this.already_visited = function(position){
-		for(var i = 0; i < this.visited.length; i++){
-			if(position[0] == this.visited[i][0] && position[1] == this.visited[i][1]){
-				return true;
+	// Choose the value in openset with smallest fScore.
+	this.minimizeF = function(){
+		var minF = Infinity;
+		var ret = 0;
+		for(let node of this.openSet){
+			var fScore = this.fScore[node];
+			if(fScore < minF){
+				minF = fScore;
+				ret = node;
 			}
 		}
-		return false;
-	}
-
-	// Check if position is in this.failed and therefore should not be visited again.
-	this.already_failed = function(position){
-		for(var i = 0; i < this.failed.length; i++){
-			if(position[0] == this.failed[i][0] && position[1] == this.failed[i][1]){
-				return true;
-			}
-		}
-		return false;
+		return ret;
 	}
 
 	this.findPath = function(){
-		this.render();
-		if(this.path[this.path.length-1][0] == level.end[0] && this.path[this.path.length-1][1] == level.end[1]){
-			return true;
-		}
-		var availableDirections = [];
-		var newPos;
-		// North
-		newPos = [this.path[this.path.length-1][0], this.path[this.path.length-1][1]-1];
-		if(newPos[1] > 0 && !this.already_visited(newPos) && !this.already_failed(newPos)){
-			if(level.level[newPos[0]][newPos[1]] == wallType.EMPTY){
-				availableDirections.push(newPos);
+		while(this.openSet.length != 0){
+			var current = this.minimizeF();
+			if(current == level.end){
+				this.makeSolution();
+				return;
+			}
+			this.openSet.delete(current);
+			this.closedSet.add(current);
+			// For each neighbor.
+			for(var i = 0; i < level.transitions[current].length; i++){
+				if(this.closedSet.has(level.transitions[current][i])){
+					continue;
+				}
+				if(!(this.openSet.has(level.transitions[current][i]))){
+					this.openSet.add(level.transitions[current][i]);
+				}
+				var gScore = this.gScore[current]+1;
+				if(gScore >= this.gScore[level.transitions[current][i]]){
+					continue;
+				}
+				this.cameFrom[level.transitions[current][i]] = current;
+				this.gScore[level.transitions[current][i]] = gScore;
+				this.fScore[level.transitions[current][i]] = this.gScore[level.transitions[current][i]] + level.level[level.transitions[current][i]][1];
 			}
 		}
-		// South
-		newPos = [this.path[this.path.length-1][0], this.path[this.path.length-1][1]+1];
-		if(newPos[1] < level.level[0].length && !this.already_visited(newPos) && !this.already_failed(newPos)){
-			if(level.level[newPos[0]][newPos[1]] == wallType.EMPTY){
-				availableDirections.push(newPos);
-			}
-		}
-		// West
-		newPos = [this.path[this.path.length-1][0]-1, this.path[this.path.length-1][1]];
-		if(newPos[0] > 0 && !this.already_visited(newPos) && !this.already_failed(newPos)){
-			if(level.level[newPos[0]][newPos[1]] == wallType.EMPTY){
-				availableDirections.push(newPos);
-			}
-		}
-		// East
-		newPos = [this.path[this.path.length-1][0]+1, this.path[this.path.length-1][1]];
-		if(newPos[0] < level.level.length && !this.already_visited(newPos) && !this.already_failed(newPos)){
-			if(level.level[newPos[0]][newPos[1]] == wallType.EMPTY){
-				availableDirections.push(newPos);
-			}
-		}
+	}
 
-		if(availableDirections.length == 0){
-			console.log("STUCK");
-			this.failed.push(this.path[this.path.length-1]);
-			this.path.pop();
-			this.visited.pop();
-			return false;
+	this.makeSolution = function(){
+		var current = level.end;
+		this.solution.push(current);
+		while(current in this.cameFrom){
+			current = this.cameFrom[current];
+			this.solution.push(current);
 		}
-
-		// Pick from available directions.
-		var minCost = Infinity;
-		var minDir = [];
-		for(var i = 0; i < availableDirections.length; i++){
-			// Pythagoras theorem.
-			var cost = sqrt((availableDirections[i][0] - level.end[0])*(availableDirections[i][0] - level.end[0]) + (availableDirections[i][1] - level.end[1])*(availableDirections[i][1] - level.end[1]));
-			if(cost < minCost){
-				minCost = cost;
-				minDir = availableDirections[i];
-			}
-		}
-		this.path.push(minDir);
-		this.visited.push(minDir);
-		return false;
 	}
 }
