@@ -7,6 +7,8 @@ var canvasWidth;
 var canvasHeight;
 var pixelsX;
 var pixelsY;
+var eraser;
+var foundPath;
 
 var wallType = {
 	EMPTY: 0,
@@ -14,8 +16,9 @@ var wallType = {
 }
 
 function setup(){
-	alert("First click on grid sets starting point. Second sets goal. After that you can place walls with mouse or by pressing \"R\" to place randomly. Then press space to start pathfinder. n to reset");
 	numClicks = 0;
+	eraser = false;
+	foundPath = false;
 	// Make canvas.
 	canvasWidth = 500;
 	canvasHeight = 500;
@@ -66,9 +69,9 @@ function Level(pixelsX, pixelsY){
 	this.addWall = function(pos){
 		// Do not add walls on start or end.
 		if(!(pos == this.start) && !(pos == this.end)){
-			if(this.level[pos][0] == wallType.EMPTY){
+			if(eraser == false){
 				this.level[pos][0] = wallType.WALL;   
-			} else if(this.level[pos][0] == wallType.WALL){
+			} else{
 				this.level[pos][0] = wallType.EMPTY;   
 			}
 		}
@@ -339,7 +342,7 @@ function mouseDragged() {
 }
 
 function keyPressed(){
-	if(keyCode == 32 && numClicks >= 2){
+	if(keyCode == 32 && numClicks >= 2 && !foundPath){
 		// Add to level available transitions from each spot on grid (which way you can move from a given position).
 		level.addTransitions();
 		// Make pathfinder.
@@ -348,6 +351,7 @@ function keyPressed(){
 		console.log("FINDING PATH");
 		pathfinder.findPath();
 		pathfinder.render();
+		foundPath = true;
 	}
 	if(keyCode == 82 && numClicks >= 2){
 		console.log("ADD RANDOM");
@@ -355,10 +359,14 @@ function keyPressed(){
 		level.render();
 	}
 	if(keyCode == 78){
+		foundPath = false;
 		level = new Level(pixelsX,pixelsY);
 		level.initializeLevel();
 		level.render();
 		numClicks = 0;
 		pathfinder = null;
+	}
+	if(keyCode == 69){
+		eraser = !eraser;
 	}
 }
