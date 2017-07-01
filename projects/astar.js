@@ -66,9 +66,9 @@ function Level(pixelsX, pixelsY){
 	this.addWall = function(pos){
 		// Do not add walls on start or end.
 		if(!(pos == this.start) && !(pos == this.end)){
-			if(this.level[pos][0] == wallType.EMPTY{
+			if(this.level[pos][0] == wallType.EMPTY){
 				this.level[pos][0] = wallType.WALL;   
-			} else if(this.level[pos][0] == wallType.WALL{
+			} else if(this.level[pos][0] == wallType.WALL){
 				this.level[pos][0] = wallType.EMPTY;   
 			}
 		}
