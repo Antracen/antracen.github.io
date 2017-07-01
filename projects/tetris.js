@@ -4,9 +4,13 @@ var gameOver;
 var score;
 
 function setup(){
-	createCanvas(100,200); // Pixels 10*10
+	var canvasX = 200;
+	var canvasY = 400;
+	var pixelsX = 10;
+	var pixelsY = 20;
+	createCanvas(canvasX, canvasY); // Pixels 10*10
+	level = new Level(canvasX, canvasY, pixelsX, pixelsY);
 	block = new Block();
-	level = new Level();
 	gameOver = false;
 	score = 0;
 	frameRate(15);
@@ -34,19 +38,26 @@ function check_keys(){
 	}
 }
 
-function Level(){
+function Level(canvasX, canvasY, pixelsX, pixelsY){
+	this.canvasX = canvasX;
+	this.canvasY = canvasY;
+	this.pixelsX = pixelsX;
+	this.pixelsY = pixelsY;
+	this.pixelSizeX = this.canvasX/this.pixelsX;
+	this.pixelSizeY = this.canvasY/this.pixelsY;
 	this.level = [];
-	for(var i = 0; i < 20; i++){
+	
+	for(var i = 0; i < this.pixelsY; i++){
 		this.level[i] = [];
-		for(var j = 0; j < 10; j++){
+		for(var j = 0; j < this.pixelsX; j++){
 			this.level[i].push([0, "black"]);
 		}
 	}
 
 	this.check_tetris = function(){
-		for(var i = 0; i < 20; i++){
+		for(var i = 0; i < this.pixelsY; i++){
 			var tetris = true;
-			for(var j = 0; j < 10; j++){
+			for(var j = 0; j < this.pixelsX; j++){
 				if(this.level[i][j][0] == 0){
 					tetris = false;
 					break;
@@ -63,7 +74,7 @@ function Level(){
 	this.break_row = function(row){
 		this.level.splice(row, 1);
 		var empty_row = [];
-		for(var i = 0; i < 10; i++){
+		for(var i = 0; i < this.pixelsX; i++){
 			empty_row.push([0, "black"]);
 		}
 		this.level.unshift(empty_row);
@@ -80,7 +91,7 @@ function Level(){
 		for(var i = 0; i < this.level.length; i++){
 			for(var j = 0; j < this.level[i].length; j++){
 				fill(color((this.level[i][j])[1]));
-				rect(j*10, i*10, 10, 10);
+				rect(j*this.pixelSizeX, i*this.pixelSizeY, this.pixelSizeX, this.pixelSizeY);
 			}
 		}
 	}
@@ -153,10 +164,10 @@ function Block(type){
 		if(this.top_left[0] < 0){
 			return true;
 		}
-		if(this.top_left[0] + this.block[0].length > 10){
+		if(this.top_left[0] + this.block[0].length > level.pixelsX){
 			return true;
 		}
-		if(this.top_left[1] + this.block.length > 20){
+		if(this.top_left[1] + this.block.length > level.pixelsY){
 			return true;
 		}
 
@@ -170,8 +181,8 @@ function Block(type){
 			}
 		}
 		var other_coords = [];
-		for(var i = 0; i < 20; i++){
-			for(var j = 0; j < 10; j++){
+		for(var i = 0; i < level.pixelsY; i++){
+			for(var j = 0; j < level.pixelsX; j++){
 				if(level.level[i][j][0] == 1){
 					other_coords.push([j, i]);
 				}
@@ -235,7 +246,7 @@ function Block(type){
 				if(this.block[i][j] == 1){
 					stroke(0);
 					fill(color(this.color));
-					rect(this.top_left[0]*10 + j*10, this.top_left[1]*10 + i*10, 10, 10);
+					rect(this.top_left[0]*level.pixelSizeX + j*level.pixelSizeX, this.top_left[1]*level.pixelSizeY + i*level.pixelSizeY, level.pixelSizeX, level.pixelSizeY);
 				}
 			}
 		}
