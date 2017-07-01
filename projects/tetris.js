@@ -13,7 +13,7 @@ function setup(){
 	block = new Block();
 	gameOver = false;
 	score = 0;
-	frameRate(15);
+	frameRate(10);
 }
 
 function draw(){
@@ -233,7 +233,7 @@ function Block(type){
 	}
 
 	this.update = function(){
-		if(this.frame == 3){
+		if(this.frame == 2){
 			this.move_down();
 			this.frame = 0;
 		}
