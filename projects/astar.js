@@ -1,8 +1,10 @@
-// TODO Add reset button (only reset player or reset both).
+// TODO
 
 var level;
 var pathfinder;
 var numClicks;
+var canvasWidth;
+var canvasHeight;
 
 var wallType = {
 	EMPTY: 0,
@@ -10,21 +12,21 @@ var wallType = {
 }
 
 function setup(){
-	alert("First click on grid sets starting point. Second sets goal. After that you can place walls with mouse or by pressing \"R\" to place randomly. Then press space to start pathfinder");
+	alert("First click on grid sets starting point. Second sets goal. After that you can place walls with mouse or by pressing \"R\" to place randomly. Then press space to start pathfinder. n to reset");
 	numClicks = 0;
 	// Make canvas.
-	var canvasWidth = 500;
-	var canvasHeight = 500;
+	canvasWidth = 500;
+	canvasHeight = 500;
 	createCanvas(canvasWidth, canvasHeight);
 	// Make level.
 	var pixelsX = 50;
 	var pixelsY = 50
-	level = new Level(pixelsX,pixelsY,canvasWidth,canvasHeight);
+	level = new Level(pixelsX,pixelsY);
 	level.initializeLevel();
 	level.render();
 }
 
-function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
+function Level(pixelsX, pixelsY){
 	this.canvasWidth = canvasWidth;
 	this.canvasHeight = canvasHeight;
 	this.pixelsX = pixelsX;
@@ -62,7 +64,7 @@ function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
 	this.addWall = function(pos){
 		// Do not add walls on start or end.
 		if(!(pos == this.start) && !(pos == this.end)){
-			this.level[pos][0] = wallType.WALL;
+			this.level[pos][0] -= 1;
 		}
 	}
 
@@ -73,6 +75,12 @@ function Level(pixelsX, pixelsY, canvasWidth, canvasHeight){
 		for(var i = 0; i < this.level.length/density; i++){
 			var randomPos = floor(random(this.pixelsX*this.pixelsY));
 			this.addWall(randomPos);
+		}
+	}
+	
+	this.resetWalls = function(){
+		for(var i = 0; i < this.level.length; i++){
+			this.level[i] = wallType.empty;
 		}
 	}
 
@@ -339,5 +347,12 @@ function keyPressed(){
 		console.log("ADD RANDOM");
 		level.addWallsRandom();
 		level.render();
+	}
+	if(keyCode == 78){
+		level = new Level(pixelsX,pixelsY);
+		level.initializeLevel();
+		level.render();
+		numClicks = 0;
+		pathfinder = null;
 	}
 }
