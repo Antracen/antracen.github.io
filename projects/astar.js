@@ -5,6 +5,8 @@ var pathfinder;
 var numClicks;
 var canvasWidth;
 var canvasHeight;
+var pixelsX;
+var pixelsY;
 
 var wallType = {
 	EMPTY: 0,
@@ -19,8 +21,8 @@ function setup(){
 	canvasHeight = 500;
 	createCanvas(canvasWidth, canvasHeight);
 	// Make level.
-	var pixelsX = 50;
-	var pixelsY = 50
+	pixelsX = 50;
+	pixelsY = 50
 	level = new Level(pixelsX,pixelsY);
 	level.initializeLevel();
 	level.render();
