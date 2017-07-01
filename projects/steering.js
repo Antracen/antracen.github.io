@@ -64,6 +64,13 @@ function AI(x, y){
 	this.steer = function(){
 		var minDistance = Infinity;
 		var targetVelocity = createVector(0,0);
+		if(points.points.length == 0){
+			var targetVector = p5.Vector.sub(createVector(300,150), this.position);
+			if(targetVector.mag() < minDistance){
+				targetVelocity = targetVector;
+				minDistance = targetVector.mag();
+			}
+		}
 		for(var i = 0; i < points.points.length; i++){
 			var targetVector = p5.Vector.sub(createVector(points.points[i][0], points.points[i][1]), this.position);
 			if(targetVector.mag() < minDistance){
