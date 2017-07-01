@@ -1,5 +1,3 @@
-// TODO
-
 var level;
 var pathfinder;
 var numClicks;
@@ -230,7 +228,7 @@ function PathFinder(){
 	this.gScore = {}; // Cost to go from start to this node.
 	this.gScore[level.start] = 0;
 	this.fScore = {}; // f-score = g-score + h-score. Cost to go to node + estimated cost to go to level.end.
-	this.fScore[level.start] = level.level[level.start][2];
+	this.fScore[level.start] = level.level[level.start][1];
 
 	// Choose the value in openset with smallest f-score.
 	this.minimizeF = function(){
@@ -354,7 +352,7 @@ function keyPressed(){
 		foundPath = true;
 	}
 	if(keyCode == 82 && numClicks >= 2){
-		console.log("ADD RANDOM");
+		console.log("ADD RANDOM WALLS");
 		level.addWallsRandom();
 		level.render();
 	}
