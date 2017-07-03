@@ -248,7 +248,7 @@ function PathFinder(){
 	// Path will be stored in this.solution
 	this.findPath = function(){
 		// While there are nodes to be evaluated.
-		while(this.openSet.length != 0){
+		while(this.openSet.size != 0){
 			// Evaluate the node which has the smallest f-value.
 			var current = this.minimizeF();
 			if(current == level.end){
