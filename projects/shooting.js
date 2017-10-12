@@ -27,6 +27,8 @@ function Player(x,y,size,num){
 	this.size = size;
 	this.velocity = createVector(3,0);
 	this.bullets = [];
+	this.explosion = [];
+	this.exploded = false;
 	
 	this.update = function(){
 		if(this.num == 0){
@@ -37,6 +39,7 @@ function Player(x,y,size,num){
 			this.collision2();
 		}
 		this.updateBullets();
+		this.updateExplode();
 	}
 
 	this.collision1 = function(){
@@ -46,6 +49,7 @@ function Player(x,y,size,num){
 				player2.points++;
 				console.log("Player2: " + player2.points);
 				player2.bullets.splice(i,1);
+				this.explode();
 			}
 		}
 	}
@@ -56,6 +60,7 @@ function Player(x,y,size,num){
 				player1.points++;
 				console.log("Player1: " + player1.points);
 				player1.bullets.splice(i,1);
+				this.explode();
 			}
 		}
 	}
@@ -63,9 +68,21 @@ function Player(x,y,size,num){
 
 	this.updateBullets = function(){
 		for(var i = 0; i < this.bullets.length; i++){
-			this.bullets[i][0].add(this.bullets[i][1]);
-			if(this.bullets[i][0].x > 800 || this.bullets[i][0].y > 500 || this.bullets[i][0].x < 0 || this.bullets[i][0].y < 0){
+			this.bullets[i][2]++;
+			if(this.bullets[i][2] > 100){
 				this.bullets.splice(i,1);
+				continue;
+			}
+			this.bullets[i][0].add(this.bullets[i][1]);
+			if(this.bullets[i][0].x < 0){
+				this.bullets[i][0].x = 700;
+			} else if(this.bullets[i][0].x > 700){
+				this.bullets[i][0].x = 0;
+			}
+			if(this.bullets[i][0].y < 0){
+				this.bullets[i][0].y = 400;
+			} else if(this.bullets[i][0].y > 400){
+				this.bullets[i][0].y = 0;
 			}
 		}
 	}
@@ -81,6 +98,16 @@ function Player(x,y,size,num){
 			this.fire();
 		}
 		this.position.add(this.velocity);
+		if(this.position.x < 0){
+			this.position.x = 700;
+		} else if(this.position.x > 700){
+			this.position.x = 0;
+		}
+		if(this.position.y < 0){
+			this.position.y = 400;
+		} else if(this.position.y > 400){
+			this.position.y = 0;
+		}
 	}
 
 	this.updatePosition2 = function(){
@@ -94,15 +121,55 @@ function Player(x,y,size,num){
 			this.fire();
 		}
 		this.position.add(this.velocity);
+		if(this.position.x < 0){
+			this.position.x = 700;
+		} else if(this.position.x > 700){
+			this.position.x = 0;
+		}
+		if(this.position.y < 0){
+			this.position.y = 400;
+		} else if(this.position.y > 400){
+			this.position.y = 0;
+		}
 	}
 
 	this.fire = function(){
 		if(this.bullets.length < 1){
-			this.bullets.push([this.position.copy(), this.velocity.copy().mult(3)]);
+			this.bullets.push([this.position.copy(), this.velocity.copy().mult(3), 0]);
+		}
+	}
+	
+	this.explode = function(){
+		for(var i = 0; i < 40; i++){
+			this.explosion.push([this.position.copy(), this.velocity.copy().mult(1).rotate(random(2*PI)), 0]);
+		}
+		this.bullets = [];
+		this.exploded = true;
+	}
+	
+	this.updateExplode = function(){
+		for(var i = 0; i < this.explosion.length; i++){
+			this.explosion[i][0].add(this.explosion[i][1]);
+			this.explosion[i][2]++;
+			if(this.explosion[i][2] > 100){
+				this.explosion.splice(i,1);
+			}
+		}
+		if(this.explosion.length == 0 && this.exploded == true){
+			this.exploded = false;
+			this.position = createVector(100,100);
 		}
 	}
 
 	this.render = function(){
+		if(this.exploded == true){
+			for(var i = 0; i < this.explosion.length; i++){
+				stroke(this.color);
+				strokeWeight(6);
+				point(this.explosion[i][0].x, this.explosion[i][0].y);
+			}
+			return;
+		}
 		stroke(this.color);
 		strokeWeight(this.size);
 		point(this.position.x, this.position.y);
