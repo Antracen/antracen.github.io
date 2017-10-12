@@ -180,3 +180,4 @@ function Player(x,y,size,num){
 		}
 	}
 }
+//
