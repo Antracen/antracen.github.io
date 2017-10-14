@@ -29,16 +29,19 @@ function Player(x,y,size,num){
 	this.bullets = [];
 	this.explosion = [];
 	this.exploded = false;
+	this.cooldown = 0;
 	
 	this.update = function(){
-		if(this.num == 0){
-			this.updatePosition1();
-			this.collision1();
-		} else{
-			this.updatePosition2();
-			this.collision2();
+		if(this.exploded == false) {
+			if(this.num == 0){
+				this.updatePosition1();
+				this.collision1();
+			} else{
+				this.updatePosition2();
+				this.collision2();
+			}
+			this.updateBullets();
 		}
-		this.updateBullets();
 		this.updateExplode();
 	}
 
@@ -47,7 +50,6 @@ function Player(x,y,size,num){
 		for(var i = 0; i < player2.bullets.length; i++){
 			if(this.position.dist(player2.bullets[i][0]) < 15){
 				player2.points++;
-				console.log("Player2: " + player2.points);
 				player2.bullets.splice(i,1);
 				this.explode();
 			}
@@ -58,7 +60,6 @@ function Player(x,y,size,num){
 		for(var i = 0; i < player1.bullets.length; i++){
 			if(this.position.dist(player1.bullets[i][0]) < 15){
 				player1.points++;
-				console.log("Player1: " + player1.points);
 				player1.bullets.splice(i,1);
 				this.explode();
 			}
@@ -67,6 +68,7 @@ function Player(x,y,size,num){
 
 
 	this.updateBullets = function(){
+		this.cooldown++;
 		for(var i = 0; i < this.bullets.length; i++){
 			this.bullets[i][2]++;
 			if(this.bullets[i][2] > 100){
@@ -133,9 +135,10 @@ function Player(x,y,size,num){
 		}
 	}
 
-	this.fire = function(){
-		if(this.bullets.length < 1){
+	this.fire = function(){	
+		if(this.bullets.length < 8 && this.cooldown > 20){
 			this.bullets.push([this.position.copy(), this.velocity.copy().mult(3), 0]);
+			this.cooldown = 0;
 		}
 	}
 	
@@ -162,6 +165,18 @@ function Player(x,y,size,num){
 	}
 
 	this.render = function(){
+		if(this.num == 0){
+			fill(this.color);
+			stroke(0,0,0,0);
+			textSize(20);
+			text(""+this.points, 10, 370);
+		}
+		else{
+			fill(this.color);
+			stroke(0,0,0,0);
+			textSize(20);
+			text(""+this.points, 650, 370);
+		}
 		if(this.exploded == true){
 			for(var i = 0; i < this.explosion.length; i++){
 				stroke(this.color);
@@ -173,8 +188,10 @@ function Player(x,y,size,num){
 		stroke(this.color);
 		strokeWeight(this.size);
 		point(this.position.x, this.position.y);
+		strokeWeight(10);
+		point(this.position.x+this.velocity.x*3, this.position.y+this.velocity.y*3);
+
 		for(var i = 0; i < this.bullets.length; i++){
-			stroke(this.color);
 			strokeWeight(10);
 			point(this.bullets[i][0].x, this.bullets[i][0].y);
 		}
