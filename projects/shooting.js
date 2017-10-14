@@ -2,6 +2,7 @@
 
 var player1;
 var player2;
+var music;
 
 function setup(){
 		// Canvas
@@ -9,6 +10,13 @@ function setup(){
 		// Other
 		player1 = new Player(100,100,20,0);
 		player2 = new Player(100,100,20,1);
+		music = new Audio('music.wav');
+		music.volume = 0.2;
+		music.addEventListener('ended', function() {
+    		this.currentTime = 0;
+    		this.play();
+		}, false);
+		music.play();
 }
 
 function draw(){
@@ -30,6 +38,13 @@ function Player(x,y,size,num){
 	this.explosion = [];
 	this.exploded = false;
 	this.cooldown = 0;
+	this.shootSound = [];
+	for(var i = 0; i < 8; i++){
+		this.shootSound[i] = new Audio('shoot.wav');
+		this.shootSound[i].volume = 0.2;
+	}
+	this.explodeSound = new Audio('explode.wav');
+	this.explodeSound.volume = 0.2;
 	
 	if(this.num == 0){
 		this.velocity.mult(-1);
@@ -143,11 +158,13 @@ function Player(x,y,size,num){
 	this.fire = function(){	
 		if(this.bullets.length < 8 && this.cooldown > 20){
 			this.bullets.push([this.position.copy(), this.velocity.copy().mult(3), 0]);
+			this.shootSound[this.bullets.length-1].play();
 			this.cooldown = 0;
 		}
 	}
 	
 	this.explode = function(){
+		this.explodeSound.play();
 		for(var i = 0; i < 40; i++){
 			this.explosion.push([this.position.copy(), this.velocity.copy().mult(1).rotate(random(2*PI)), 0]);
 		}
