@@ -31,6 +31,11 @@ function Player(x,y,size,num){
 	this.exploded = false;
 	this.cooldown = 0;
 	
+	if(this.num == 0){
+		this.velocity.mult(-1);
+		this.position.add(40,100);
+	}
+
 	this.update = function(){
 		if(this.exploded == false) {
 			if(this.num == 0){
