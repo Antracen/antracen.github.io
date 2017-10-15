@@ -44,8 +44,12 @@ function Player(x,y,size,num){
 		this.shootSound[i] = new Audio('shoot.wav');
 		this.shootSound[i].volume = 0.2;
 	}
-	this.explodeSound = new Audio('explode.wav');
-	this.explodeSound.volume = 0.2;
+	this.explodeSound = [];
+	this.explodeIndex = 0;
+	for(var i = 0; i < 5; i++){
+		this.explodeSound[i] = new Audio('explode.wav');
+		this.explodeSound[i].volume = 0.2;
+	}
 	
 	if(this.num == 0){
 		this.velocity.mult(-1);
@@ -169,7 +173,11 @@ function Player(x,y,size,num){
 	}
 	
 	this.explode = function(){
-		this.explodeSound.play();
+		this.explodeSound[this.explodeIndex].play();
+		this.explodeIndex++;
+		if(this.explodeIndex > 4){
+			this.explodeIndex = 0;
+		}
 		for(var i = 0; i < 40; i++){
 			this.explosion.push([this.position.copy(), this.velocity.copy().mult(1).rotate(random(2*PI)), 0]);
 		}
