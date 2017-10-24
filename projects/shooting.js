@@ -1,29 +1,63 @@
 // WARNING THIS CODE SUCKS ASS, WILL UPDATE
 
-var map;
+var level;
+var started;
 var players;
 var music;
+var keyLayouts;
 
 function setup(){
 	var xSize = 700;
 	var ySize = 400;
+	started = false;
+	keyLayouts = [
+		[49,50,51], [52,53,54], [55,56,57], // 123 456 789
+		[81,87,69], [82,84,89], [85,73,79], // qwe rty uio
+		[65,83,68], [70,71,72], [74,75,76], // asd fgh jkl
+		[90,88,67], [86,66,78], [77,188,190] // zxc vbn m,.
+	];
 	createCanvas(xSize, ySize);
-	map = new Map(xSize, ySize, "#2d2d2d");
-	players = [];
-	players.push(new Player(20,0,LEFT_ARROW,DOWN_ARROW,RIGHT_ARROW));
-	players.push(new Player(20,1,65,83,68));
-	players.push(new Player(20,2,74,75,76));
-	players.push(new Player(20,3,70,71,72));
+	level = new Level(xSize, ySize, "#2d2d2d");
 	playMusic();
 }
 
 function draw(){
-	map.render();
+	if(started == false){
+		introScreen();
+		return;
+	}
+	level.render();
 	keyListener();
 	for(var i = 0; i < players.length; i++){
 		players[i].update();
 		players[i].render();
 	}
+}
+
+function introScreen(){
+	level.render();
+	level.cooldown++;
+	
+	if(level.cooldown > 10){
+		level.cooldown = 0;
+		if(keyIsDown(UP_ARROW)){
+			level.players++;
+		}
+		if(keyIsDown(DOWN_ARROW)){
+			level.players--;
+		}
+		if(keyIsDown(ENTER)){
+			started = true;
+			players = [];
+			for(var i = 0; i < max(1,min(level.players, keyLayouts.length)); i++){
+				players.push(new Player(20,i,keyLayouts[i][0],keyLayouts[i][1],keyLayouts[i][2]));
+			}
+		}
+	}
+	fill(255);
+	textSize(10);
+	text("Choose number of players with arrows up, down and confirm with enter.", 300, 100);
+	text(level.players, 300, 200);
 }
 
 function playMusic(){
@@ -36,9 +70,11 @@ function playMusic(){
 	music.play();
 }
 
-function Map(xSize, ySize, color){
+function Level(xSize, ySize, color){
 	this.xSize = xSize;
 	this.ySize = ySize;
+	this.players = 0;
+	this.cooldown = 0;
 	this.color = color;
 	this.render = function(){
 		background(this.color);
@@ -55,7 +91,7 @@ function Player(size,num,leftKey,shootKey,rightKey){
 	this.points = 0;
 	this.num = num;
 
-	this.position = createVector(random(map.xSize), random(map.ySize));
+	this.position = createVector(random(level.xSize), random(level.ySize));
 	this.velocity = createVector(random(3),random(3)).setMag(3);
 
 	this.bullets = [];
@@ -95,7 +131,7 @@ function Player(size,num,leftKey,shootKey,rightKey){
 			for(var j = 0; j < players[i].bullets.length; j++){
 				if(this.position.dist(players[i].bullets[j][0]) < 15){
 					players[i].points++;
-					players[i].bullets.splice(i,1);
+					players[i].bullets.splice(j,1);
 					this.explode();
 				}
 			}	
