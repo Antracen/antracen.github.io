@@ -7,8 +7,8 @@ var music;
 var keyLayouts;
 
 function setup(){
-	var xSize = 700;
-	var ySize = 400;
+	var xSize = 800;
+	var ySize = 800;
 	started = false;
 	keyLayouts = [
 		[49,50,51], [52,53,54], [55,56,57], // 123 456 789
@@ -26,6 +26,7 @@ function draw(){
 		introScreen();
 		return;
 	}
+	level.update();
 	level.render();
 	keyListener();
 	for(var i = 0; i < players.length; i++){
@@ -73,11 +74,24 @@ function playMusic(){
 function Level(xSize, ySize, color){
 	this.xSize = xSize;
 	this.ySize = ySize;
+	
 	this.players = 0;
+	this.livingPlayers = 0;
+	
 	this.cooldown = 0;
+	
+	
 	this.color = color;
 	this.render = function(){
 		background(this.color);
+	}
+	
+	this.update = function(){
+		if(this.livingPlayers < 2){
+			for(var i = 0; i < players.length; i++){
+				players[i].spawn();
+			}
+		}
 	}
 }
 
@@ -91,14 +105,11 @@ function Player(size,num,leftKey,shootKey,rightKey){
 	this.points = 0;
 	this.num = num;
 
-	this.position = createVector(random(level.xSize), random(level.ySize));
-	this.velocity = createVector(random(3),random(3)).setMag(3);
-
 	this.bullets = [];
 	this.cooldown = 0;
 
 	this.explosion = [];
-	this.exploded = false;
+	this.exploded = true;
 
 	this.shootSound = [];
 	this.shootIndex = 0;
@@ -113,14 +124,24 @@ function Player(size,num,leftKey,shootKey,rightKey){
 		this.explodeSound[i] = new Audio('explode.wav');
 		this.explodeSound[i].volume = 0.2;
 	}
+	
+	this.spawn = function(){
+		if(this.exploded == true){
+			level.livingPlayers++;
+			this.position = createVector(random(level.xSize), random(level.ySize));
+			this.velocity = createVector(random(-1,1),random(-1,1)).setMag(6);
+			this.exploded = false;
+		}
+	}
 
 	this.update = function(){
 		if(this.exploded == false) {
 			this.updatePosition();
 			this.collision();
 			this.updateBullets();
+		} else{
+			this.updateExplode();
 		}
-		this.updateExplode();
 	}
 
 	this.collision = function(){
@@ -143,35 +164,27 @@ function Player(size,num,leftKey,shootKey,rightKey){
 		this.cooldown++;
 		for(var i = 0; i < this.bullets.length; i++){
 			this.bullets[i][2]++;
-			if(this.bullets[i][2] > 100){
+			if(this.bullets[i][2] > 150){
 				this.bullets.splice(i,1);
 				continue;
 			}
 			this.bullets[i][0].add(this.bullets[i][1]);
-			if(this.bullets[i][0].x < 0){
-				this.bullets[i][0].x = 700;
-			} else if(this.bullets[i][0].x > 700){
-				this.bullets[i][0].x = 0;
+			if(this.bullets[i][0].x < 0 || this.bullets[i][0].x > level.xSize){
+				this.bullets[i][1].x *= -1;
 			}
-			if(this.bullets[i][0].y < 0){
-				this.bullets[i][0].y = 400;
-			} else if(this.bullets[i][0].y > 400){
-				this.bullets[i][0].y = 0;
+			if(this.bullets[i][0].y < 0 || this.bullets[i][0].y > level.ySize){
+				this.bullets[i][1].y *= -1;
 			}
 		}
 	}
 
 	this.updatePosition = function(){
 		this.position.add(this.velocity);
-		if(this.position.x < 0){
-			this.position.x = 700;
-		} else if(this.position.x > 700){
-			this.position.x = 0;
+		if(this.position.x < 0 || this.position.x > level.xSize){
+			this.velocity.x *= -1;
 		}
-		if(this.position.y < 0){
-			this.position.y = 400;
-		} else if(this.position.y > 400){
-			this.position.y = 0;
+		if(this.position.y < 0 || this.position.y > level.ySize){
+			this.velocity.y *= -1;
 		}
 	}
 
@@ -193,7 +206,7 @@ function Player(size,num,leftKey,shootKey,rightKey){
 		if(this.explodeIndex > 4){
 			this.explodeIndex = 0;
 		}
-		for(var i = 0; i < 40; i++){
+		for(var i = 0; i < 100; i++){
 			this.explosion.push([this.position.copy(), this.velocity.copy().mult(1).rotate(random(2*PI)), 0]);
 		}
 		this.bullets = [];
@@ -207,10 +220,9 @@ function Player(size,num,leftKey,shootKey,rightKey){
 			if(this.explosion[i][2] > 100){
 				this.explosion.splice(i,1);
 			}
-		}
-		if(this.explosion.length == 0 && this.exploded == true){
-			this.exploded = false;
-			this.position = createVector(100,100);
+			if(this.explosion.length == 0){
+				level.livingPlayers--;
+			}
 		}
 	}
 
@@ -218,7 +230,7 @@ function Player(size,num,leftKey,shootKey,rightKey){
 		fill(this.color);
 		stroke(0,0,0,0);
 		textSize(20);
-		text(""+this.points, 10+this.num*50, 370);
+		text(""+this.points, 10+this.num*50, level.ySize-30);
 		if(this.exploded == true){
 			for(var i = 0; i < this.explosion.length; i++){
 				stroke(this.color);
@@ -231,7 +243,7 @@ function Player(size,num,leftKey,shootKey,rightKey){
 		strokeWeight(this.size);
 		point(this.position.x, this.position.y);
 		strokeWeight(10);
-		point(this.position.x+this.velocity.x*3, this.position.y+this.velocity.y*3);
+		point(this.position.x+this.velocity.x*2, this.position.y+this.velocity.y*2);
 
 		for(var i = 0; i < this.bullets.length; i++){
 			strokeWeight(10);
