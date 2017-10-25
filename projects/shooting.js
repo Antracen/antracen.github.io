@@ -5,6 +5,7 @@ var started;
 var players;
 var music;
 var keyLayouts;
+var playerColors;
 
 function setup(){
 	var xSize = 800;
@@ -16,6 +17,7 @@ function setup(){
 		[65,83,68], [70,71,72], [74,75,76], // asd fgh jkl
 		[90,88,67], [86,66,78], [77,188,190] // zxc vbn m,.
 	];
+	playerColors = ['yellow', 'red', 'blue', 'green', 'orange', 'pink', 'chartreuse', 'aqua', 'white', 'darksalmon', 'greenyellow', 'orchid'];
 	createCanvas(xSize, ySize);
 	level = new Level(xSize, ySize, "#2d2d2d");
 	playMusic();
@@ -51,7 +53,7 @@ function introScreen(){
 			started = true;
 			players = [];
 			for(var i = 0; i < max(1,min(level.players, keyLayouts.length)); i++){
-				players.push(new Player(20,i,keyLayouts[i][0],keyLayouts[i][1],keyLayouts[i][2]));
+				players.push(new Player(20,i,keyLayouts[i][0],keyLayouts[i][1],keyLayouts[i][2],playerColors[i]));
 			}
 		}
 	}
@@ -71,7 +73,7 @@ function playMusic(){
 	music.play();
 }
 
-function Level(xSize, ySize, color){
+function Level(xSize, ySize, playerColor){
 	this.xSize = xSize;
 	this.ySize = ySize;
 	
@@ -81,7 +83,7 @@ function Level(xSize, ySize, color){
 	this.cooldown = 0;
 	
 	
-	this.color = color;
+	this.color = color(playerColor);
 	this.render = function(){
 		background(this.color);
 	}
@@ -95,8 +97,8 @@ function Level(xSize, ySize, color){
 	}
 }
 
-function Player(size,num,leftKey,shootKey,rightKey){
-	this.color = color(random(255),random(255),random(255));
+function Player(size,num,leftKey,shootKey,rightKey,color){
+	this.color = color;
 	this.size = size;
 	this.leftKey = leftKey;
 	this.shootKey = shootKey;
