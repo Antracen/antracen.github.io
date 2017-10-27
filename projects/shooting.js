@@ -188,6 +188,14 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 		if(this.position.y < 0 || this.position.y > level.ySize){
 			this.velocity.y *= -1;
 		}
+		this.position.x = this.position.x % level.xSize;
+		if(this.position.x < 0){
+			this.position.x = level.xSize-this.position.x;
+		}
+		this.position.y = this.position.y % level.ySize;
+		if(this.position.y < 0){
+			this.position.y = level.ySize-this.position.y;
+		}
 	}
 
 	this.fire = function(){	
