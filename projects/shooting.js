@@ -182,19 +182,21 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 
 	this.updatePosition = function(){
 		this.position.add(this.velocity);
-		if(this.position.x < 0 || this.position.x > level.xSize){
+		if(this.position.x > level.xSize){
 			this.velocity.x *= -1;
+			this.position.x = level.xSize;
 		}
-		if(this.position.y < 0 || this.position.y > level.ySize){
+		if(this.position.y > level.ySize){
 			this.velocity.y *= -1;
+			this.position.y = level.ySize;
 		}
-		this.position.x = this.position.x % level.xSize;
 		if(this.position.x < 0){
-			this.position.x = level.xSize-this.position.x;
+			this.velocity.x *= -1;
+			this.position.x = 0;
 		}
-		this.position.y = this.position.y % level.ySize;
 		if(this.position.y < 0){
-			this.position.y = level.ySize-this.position.y;
+			this.velocity.y *= -1;
+			this.position.y = 0;
 		}
 	}
 
