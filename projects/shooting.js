@@ -107,7 +107,7 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 	this.points = 0;
 	this.num = num;
 
-	this.bullets.length = 0;
+	this.bullets = [];
 	this.cooldown = 0;
 
 	this.explosion = [];
@@ -128,7 +128,7 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 	}
 	
 	this.spawn = function(){
-		this.bullets = [];
+		this.bullets.length = 0;
 		if(this.exploded == true){
 			level.livingPlayers++;
 			this.position = createVector(random(level.xSize), random(level.ySize));
