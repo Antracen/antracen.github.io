@@ -107,7 +107,7 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 	this.points = 0;
 	this.num = num;
 
-	this.bullets = [];
+	this.bullets.length = 0;
 	this.cooldown = 0;
 
 	this.explosion = [];
