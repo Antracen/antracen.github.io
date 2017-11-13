@@ -128,6 +128,7 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 	}
 	
 	this.spawn = function(){
+		this.bullets = [];
 		if(this.exploded == true){
 			level.livingPlayers++;
 			this.position = createVector(random(level.xSize), random(level.ySize));
