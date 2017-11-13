@@ -219,7 +219,7 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 			this.explodeIndex = 0;
 		}
 		for(var i = 0; i < 100; i++){
-			this.explosion.push([this.position.copy(), this.velocity.copy().mult(1).rotate(random(2*PI)), 0]);
+			this.explosion.push([this.position.copy(), this.velocity.copy().mult(random(2)).rotate(random(2*PI)), 0]);
 		}
 		this.bullets = [];
 		this.exploded = true;
