@@ -1,0 +1,42 @@
+a {
+	text-decoration:none;
+}
+
+body {
+	background-color:#eeeeee;
+}
+
+tr {
+	border:1px solid black;
+}
+
+th {
+	background-color:#e1e1e1;
+}
+
+table {
+	width:400px;
+	background-color:white;
+	border-collapse: collapse;
+}
+
+blogpost {
+	width:500px;
+}
+
+hr {
+	width:500px;
+	margin:0px;
+}
+
+blogtext {
+	width:500px;
+}
+
+fakelink {
+	color:#0000EE;
+}
+
+biglinks {
+	font-size:30px;
+}
