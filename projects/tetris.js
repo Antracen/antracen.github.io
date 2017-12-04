@@ -107,31 +107,31 @@ function Block(type){
 	switch(this.type){
 		case 0:
 			this.block = [[1,1],[1,1]];
-			this.color = "red";
+			this.color = "yellow";
 			break;
 		case 1:
 			this.block = [[0,1,1],[1,1,0]];
-			this.color = "blue";
+			this.color = "green";
 			break;
 		case 2:
 			this.block = [[1,1,0],[0,1,1]];
-			this.color = "magenta";
+			this.color = "red";
 			break;
 		case 3:
-			this.block = [[1,1,1],[0,0,1]];
-			this.color = "green";
+			this.block = [[1,0,0],[1,1,1]];
+			this.color = "blue";
 			break;
 		case 4:
-			this.block = [[1,1,1], [1,0,0]];
-			this.color = "purple";
+			this.block = [[0,0,1],[1,1,1]];
+			this.color = "orange";
 			break;
 		case 5:
 			this.block = [[1,1,1,1]];
-			this.color = "orange";
+			this.color = "cyan";
 			break;
 		case 6:
-			this.block = [[1,1,1],[0,1,0]];
-			this.color = "yellow";
+			this.block = [[0,1,0],[1,1,1]];
+			this.color = "purple";
 			break;
 	}
 
