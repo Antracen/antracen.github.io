@@ -18,12 +18,12 @@ function setup(){
 	eraser = false;
 	foundPath = false;
 	// Make canvas.
-	canvasWidth = 500;
-	canvasHeight = 500;
+	canvasWidth = 600;
+	canvasHeight = 600;
 	createCanvas(canvasWidth, canvasHeight);
 	// Make level.
-	pixelsX = 50;
-	pixelsY = 50
+	pixelsX = 30;
+	pixelsY = 30;
 	level = new Level(pixelsX,pixelsY);
 	level.initializeLevel();
 	level.render();
@@ -321,7 +321,7 @@ function mousePressed(){
 			level.render();
 		} else if(numClicks == 2){
 			level.end = position;
-			level.render;
+			level.render();
 		} else{
 			level.addWall(position);
 			level.render();
