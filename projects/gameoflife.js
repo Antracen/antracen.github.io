@@ -8,7 +8,7 @@ function setup(){
 	createCanvas(xSize, ySize);
 	level = new Level(xSize, ySize, pixelsX, pixelsY);
 	level.populate();
-	frameRate(5);
+	frameRate(10);
 }
 
 function draw(){
@@ -30,20 +30,29 @@ function Level(xSize, ySize, pixelsX, pixelsY){
 
 	for(var i = 0; i < pixelsY; i++){
 		var row = [];
+        var row2 = [];
 		for(var j = 0; j < pixelsX; j++){
 			row.push(0);
+            row2.push(0);
 		}
 		this.grids[0].push(row);
-		this.grids[1].push(row);
+		this.grids[1].push(row2);
 	}
 	
 	this.populate = function(){
 		for(var i = 0; i < this.pixelsY; i++){
 			for(var j = 0; j < this.pixelsX; j++){
 				var randomNum = random(100);
-				if(randomNum < 10) this.grids[this.currentGrid][i][j] = 1;
+				if(randomNum < 20) this.grids[this.currentGrid][i][j] = 1;
 			}
-		}
+		} 
+// Glider
+//        this.grids[this.currentGrid][0+10][2+10] = 1;
+//        this.grids[this.currentGrid][1+10][0+10] = 1;
+//        this.grids[this.currentGrid][1+10][2+10] = 1;
+//        this.grids[this.currentGrid][2+10][1+10] = 1;
+//        this.grids[this.currentGrid][2+10][2+10] = 1;
+        
 	}
 	
 	this.render = function(){
@@ -77,7 +86,7 @@ function Level(xSize, ySize, pixelsX, pixelsY){
 			if(j+1 < this.pixelsX && this.grids[this.currentGrid][i-1][j+1] == 1){
 				neighbours++;
 			}
-		}
+        }
 		// Below
 		if(i+1 < this.pixelsY){
 			if(this.grids[this.currentGrid][i+1][j] == 1) neighbours++;
@@ -107,22 +116,28 @@ function Level(xSize, ySize, pixelsX, pixelsY){
 
 		for(var i = 0; i < this.pixelsY; i++){
 			for(var j = 0; j < this.pixelsX; j++){
-
+                
 				var neighbours = this.countNeighbours(i,j);
 
 				// CELL
 				if(this.grids[this.currentGrid][i][j] == 1){
-
 					// If less than 2 or more than 3 neighbours then cell dies.
-					if(neighbours < 2 || neighbours > 3) this.grids[1-this.currentGrid][i][j] = 0;
-
+					if(neighbours < 2 || neighbours > 3) {
+                        this.grids[1-this.currentGrid][i][j] = 0;
+                    }
+                    else{
+                        this.grids[1-this.currentGrid][i][j] = 1;
+                    }
 				}
 				// NO CELL
 				else{
-
 					// If exactly three neighbours then cell is born.
-					if(neighbours == 3) this.grids[1-this.currentGrid][i][j] = 1;
-
+					if(neighbours == 3){
+                        this.grids[1-this.currentGrid][i][j] = 1;
+                    }
+                    else{
+                        this.grids[1-this.currentGrid][i][j] = 0;
+                    }
 				}
 
 			}
