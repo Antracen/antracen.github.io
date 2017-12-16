@@ -1,19 +1,63 @@
 var level;
+var paused = false;
+var pauseButton;
 
 function setup(){
 	var xSize = 500;
 	var ySize = 500;
-	var pixelsX = 50;
-	var pixelsY = 50;
+	var pixelsX = 50; // Should be at least 3.
+	var pixelsY = 50; // Should be at least 3.
 	createCanvas(xSize, ySize);
 	level = new Level(xSize, ySize, pixelsX, pixelsY);
-	level.populate();
+	level.populate("random");
 	frameRate(10);
+	
+	var clearButton = createButton("Clear board");
+	clearButton.position(10+xSize, 10);
+	clearButton.mousePressed(clearLevel);
+	
+	var randomButton = createButton("Spawn random");
+	randomButton.position(10+xSize, 60);
+	randomButton.mousePressed(populateLevel);
+	
+	var gliderButton = createButton("Spawn glider");
+	gliderButton.position(10+xSize, 110);
+	gliderButton.mousePressed(spawnGlider);
+	
+	var spinnerButton = createButton("Spawn spinner");
+	spinnerButton.position(10+xSize, 160);
+	spinnerButton.mousePressed(spawnSpinner);
+	
+	pauseButton = createButton("Pause");
+	pauseButton.position(10+xSize, 210);
+	pauseButton.mousePressed(pause);
 }
 
 function draw(){
-	level.render();
-	level.update();
+	if(!paused){
+		level.update();
+		level.render();
+	}
+}
+
+function pause(){
+	paused = !paused;
+}
+
+function clearLevel(){
+	level.clear();
+}
+
+function populateLevel(){
+	level.populate("random");
+}
+
+function spawnGlider(){
+	level.populate("glider");
+}
+
+function spawnSpinner(){
+	level.populate("spinner");
 }
 
 function Level(xSize, ySize, pixelsX, pixelsY){
@@ -39,20 +83,41 @@ function Level(xSize, ySize, pixelsX, pixelsY){
 		this.grids[1].push(row2);
 	}
 	
-	this.populate = function(){
+	this.populate = function(type){
+	
+		if(type == "random"){
+			for(var i = 0; i < this.pixelsY; i++){
+				for(var j = 0; j < this.pixelsX; j++){
+					var randomNum = random(100);
+					if(randomNum < 20) this.grids[this.currentGrid][i][j] = 1;
+				}
+			} 
+		}
+		else if(type == "glider"){
+			this.grids[this.currentGrid][0][2] = 1;
+		    this.grids[this.currentGrid][1][0] = 1;
+		    this.grids[this.currentGrid][1][2] = 1;
+		    this.grids[this.currentGrid][2][1] = 1;
+		    this.grids[this.currentGrid][2][2] = 1;
+		}
+		else if(type == "spinner"){
+			this.grids[this.currentGrid][0][1] = 1;
+		    this.grids[this.currentGrid][1][1] = 1;
+		    this.grids[this.currentGrid][2][1] = 1;
+		}
+		
+		this.render();
+	}
+	
+	this.clear = function(){
 		for(var i = 0; i < this.pixelsY; i++){
 			for(var j = 0; j < this.pixelsX; j++){
-				var randomNum = random(100);
-				if(randomNum < 20) this.grids[this.currentGrid][i][j] = 1;
+				this.grids[this.currentGrid][i][j] = 0;
+				this.grids[1-this.currentGrid][i][j] = 0;
 			}
-		} 
-// Glider
-//        this.grids[this.currentGrid][0+10][2+10] = 1;
-//        this.grids[this.currentGrid][1+10][0+10] = 1;
-//        this.grids[this.currentGrid][1+10][2+10] = 1;
-//        this.grids[this.currentGrid][2+10][1+10] = 1;
-//        this.grids[this.currentGrid][2+10][2+10] = 1;
-        
+		}         
+		this.currentGrid = 0;
+		this.render();
 	}
 	
 	this.render = function(){
