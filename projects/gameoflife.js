@@ -13,23 +13,23 @@ function setup(){
 	frameRate(10);
 	
 	var clearButton = createButton("Clear board");
-	clearButton.position(10+xSize, 10);
+	clearButton.position(10+xSize, 130);
 	clearButton.mousePressed(clearLevel);
 	
 	var randomButton = createButton("Spawn random");
-	randomButton.position(10+xSize, 60);
+	randomButton.position(10+xSize, 180);
 	randomButton.mousePressed(populateLevel);
 	
 	var gliderButton = createButton("Spawn glider");
-	gliderButton.position(10+xSize, 110);
+	gliderButton.position(10+xSize, 230);
 	gliderButton.mousePressed(spawnGlider);
 	
 	var spinnerButton = createButton("Spawn spinner");
-	spinnerButton.position(10+xSize, 160);
+	spinnerButton.position(10+xSize, 280);
 	spinnerButton.mousePressed(spawnSpinner);
 	
 	pauseButton = createButton("Pause");
-	pauseButton.position(10+xSize, 210);
+	pauseButton.position(10+xSize, 330);
 	pauseButton.mousePressed(pause);
 }
 
