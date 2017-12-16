@@ -39,7 +39,7 @@ Control with space.
 		this.render = function(){
 			ctx.fillStyle = "red";
 			ctx.beginPath();
-			ctx.arc(40, this.y, this.radius, 0, 2*Math.PI);
+			ctx.arc(40, 350, this.radius, 0, 2*Math.PI);
 			ctx.fill();
 		}
 
@@ -108,7 +108,7 @@ Control with space.
 		this.render = function(){
 			ctx.fillStyle = "green";
 			for(i = 0; i < canvas.width; i++){
-				ctx.fillRect(i, Math.floor(this.y(i - 40 + player.x)), 1, 999);
+				ctx.fillRect(i, 350-player.y + Math.floor(this.y(i - 40 + player.x)), 1, 999);
 			}
 		}
 	}
