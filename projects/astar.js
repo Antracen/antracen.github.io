@@ -254,7 +254,7 @@ function PathFinder(){
 			if(current == level.end){
 				// We are finished.
 				this.makeSolution();
-				return;
+				return true;
 			}
 			// Current is no longer in the to be evaluated. It is instead placed in the closed set (nodes evaluated).
 			this.openSet.delete(current);
@@ -282,6 +282,7 @@ function PathFinder(){
 				this.fScore[neighbor] = this.gScore[neighbor] + level.level[neighbor][1];
 			}
 		}
+		return false;
 	}
 
 	// Create solution array.
@@ -347,9 +348,13 @@ function keyPressed(){
 		pathfinder = new PathFinder();
 		// Find and render path.
 		console.log("FINDING PATH");
-		pathfinder.findPath();
-		pathfinder.render();
-		foundPath = true;
+		if(pathfinder.findPath()){
+			pathfinder.render();
+			foundPath = true;
+		}
+		else{
+			alert("NO PATH AVAILABLE");
+		}
 	}
 	if(keyCode == 82 && numClicks >= 2){
 		console.log("ADD RANDOM WALLS");
