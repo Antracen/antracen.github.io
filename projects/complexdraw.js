@@ -64,7 +64,7 @@ function update(){
 // Draw background and all points
 function draw(){
 	update();
-	background("white");
+	background("#FFFFCA");
 	for(var i in points){
 		points[i].render();
 	}
