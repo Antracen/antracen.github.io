@@ -2,6 +2,7 @@ var block;
 var level;
 var gameOver;
 var score;
+var justMoved = false;
 
 function setup(){
 	var canvasX = 200;
@@ -13,7 +14,7 @@ function setup(){
 	block = new Block();
 	gameOver = false;
 	score = 0;
-	frameRate(10);
+	frameRate(7);
 }
 
 function draw(){
@@ -22,7 +23,8 @@ function draw(){
 		level.update();
 		level.render();
 		block.render();
-		check_keys();
+		if(!justMoved) check_keys();
+		justMoved = false;
 	}
 }
 
@@ -30,7 +32,7 @@ function check_keys(){
 	if(keyIsDown(LEFT_ARROW)){
 		block.move_X(-1);
 	}
-	if(keyIsDown(RIGHT_ARROW)){
+	else if(keyIsDown(RIGHT_ARROW)){
 		block.move_X(1);
 	}
 	if(keyIsDown(DOWN_ARROW)){
@@ -260,6 +262,14 @@ function keyPressed(){
 			break;
 		case 32: // SPACE
 			block.drop();
+			break;
+		case LEFT_ARROW:
+			block.move_X(-1);
+			justMoved = true;
+			break;
+		case RIGHT_ARROW:
+			block.move_X(1);
+			justMoved = true;
 			break;
 	}
 }
