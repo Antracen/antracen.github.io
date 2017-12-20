@@ -51,8 +51,8 @@ function touchEnded(){
 }
 
 function touchMoved(){	
-	if(mouseX < pmouseX) for(var p of points) p.rotate(-rotSpeed); 
-	else if(mouseX > pmouseX) for(var p of points) p.rotate(rotSpeed); 
+	if(rotationZ < 0) for(var p of points) p.rotate(-rotSpeed); 
+	else if(rotationZ > 0) for(var p of points) p.rotate(rotSpeed); 
 	return false;
 }
 
