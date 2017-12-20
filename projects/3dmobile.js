@@ -38,7 +38,12 @@ function setup(){
 
 function draw(){
 	background(200);	
-	if(moving) for(var p of points) p.changeX(xSpeed); // W
+	if(moving){
+		for(var p of points) p.changeX(xSpeed); // W
+		
+		if(mouseX < 100) for(var p of points) p.rotate(-rotSpeed); 
+		else if(mouseX > 200) for(var p of points) p.rotate(rotSpeed);
+	}
 	for(var w of walls) w.render();
 }
 
@@ -48,12 +53,6 @@ function touchStarted(){
 
 function touchEnded(){
 	moving = false;
-}
-
-function touchMoved(){	
-	if(mouseX < 150) for(var p of points) p.rotate(-rotSpeed); 
-	else if(mouseX > 150) for(var p of points) p.rotate(rotSpeed); 
-	return false;
 }
 
 function SphericalPoint(x, y, z){
