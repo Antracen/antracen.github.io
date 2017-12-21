@@ -48,7 +48,27 @@ function draw(){
 	if(keyIsDown(LEFT_ARROW)) for(var p of points) p.rotate(-rotSpeed); 
 	else if(keyIsDown(RIGHT_ARROW)) for(var p of points) p.rotate(rotSpeed); 
 	
-	for(var w of walls) w.render();
+	var wallDistances = [];
+	
+	for(var i = 0; i < walls.length; i++){
+		wallDistances.push([i, walls[i].avgDistance()]);
+	}
+	
+	// SORT WALLS
+	for(var i = 0; i < wallDistances.length; i++){
+        var j = i;
+        while(j > 0 && wallDistances[j-1][1] > wallDistances[j][1]){
+            var temp0 = wallDistances[j][0];
+            var temp1 = wallDistances[j][1];
+            wallDistances[j][0] = wallDistances[j-1][0];
+            wallDistances[j-1][0] = temp0;
+            wallDistances[j][1] = wallDistances[j-1][1];
+            wallDistances[j-1][1] = temp1;
+            j--;
+        }
+    }
+	
+	for(var w of wallDistances) walls[w[0]].render();
 }
 
 function SphericalPoint(x, y, z){
@@ -108,6 +128,10 @@ function SphericalPoint(x, y, z){
 function Wall(topleft, topright, bottomright, bottomleft){
 
 	this.lines = [[topleft,topright], [bottomright,bottomleft]];
+	
+	this.avgDistance = function(){
+		return (points[topleft].getX() + points[topright].getX() + points[bottomright].getX() + points[bottomleft].getX())/4;
+	}
 	
 	this.render = function(){
 		beginShape();
