@@ -95,6 +95,8 @@ function Wall(topleft, topright, bottomright, bottomleft){
 	}
 	
 	this.render = function(){
+		stroke(0);
+		fill('#E83D84');
 		beginShape();
 	
 		for(var l of this.lines){
