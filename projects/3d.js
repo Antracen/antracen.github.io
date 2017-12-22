@@ -1,18 +1,29 @@
-var z = 1;
 var points = [];
 var walls = [];
 var xSpeed = 15;
 var ySpeed = 15;
 var rotSpeed = 0.05;
-var xSize = 300;
-var ySize = 300;
+var xSize = 500;
+var ySize = 500;
+
+var rotMatrixRight;
+var rotMatrixLeft;
 
 function setup(){
 	var canvas = createCanvas(xSize, ySize);
-	canvas.position(100, 300);
+	canvas.position(20, 150);
 	
-	// WALL POINTS
-	// DEPTH, RIGHT/LEFT, UP/DOWN
+	// Rotational matrix depends on rotational speed.
+	rotMatrixRight = [];
+	rotMatrixRight.push([cos(rotSpeed),-sin(rotSpeed),0]);
+	rotMatrixRight.push([sin(rotSpeed),cos(rotSpeed),0]);
+	rotMatrixRight.push([0,0,1]);
+	rotMatrixLeft = [];
+	rotMatrixLeft.push([cos(-rotSpeed),-sin(-rotSpeed),0]);
+	rotMatrixLeft.push([sin(-rotSpeed),cos(-rotSpeed),0]);
+	rotMatrixLeft.push([0,0,1]);
+	
+	// WALL POINTS: DEPTH, RIGHT/LEFT, UP/DOWN
 	points.push(new SphericalPoint(-510, -100, -100)); // 0 (FLD)
 	points.push(new SphericalPoint(-510, 100, -100)); // 1 (FRD)
 	points.push(new SphericalPoint(-510, 100, 100)); // 2 (FRU)
@@ -39,89 +50,39 @@ function draw(){
 	background(200);
 	
 	// MOVEMENT
-	if(keyIsDown(87)) for(var p of points) p.changeX(xSpeed); // W
-	else if(keyIsDown(83)) for(var p of points) p.changeX(-xSpeed); // S
-	if(keyIsDown(65)) for(var p of points) p.changeY(ySpeed); // A
-	else if(keyIsDown(68)) for(var p of points) p.changeY(-ySpeed); // D	
+	if(keyIsDown(87)) for(var p of points) p.x += xSpeed; // W
+	else if(keyIsDown(83)) for(var p of points) p.x -= xSpeed; // S
+	if(keyIsDown(65)) for(var p of points) p.y += ySpeed; // A
+	else if(keyIsDown(68)) for(var p of points) p.y -= ySpeed; // D	
 	
 	// CAMERA
-	if(keyIsDown(LEFT_ARROW)) for(var p of points) p.rotate(-rotSpeed); 
-	else if(keyIsDown(RIGHT_ARROW)) for(var p of points) p.rotate(rotSpeed); 
+	if(keyIsDown(LEFT_ARROW)) for(var p of points) p.rotate(-1); 
+	else if(keyIsDown(RIGHT_ARROW)) for(var p of points) p.rotate(1); 
 	
 	var wallDistances = [];
-	
 	for(var i = 0; i < walls.length; i++){
 		wallDistances.push([i, walls[i].avgDistance()]);
 	}
 	
-	// SORT WALLS
-	for(var i = 0; i < wallDistances.length; i++){
-        var j = i;
-        while(j > 0 && wallDistances[j-1][1] > wallDistances[j][1]){
-            var temp0 = wallDistances[j][0];
-            var temp1 = wallDistances[j][1];
-            wallDistances[j][0] = wallDistances[j-1][0];
-            wallDistances[j-1][0] = temp0;
-            wallDistances[j][1] = wallDistances[j-1][1];
-            wallDistances[j-1][1] = temp1;
-            j--;
-        }
-    }
+	wallDistances.sort(function(a,b){ return a[1] - b[1] }); // Sort to render furthest walls first.
 	
 	for(var w of wallDistances) walls[w[0]].render();
 }
 
 function SphericalPoint(x, y, z){
-	this.len = sqrt(x*x + y*y + z*z);
-	this.phi = acos(z/this.len);
-	this.theta = atan2(y,x);
+	this.x = x;
+	this.y = y;
+	this.z = z;
 	
-	this.checkTheta = function(){
-		while(this.theta < 0) this.theta += 2*PI;
-		while(this.theta > 2*PI) this.theta -= 2*PI;
-	}
-	
-	this.checkPhi = function(){
-		while(this.phi < 0) this.phi += 2*PI;
-		while(this.phi > PI) this.phi -= 2*PI;
-	}
-	
-	this.angleCheck = function(){
-		this.checkTheta();
-		this.checkPhi();
-	}
-	
-	this.angleCheck();
-	
-	this.getX = function(){ return this.len * sin(this.phi) * cos(this.theta); }
-	this.getY = function(){ return this.len * sin(this.phi) * sin(this.theta); }
-	this.getZ = function(){ return this.len * cos(this.phi); }
-	
-	this.changeX = function(value){
-		var x = this.getX();
-		var y = this.getY();
-		var z = this.getZ();
-		x += value;
-		this.len = sqrt(x*x + y*y + z*z);
-		this.phi = acos(z/this.len);
-		this.theta = atan2(y,x);
-		this.angleCheck();
-	}
-	
-	this.changeY = function(value){
-		var x = this.getX();
-		var y = this.getY();
-		var z = this.getZ();
-		y += value;
-		this.len = sqrt(x*x + y*y + z*z);
-		this.phi = acos(z/this.len);
-		this.theta = atan2(y,x);
-		this.angleCheck();
-	}
-	
+	// Rotate by matrix multiplication.
 	this.rotate = function(dir){
-		this.theta += dir;
-		this.checkTheta();
+		var rotMatrix = (dir == -1) ? rotMatrixLeft : rotMatrixRight;
+		this.newX = rotMatrix[0][0]*this.x + rotMatrix[0][1]*this.y + rotMatrix[0][2]*this.z;
+		this.newY = rotMatrix[1][0]*this.x + rotMatrix[1][1]*this.y + rotMatrix[1][2]*this.z;
+		this.newZ = rotMatrix[2][0]*this.x + rotMatrix[2][1]*this.y + rotMatrix[2][2]*this.z;
+		this.x = this.newX;
+		this.y = this.newY;
+		this.z = this.newZ;
 	}
 }
 
@@ -130,35 +91,35 @@ function Wall(topleft, topright, bottomright, bottomleft){
 	this.lines = [[topleft,topright], [bottomright,bottomleft]];
 	
 	this.avgDistance = function(){
-		return (points[topleft].getX() + points[topright].getX() + points[bottomright].getX() + points[bottomleft].getX())/4;
+		return (points[topleft].x + points[topright].x + points[bottomright].x + points[bottomleft].x)/4;
 	}
 	
 	this.render = function(){
 		beginShape();
 	
 		for(var l of this.lines){
-			var p1Coords = [points[l[0]].getX(), points[l[0]].getY(), points[l[0]].getZ()];
-			var p2Coords = [points[l[1]].getX(), points[l[1]].getY(), points[l[1]].getZ()];
+			var p1 = {x: points[l[0]].x, y: points[l[0]].y, z: points[l[0]].z};
+			var p2 = {x: points[l[1]].x, y: points[l[1]].y, z: points[l[1]].z};
 			
-			if(p1Coords[0] > 0 && p2Coords[0] > 0) return; // Don't draw behind camera.
+			if(p1.x > 0 && p2.x > 0) return; // Don't draw behind camera.
 			
-			if(p1Coords[0] > 0 && p2Coords[0] < 0){ // Starting points behind player.
-				var vector = [p2Coords[0] - p1Coords[0], p2Coords[1] - p1Coords[1], p2Coords[2] - p1Coords[2]];
-				var k = -p1Coords[0]/vector[0];
-				var point1 = [p1Coords[0] + vector[0]*k, p1Coords[1] + vector[1]*k, p1Coords[2] + vector[2]*k];
+			if(p1.x > 0 && p2.x < 0){ // Starting points behind player.
+				var vector = [p2.x - p1.x, p2.y - p1.y, p2.z - p1.z];
+				var k = -p1.x/vector[0];
+				var point1 = [p1.x + vector[0]*k, p1.y + vector[1]*k, p1.z + vector[2]*k];
 				vertex(xSize/2 + xSize*point1[1], ySize/2 + -ySize*point1[2]);
-				vertex(xSize/2 + xSize*p2Coords[1]/-p2Coords[0], ySize/2 + -ySize*p2Coords[2]/-p2Coords[0]);
+				vertex(xSize/2 + xSize*p2.y/-p2.x, ySize/2 + -ySize*p2.z/-p2.x);
 			}
-			else if(p1Coords[0] < 0 && p2Coords[0] > 0){ // Ending points behind player.
-				var vector = [p1Coords[0] - p2Coords[0], p1Coords[1] - p2Coords[1], p1Coords[2] - p2Coords[2]]
-				var k = -p2Coords[0]/vector[0];
-				var point2 = [p2Coords[0] + vector[0]*k, p2Coords[1] + vector[1]*k, p2Coords[2] + vector[2]*k];
-				vertex(xSize/2 + xSize*p1Coords[1]/-p1Coords[0], ySize/2 + -ySize*p1Coords[2]/-p1Coords[0]);
+			else if(p1.x < 0 && p2.x > 0){ // Ending points behind player.
+				var vector = [p1.x - p2.x, p1.y - p2.y, p1.z - p2.z]
+				var k = -p2.x/vector[0];
+				var point2 = [p2.x + vector[0]*k, p2.y + vector[1]*k, p2.z + vector[2]*k];
+				vertex(xSize/2 + xSize*p1.y/-p1.x, ySize/2 + -ySize*p1.z/-p1.x);
 				vertex(xSize/2 + xSize*point2[1], ySize/2 + -ySize*point2[2]);
 			}
 			else{ // Everything in front of player.
-				vertex(xSize/2 + xSize*p1Coords[1]/-p1Coords[0], ySize/2 + -ySize*p1Coords[2]/-p1Coords[0]);
-				vertex(xSize/2 + xSize*p2Coords[1]/-p2Coords[0], ySize/2 + -ySize*p2Coords[2]/-p2Coords[0]);		
+				vertex(xSize/2 + xSize*p1.y/-p1.x, ySize/2 + -ySize*p1.z/-p1.x);
+				vertex(xSize/2 + xSize*p2.y/-p2.x, ySize/2 + -ySize*p2.z/-p2.x);		
 			}
 		}
 		endShape(CLOSE);
