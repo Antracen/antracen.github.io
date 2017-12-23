@@ -64,7 +64,7 @@ function introScreen(){
 }
 
 function playMusic(){
-	music = new Audio('music.wav');
+	music = new Audio('../libraries/sounds/music.wav');
 	music.volume = 0.2;
 	music.addEventListener('ended', function() {
    		this.currentTime = 0;
@@ -116,14 +116,14 @@ function Player(size,num,leftKey,shootKey,rightKey,color){
 	this.shootSound = [];
 	this.shootIndex = 0;
 	for(var i = 0; i < 15; i++){
-		this.shootSound[i] = new Audio('shoot.wav');
+		this.shootSound[i] = new Audio('../libraries/sounds/shoot.wav');
 		this.shootSound[i].volume = 0.2;
 	}
 	
 	this.explodeSound = [];
 	this.explodeIndex = 0;
 	for(var i = 0; i < 5; i++){
-		this.explodeSound[i] = new Audio('explode.wav');
+		this.explodeSound[i] = new Audio('../libraries/sounds/explode.wav');
 		this.explodeSound[i].volume = 0.2;
 	}
 	
