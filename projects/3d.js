@@ -64,7 +64,7 @@ function draw(){
 	for(var w of wallDistances) walls[w[0]].render();
 }
 
-function SphericalPoint(x, y, z){
+function Point3D(x, y, z){
 	this.x = x;
 	this.y = y;
 	this.z = z;
@@ -81,10 +81,10 @@ function SphericalPoint(x, y, z){
 function StraightWall(bottomright, bottomleft, height){
 
 	this.points = [
-		new SphericalPoint(bottomleft[0], bottomleft[1], height-100),
-		new SphericalPoint(bottomright[0], bottomright[1], height-100),
-		new SphericalPoint(bottomright[0], bottomright[1], -100),
-		new SphericalPoint(bottomleft[0], bottomleft[1], -100)
+		new Point3D(bottomleft[0], bottomleft[1], height-100),
+		new Point3D(bottomright[0], bottomright[1], height-100),
+		new Point3D(bottomright[0], bottomright[1], -100),
+		new Point3D(bottomleft[0], bottomleft[1], -100)
 	];
 	
 	this.avgDistance = function(){
