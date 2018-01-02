@@ -1,8 +1,10 @@
 // TODO REFACTORING + SPRITES
 
-var xSize = 510;
-var ySize = 510;
+var xSize = 500;
+var ySize = 500;
 var level, player;
+var started = false;
+var colorPicker;
 
 function setup(){
 	var canvas = createCanvas(xSize, ySize);
@@ -10,6 +12,11 @@ function setup(){
 	level = new Level();
 	player = new Player();
 	frameRate(20);
+	var startButton = createButton("Start game");
+	startButton.position(40+xSize, 250);
+	startButton.mousePressed(() => started=true);
+	colorPicker = createInput(0,"color");
+	colorPicker.position(40+xSize, 280);
 }
 
 function Level(){
@@ -20,15 +27,6 @@ function Level(){
 		for(var j = 0; j < 50; j++) row.push(0);
 		this.walls.push(row);
 	}
-	for(var i = 0; i < 50; i++){
-		this.walls[0][i] = 'red';
-		this.walls[49][i] = 'red';
-		this.walls[i][0] = 'red';
-		this.walls[i][49] = 'red';
-	}
-	for(var i = 5; i < 10; i++) for(var j = 5; j < 10; j++) this.walls[i][j] = 'pink';
-	for(var i = 35; i < 40; i++) for(var j = 35; j < 40; j++) this.walls[i][j] = 'yellow';
-	for(var i = 25; i < 30; i++) for(var j = 25; j < 30; j++) this.walls[i][j] = 'green';
 	
 	// RAYCASTING
 	this.shootRay = function(rayX, rayY, rayAngle){
@@ -69,6 +67,7 @@ function Level(){
 			if(pow(player.x-rayX, 2) + pow(player.y-rayY, 2) > (50*50 + 50*50)) return -1;
 			// Only look for walls within playing grid.
 			if(rayX < 0 || rayY < 0 || rayX >= 50 || rayY >= 50) return -1;
+			if(wallX < 0 || wallY < 0 || wallX >= 50 || wallY >= 50) return -1;
 			// If wall found, return distance.
 			if(this.walls[wallY][wallX] != 0){
 				return [sqrt(pow(player.x-rayX, 2) + pow(player.y-rayY, 2)), this.walls[wallY][wallX]];
@@ -101,6 +100,21 @@ function Player(){
 
 // DRAW EVERYTHING
 function draw(){
+	if(!started){
+		background(200);
+		for(var i = 0; i < 50; i++){
+			for(var j = 0; j < 50; j++){
+				if(level.walls[i][j] != 0){
+					fill(level.walls[i][j]);
+				}
+				else{
+					fill(200);
+				}
+				rect(10*j,10*i,10,10);
+			}
+		}
+		return;
+	}
 	if(keyIsDown(UP_ARROW)){
 		var newY = player.y + 0.4*sin(player.angle);
 		var newX = player.x + 0.4*cos(player.angle);
@@ -124,6 +138,14 @@ function draw(){
 	fill('#b35d09');
 	rect(0,ySize/2,xSize,ySize/2);
 	player.shootRays();
+}
+
+function mousePressed(){
+	if(!started){
+		var x = floor(mouseX/10);
+		var y = floor(mouseY/10);
+		if(x >= 0 && y >= 0 && x < 50 && y < 50) level.walls[y][x] = colorPicker.value();
+	}
 }
 
 // Make it so an angle is between 0 and 2*PI.

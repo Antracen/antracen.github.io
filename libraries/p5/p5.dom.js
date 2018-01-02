@@ -736,9 +736,9 @@
    *
    * </code></div>
    */
-  p5.prototype.createInput = function(value) {
+  p5.prototype.createInput = function(value, type) {
     var elt = document.createElement('input');
-    elt.type = 'text';
+    elt.type = type;
     if (value) elt.value = value;
     return addElement(elt, this);
   };
