@@ -1,6 +1,6 @@
 // TODO REFACTORING + SPRITES
-var xSize = 1000;
-var ySize = 1000;
+var xSize = 500;
+var ySize = 500;
 var started = false;
 var placingPlayer = false;
 var level;
