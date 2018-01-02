@@ -1,6 +1,6 @@
 // TODO REFACTORING + SPRITES
-var xSize = 500;
-var ySize = 500;
+var xSize = 1000;
+var ySize = 1000;
 var started = false;
 var placingPlayer = false;
 var level;
@@ -136,7 +136,7 @@ function draw(){
 			for(var j = 0; j < level.gridSizeX; j++){
 				if(level.walls[i][j] != 0) fill(level.walls[i][j]);
 				else fill(200);
-				rect(level.gridWidth*j,500-level.gridHeight-level.gridHeight*i,level.gridWidth,level.gridHeight);
+				rect(level.gridWidth*j,ySize-level.gridHeight-level.gridHeight*i,level.gridWidth,level.gridHeight);
 			}
 		}
 		return;
