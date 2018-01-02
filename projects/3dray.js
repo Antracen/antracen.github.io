@@ -5,6 +5,7 @@ var ySize = 500;
 var level, player;
 var started = false;
 var colorPicker;
+var placingPlayer = false;
 
 function setup(){
 	var canvas = createCanvas(xSize, ySize);
@@ -14,7 +15,7 @@ function setup(){
 	frameRate(20);
 	var startButton = createButton("Start game");
 	startButton.position(40+xSize, 250);
-	startButton.mousePressed(() => started=true);
+	startButton.mousePressed(startGame);
 	colorPicker = createInput(0,"color");
 	colorPicker.position(40+xSize, 280);
 }
@@ -100,16 +101,13 @@ function Player(){
 
 // DRAW EVERYTHING
 function draw(){
+	// If game not started, draw current state of level editor.
 	if(!started){
 		background(200);
 		for(var i = 0; i < 50; i++){
 			for(var j = 0; j < 50; j++){
-				if(level.walls[i][j] != 0){
-					fill(level.walls[i][j]);
-				}
-				else{
-					fill(200);
-				}
+				if(level.walls[i][j] != 0) fill(level.walls[i][j]);
+				else fill(200);
 				rect(10*j,10*i,10,10);
 			}
 		}
@@ -140,8 +138,25 @@ function draw(){
 	player.shootRays();
 }
 
+function startGame(){
+	if(!started){
+		alert("Press where you want to place player!");
+		placingPlayer = true;
+	}
+}
+
 function mousePressed(){
 	if(!started){
+		if(placingPlayer){
+			var x = floor(mouseX/10);
+			var y = floor(mouseY/10);
+			if(x >= 0 && y >= 0 && x < 50 && y < 50 && level.walls[y][x] == 0){
+				player.x = x;
+				player.y = y;
+				started = true;
+				return;
+			}
+		}
 		var x = floor(mouseX/10);
 		var y = floor(mouseY/10);
 		if(x >= 0 && y >= 0 && x < 50 && y < 50) level.walls[y][x] = colorPicker.value();
