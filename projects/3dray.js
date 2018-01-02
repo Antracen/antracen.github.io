@@ -28,6 +28,12 @@ function Level(){
 		for(var j = 0; j < 50; j++) row.push(0);
 		this.walls.push(row);
 	}
+	for(var i = 0; i < 50; i++){
+		this.walls[0][i] = 'black';
+		this.walls[49][i] = 'black';
+		this.walls[i][0] = 'black';
+		this.walls[i][49] = 'black';
+	}
 	
 	// RAYCASTING
 	this.shootRay = function(rayX, rayY, rayAngle){
@@ -116,14 +122,18 @@ function draw(){
 	if(keyIsDown(UP_ARROW)){
 		var newY = player.y + 0.4*sin(player.angle);
 		var newX = player.x + 0.4*cos(player.angle);
-		if(level.walls[floor(newY + 0.8*sin(player.angle))][floor(newX+ 0.8*cos(player.angle))] == 0){
+		var colY = floor(newY + 0.4*sin(player.angle));
+		var colX = floor(newX + 0.4*cos(player.angle));
+		if(colY >= 0 && colX >= 0 && colY < 50 && colX < 50 && level.walls[colY][colX] == 0){
 			player.y = newY;
 			player.x = newX;
 		}
 	} else if(keyIsDown(DOWN_ARROW)){
 		var newY = player.y - 0.4*sin(player.angle);
 		var newX = player.x - 0.4*cos(player.angle);
-		if(level.walls[floor(newY)][floor(newX)] == 0){
+		var colY = floor(newY - 0.4*sin(player.angle));
+		var colX = floor(newX - 0.4*cos(player.angle));
+		if(colY >= 0 && colX >= 0 && colY < 50 && colX < 50 && level.walls[colY][colX] == 0){
 			player.y = newY;
 			player.x = newX;
 		}
