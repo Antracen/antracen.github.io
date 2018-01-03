@@ -5,7 +5,8 @@ var started = false;
 var placingPlayer = false;
 var level;
 var player;
-var colorPicker;
+var spritePicker;
+var sprites = {};
 
 function setup(){
 	var canvasY = 250;
@@ -16,8 +17,12 @@ function setup(){
 	var startButton = createButton("Start game");
 	startButton.position(xSize+40, canvasY);
 	startButton.mousePressed(startGame);
-	colorPicker = createInput(0,"color");
-	colorPicker.position(xSize+40, canvasY+30);
+	spritePicker = createSelect();
+	spritePicker.position(xSize+40, canvasY+30);
+	spritePicker.option("Grey brick wall");
+	spritePicker.option("Bush");
+	sprites["Grey brick wall"] = loadImage('../libraries/design/wallSprite.jpg');
+	sprites["Bush"] = loadImage('../libraries/design/bushSprite.png');
 }
 
 function Level(gridSizeX, gridSizeY){
@@ -35,12 +40,12 @@ function Level(gridSizeX, gridSizeY){
 	}
 	// PLACE OUTER WALLS
 	for(var i = 0; i < this.gridSizeX; i++){
-		this.walls[0][i] = 'black';
-		this.walls[this.gridSizeY-1][i] = 'black';
+		this.walls[0][i] = "Bush";
+		this.walls[this.gridSizeY-1][i] = "Bush";
 	}
 	for(var i = 0; i < this.gridSizeY; i++){
-		this.walls[i][0] = 'black';
-		this.walls[i][this.gridSizeX-1] = 'black';
+		this.walls[i][0] = "Bush";
+		this.walls[i][this.gridSizeX-1] = "Bush";
 	}
 	
 	// RAYCASTING
@@ -85,7 +90,7 @@ function Level(gridSizeX, gridSizeY){
 			if(wallX < 0 || wallY < 0 || wallX >= this.gridSizeX || wallY >= this.gridSizeY) return -1;
 			// If wall found, return distance.
 			if(this.walls[wallY][wallX] != 0){
-				return [sqrt(pow(player.x-rayX, 2) + pow(player.y-rayY, 2)), this.walls[wallY][wallX]];
+				return [sqrt(pow(player.x-rayX, 2) + pow(player.y-rayY, 2)), this.walls[wallY][wallX], abs(rayX+rayY)%1];
 			}
 		}
 		return -1;
@@ -96,34 +101,45 @@ function Player(){
 	this.x = 2;
 	this.y = 2;
 	this.angle = PI/2;
-	this.FOV = PI/2;
+	this.FOV = PI/3;
 	
 	// Shoot a ray for every vertical pixel. 
 	// Draw line with height based on ray distance to a wall.
 	this.shootRays = function(){
 		for(var i = 0; i < xSize; i++){
-			var eyeAngle = fixAngle(this.FOV/2 - this.FOV*(i/xSize)); // Angle from players eye.
-			var rayAngle = fixAngle(this.angle + eyeAngle); // Total angle of ray.
+			var eyeAngle = (this.FOV/2 - this.FOV*(i/xSize)); // Angle from players eye.
+			var rayAngle = (this.angle + eyeAngle); // Total angle of ray.
 			var wallPos = level.shootRay(this.x, this.y, rayAngle);
 			if(wallPos != -1){
 				var distance = wallPos[0]*cos(eyeAngle); // Vertical distance to wall.
 				var height = ySize/distance;
-				stroke(wallPos[1]);
-				line(i,ySize/2 - height/2, i, ySize/2 + height/2);
+				image(sprites[wallPos[1]], i, ySize/2-height/2, 1, height, floor(sprites[wallPos[1]].width*wallPos[2]), 0, 1, sprites[wallPos[1]].height);
+				stroke(color('rgba(0,0,0,' + min(distance/20, 0.4) + ')')); // Shade color
+				line(i,ySize/2 - height/2, i, ySize/2 + height/2); // Apply shade
 			}
 		}
+	}
+	
+	this.moveTo = function(newX, newY, speed, angle){
+		var colY = floor(newY + speed*sin(angle));
+		var colX = floor(newX + speed*cos(angle));
+		if(colX >= 0 && colX < level.gridSizeX && level.walls[floor(player.y)][colX] == 0) player.x = newX;
+		if(colY >= 0 && colY < level.gridSizeY && level.walls[colY][floor(player.x)] == 0) player.y = newY;
 	}
 	
 	this.moveY = function(direction){
 		var speed = direction*0.4;
 		var newY = player.y + speed*sin(player.angle);
 		var newX = player.x + speed*cos(player.angle);
-		var colY = floor(newY + speed*sin(player.angle));
-		var colX = floor(newX + speed*cos(player.angle));
-		if(colY >= 0 && colX >= 0 && colY < level.gridSizeY && colX < level.gridSizeX && level.walls[colY][colX] == 0){
-			player.y = newY;
-			player.x = newX;
-		}
+		this.moveTo(newX, newY, speed, player.angle);
+	}
+	
+	this.moveX = function(direction){
+		var speed = 0.4;
+		var angle = player.angle-direction*PI/2;
+		var newY = player.y + speed*sin(angle);
+		var newX = player.x + speed*cos(angle);
+		this.moveTo(newX, newY, speed, angle);
 	}
 }
 
@@ -134,7 +150,10 @@ function draw(){
 		background(200);
 		for(var i = 0; i < level.gridSizeY; i++){
 			for(var j = 0; j < level.gridSizeX; j++){
-				if(level.walls[i][j] != 0) fill(level.walls[i][j]);
+				if(level.walls[i][j] != 0){
+					if(level.walls[i][j] == "Grey brick wall") fill(100);
+					else if(level.walls[i][j] == "Bush") fill('green');
+				}
 				else fill(200);
 				rect(level.gridWidth*j,ySize-level.gridHeight-level.gridHeight*i,level.gridWidth,level.gridHeight);
 			}
@@ -143,18 +162,10 @@ function draw(){
 	}
 	if(keyIsDown(87)) player.moveY(1);
 	else if(keyIsDown(83)) player.moveY(-1);
-	if(keyIsDown(65)){ // MOVE LEFT
-		player.angle = fixAngle(player.angle + PI*0.5); // TURN 90 DEGREES LEFT
-		player.moveY(1); // MOVE FORWARD
-		player.angle = fixAngle(player.angle - PI*0.5); // TURN 90 DEGREES RIGHT
-	}
-	else if(keyIsDown(68)){
-		player.angle = fixAngle(player.angle - PI*0.5);
-		player.moveY(1);
-		player.angle = fixAngle(player.angle + PI*0.5);
-	}
-	if(keyIsDown(LEFT_ARROW)) player.angle = fixAngle(player.angle + 0.07);
-	else if(keyIsDown(RIGHT_ARROW)) player.angle = fixAngle(player.angle - 0.07)
+	if(keyIsDown(65)) player.moveX(-1);
+	else if(keyIsDown(68)) player.moveX(1);
+	if(keyIsDown(LEFT_ARROW)) player.angle += 0.07;
+	else if(keyIsDown(RIGHT_ARROW)) player.angle -= 0.07;
 	
 	fill('#00ceff'); // SKY
 	rect(0,0,xSize,ySize/2);
@@ -182,13 +193,6 @@ function mousePressed(){
 				return;
 			}
 		}
-		if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY) level.walls[y][x] = colorPicker.value();
+		if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY) level.walls[y][x] = spritePicker.value();
 	}
-}
-
-// Make it so an angle is between 0 and 2*PI. Maybe unnecessary
-function fixAngle(angle){
-	while(angle < 0) angle += 2*PI;
-	while(angle >= 2*PI) angle -= 2*PI;
-	return angle;
 }
