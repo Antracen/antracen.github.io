@@ -20,8 +20,10 @@ function setup(){
 	spritePicker = createSelect();
 	spritePicker.position(xSize+40, canvasY+30);
 	spritePicker.option("Grey brick wall");
+	spritePicker.option("Wooden wall");
 	spritePicker.option("Bush");
-	sprites["Grey brick wall"] = loadImage('../libraries/design/wallSprite.jpg');
+	sprites["Grey brick wall"] = loadImage('../libraries/design/brickWallSprite.jpg');
+	sprites["Wooden wall"] = loadImage('../libraries/design/woodWallSprite.jpg');
 	sprites["Bush"] = loadImage('../libraries/design/bushSprite.png');
 }
 
@@ -152,6 +154,7 @@ function draw(){
 			for(var j = 0; j < level.gridSizeX; j++){
 				if(level.walls[i][j] != 0){
 					if(level.walls[i][j] == "Grey brick wall") fill(100);
+					else if(level.walls[i][j] == "Wooden wall") fill('#966F33');
 					else if(level.walls[i][j] == "Bush") fill('green');
 				}
 				else fill(200);
