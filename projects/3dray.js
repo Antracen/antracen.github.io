@@ -130,14 +130,14 @@ function Player(){
 	}
 	
 	this.moveY = function(direction){
-		var speed = direction*0.4;
+		var speed = direction*0.1;
 		var newY = player.y + speed*sin(player.angle);
 		var newX = player.x + speed*cos(player.angle);
 		this.moveTo(newX, newY, speed, player.angle);
 	}
 	
 	this.moveX = function(direction){
-		var speed = 0.4;
+		var speed = 0.1;
 		var angle = player.angle-direction*PI/2;
 		var newY = player.y + speed*sin(angle);
 		var newX = player.x + speed*cos(angle);
@@ -167,8 +167,8 @@ function draw(){
 	else if(keyIsDown(83)) player.moveY(-1);
 	if(keyIsDown(65)) player.moveX(-1);
 	else if(keyIsDown(68)) player.moveX(1);
-	if(keyIsDown(LEFT_ARROW)) player.angle += 0.07;
-	else if(keyIsDown(RIGHT_ARROW)) player.angle -= 0.07;
+	if(keyIsDown(LEFT_ARROW)) player.angle += 0.06;
+	else if(keyIsDown(RIGHT_ARROW)) player.angle -= 0.06;
 	
 	fill('#00ceff'); // SKY
 	rect(0,0,xSize,ySize/2);
