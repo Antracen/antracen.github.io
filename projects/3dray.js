@@ -1,4 +1,4 @@
-// TODO REFACTORING + SPRITES
+// TODO REFACTORING
 var xSize = 500;
 var ySize = 500;
 var started = false;

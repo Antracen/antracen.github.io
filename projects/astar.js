@@ -1,375 +1,247 @@
+// TODO: More efficient data structures.
+// This pathfinder goes from start to goal using the A* algorithm.
 var level;
 var pathfinder;
-var numClicks;
 var canvasWidth;
 var canvasHeight;
-var pixelsX;
-var pixelsY;
-var eraser;
-var foundPath;
-
-var wallType = {
-	EMPTY: 0,
-	WALL: 1
-}
+var clickSelector;
 
 function setup(){
-	numClicks = 0;
-	eraser = false;
-	foundPath = false;
-	// Make canvas.
 	canvasWidth = 600;
 	canvasHeight = 600;
 	createCanvas(canvasWidth, canvasHeight);
-	// Make level.
-	pixelsX = 30;
-	pixelsY = 30;
-	level = new Level(pixelsX,pixelsY);
-	level.initializeLevel();
+	
+	level = new Level(30,30);
 	level.render();
+
+	pathfinder = new PathFinder();
+	
+	var startButton = createButton("Find path");
+	startButton.position(10,canvasHeight+160);
+	startButton.mousePressed(startPathfinding);
+	
+	var resetButton = createButton("Reset");
+	resetButton.position(85,canvasHeight+160);
+	resetButton.mousePressed(() => level.resetPathfinder());
+	
+	clickSelector = createSelect();
+	clickSelector.position(140,canvasHeight+160);
+	clickSelector.option("Place wall");
+	clickSelector.option("Eraser");
+	clickSelector.option("Place start");
+	clickSelector.option("Place goal");
 }
 
+// The level is represented as an array containing information about
+// level squares. A square is a 2d array. First element is 0 if square
+// is empty, 1 if it is a wall. Second element contains Manhattan distance
+// from square to goal.
 function Level(pixelsX, pixelsY){
-	this.canvasWidth = canvasWidth;
-	this.canvasHeight = canvasHeight;
 	this.pixelsX = pixelsX;
 	this.pixelsY = pixelsY;
-	this.pixelSizeX = floor(this.canvasWidth/this.pixelsX);
-	this.pixelSizeY = floor(this.canvasHeight/this.pixelsY);
+	this.pixelSizeX = floor(canvasWidth/this.pixelsX)-1;
+	this.pixelSizeY = floor(canvasHeight/this.pixelsY)-1;
 	this.start = -1;
-	this.end = -1;
-	this.level = []; // Keeps values [Walltype, eucledian distance to end].
-	this.transitions = {}; // transitions = {x: [places you can go from x]}.
+	this.goal = -1;
+	this.level = [];
 
-	// Get X coordinate of place in level.
-	this.getX = function(gridValue){
-		return gridValue % this.pixelsX;
+	// Fill level[] with empty squares.
+	for(var i = 0; i < this.pixelsX*this.pixelsY; i++){
+		this.level[i] = [0, -1];
 	}
 
-	// Get Y coordinate of place in level.
-	this.getY = function(gridValue){
-		return floor(gridValue/this.pixelsX);
+	// Get array position corresponding to XY coordinates.
+	this.posFromXY = function(x, y){
+		return x + y*this.pixelsX;
 	}
 
-	// Fill level[] with values.
-	this.initializeLevel = function(){
+	// Get XY coordinates of an array position.
+	this.posToXY = function(pos){
+		return [pos % this.pixelsX, floor(pos / this.pixelsX)];
+	}
+
+	// Calculates all Manhattan distances.
+	this.fillToGoalCosts = function(){
 		for(var i = 0; i < this.pixelsX*this.pixelsY; i++){
-			var y = this.getY(i);
-			var x = this.getX(i);
-			var endY = this.getY(this.end);
-			var endX = this.getX(this.end);
-			// h-value is distance to the end calculated with Pythagorean theorem.
-			var hValue = sqrt((x-endX)*(x-endX)+(y-endY)*(y-endY));
-			this.level.push([wallType.EMPTY, hValue]);
+			var xy = this.posToXY(i);
+			var goalXY = this.posToXY(this.goal);
+			this.level[i][1] = abs(xy[0]-goalXY[0]) + abs(xy[1]-goalXY[1]);
 		}
 	}
 
-	this.addWall = function(pos){
-		// Do not add walls on start or end.
-		if(!(pos == this.start) && !(pos == this.end)){
-			if(eraser == false){
-				this.level[pos][0] = wallType.WALL;   
-			} else{
-				this.level[pos][0] = wallType.EMPTY;   
-			}
-		}
-	}
-
-	// Scatter walls randomly across level.
-	this.addWallsRandom = function(){
-		// Higher density = less walls are placed.
-		var density = 5;
-		for(var i = 0; i < this.level.length/density; i++){
-			var randomPos = floor(random(this.pixelsX*this.pixelsY));
-			this.addWall(randomPos);
-		}
+	// Change square into wall or empty.
+	this.changeSquare = function(pos, type){
+		this.level[pos][0] = type;
+		if(this.start == pos) this.start = -1;
+		else if(this.goal == pos) this.goal = -1;
+		this.render();
 	}
 	
-	this.resetWalls = function(){
+	this.resetPathfinder = function(){
+		// Remove all walls.
 		for(var i = 0; i < this.level.length; i++){
-			this.level[i] = wallType.EMPTY;
-		}
-	}
-
-	// Add transition from first argument to all others.
-	this.addTransition = function(){
-		if(arguments.length > 0){
-			var from = arguments[0];
-			if(this.level[from][1] == wallType.WALL){
-				return;
-			}
-			this.transitions[from] = [];
-			for(var i = 1; i < arguments.length; i++) {
-				var to = arguments[i];
-				if(this.level[to][0] != wallType.WALL){
-					this.transitions[from].push(to);
-				}
+			for(var j = 0; j < this.level[i].length; j++){
+				this.level[i][j] = 0;	
 			}
 		}
+		this.start = -1;
+		this.goal = -1;
+		this.render();
 	}
 
-	// For every level position add which level positions are reachable.
-	this.addTransitions = function(){
-		// CENTER PIECES - up down left right transitions
-		// FOR EVERY COLUMN EXCEPT EDGES
-		for(var i = 1; i < this.pixelsX-1; i++){
-			// FOR EVERY ROW EXCEPT EDGES
-			for(var j = 1; j < this.pixelsY-1; j++){
-				var pos = i+j*this.pixelsX;
-				var up = pos-this.pixelsX;
-				var down = pos+this.pixelsX;
-				var left = pos-1;
-				var right = pos+1;
-				this.addTransition(pos, up, down, left, right);
-			}
-		}
-
-		// TOP EDGES - left right down transitions
-		// FOR EVERY COLUMN EXCEPT CORNERS
-		for(var i = 1; i < this.pixelsX-1; i++){
-			// FOR FIRST ROW
-			var j = 0;
-			var pos = i + j*this.pixelsX;
-			var down = pos+this.pixelsX;
-			var left = pos-1;
-			var right = pos+1;
-			this.addTransition(pos, down, left, right);
-		}
-		// BOTTOM EDGES - left right up transitions
-		for(var i = 1; i < this.pixelsX-1; i++){
-			// For last row
-			var j = this.pixelsY-1;
-			var pos = i + j*this.pixelsX;
-			var up = pos-this.pixelsX;
-			var left = pos-1;
-			var right = pos+1;
-			this.addTransition(pos, up, left, right);
-		}
-		// LEFT EDGE - add up down right transitions
-		// FOR FIRST COLUMN
-		var i = 0;
-		// FOR ALL ROWS EXCEPT CORNERS
-		for(var j = 1; j < this.pixelsY-1; j++){
-			var pos = i + j*this.pixelsX;
-			var up = pos-this.pixelsX;
-			var down = pos+this.pixelsX;
-			var right = pos+1;
-			this.addTransition(pos, up, down, right);
-		}
-		// RIGHT EDGE - add up down left transitions
-		// FOR LAST COLUMN
-		var i = this.pixelsX-1;
-		// FOR ALL ROWS EXCEPT CORNERS
-		for(var j = 1; j < this.pixelsY-1; j++){
-			var pos = i + j*this.pixelsX;
-			var up = pos-this.pixelsX;
-			var down = pos+this.pixelsX;
-			var left = pos-1;
-			this.addTransition(pos, up, down, left);
-		}
-		// CORNERS
-		// TOP LEFT
-		var pos = 0;
-		var down = pos + this.pixelsX;
-		var right = pos+1;
-		this.addTransition(pos, down, right);
-		// BOTTOM LEFT
-		var pos = 0+(this.pixelsY-1)*this.pixelsX;
-		var up = pos - this.pixelsX;
-		var right = pos+1;
-		this.addTransition(pos, up, right);
-		// TOP RIGHT
-		var pos = this.pixelsX-1;
-		var down = pos+this.pixelsX;
-		var left = pos-1;
-		this.addTransition(pos, down, left);
-		// BOTTOM RIGHT
-		var pos = this.pixelsX-1 + (this.pixelsY-1)*this.pixelsX;
-		var up = pos-this.pixelsX;
-		var left = pos-1;
-		this.addTransition(pos, up, left);
-	}
-
-	// Draw a level rectangle.
+	// Draw a rectangle on canvas of a level square.
 	this.drawRect = function(position, squareColor){
 		fill(color(squareColor));
-		var x = this.getX(position);
-		var y = this.getY(position);
-		rect(x * this.pixelSizeX, y * this.pixelSizeY, this.pixelSizeX-1, this.pixelSizeY-1);
+		var x = (position % this.pixelsX) * this.pixelSizeX;
+		var y = floor(position / this.pixelsX) * this.pixelSizeY;
+		rect(x, y, this.pixelSizeX, this.pixelSizeY);
 	}
 
 	this.render = function(){
 		var squareColor = "";
-		for(var i = 0; i < this.level.length; i++){
+		for(var i = 0; i < this.pixelsX*this.pixelsY; i++){
 			switch(this.level[i][0]){
-				case wallType.EMPTY:
+				case 0:
 					squareColor = "white";
 					break;
-				case wallType.WALL:
+				case 1:
 					squareColor = "black";
 					break;
 			}
-			if(i == this.start){
-				squareColor = "green";
-			} else if(i == this.end){
-				squareColor = "red";
-			}
 			this.drawRect(i, squareColor);
 		}
+		this.drawRect(this.start, "green");
+		this.drawRect(this.goal, "red");
 	}
 }
 
+// Finds path from start to goal and renders it on canvas.
 function PathFinder(){
-	this.solution = []; // solution = [grids making up the shortest path to level.end]
-	this.closedSet = new Set(); // Evaluated level squares.
-	this.openSet = new Set(); // Squares not yet evaluated.
-	this.openSet.add(level.start); // start is to be evaluated.
-	this.cameFrom = {}; // For each node, how did you get to that node?
-	this.gScore = {}; // Cost to go from start to this node.
-	this.gScore[level.start] = 0;
-	this.fScore = {}; // f-score = g-score + h-score. Cost to go to node + estimated cost to go to level.end.
-	this.fScore[level.start] = level.level[level.start][1];
 
-	// Choose the value in openset with smallest f-score.
-	this.minimizeF = function(){
-		var minF = Infinity;
+	// Chooses the value in notEvaluated with smallest
+	// cost from start to node + manhattan distance to end.
+	this.minimizeCost = function(){
+		var minCost = Infinity;
 		var ret = 0;
-		for(let node of this.openSet){
-			var fScore = this.fScore[node];
-			if(fScore < minF){
-				minF = fScore;
+		for(let node of this.notEvaluated){
+			var cost = this.goToCost[node] + level.level[node][1];
+			if(cost < minCost){
+				minCost = cost;
 				ret = node;
 			}
 		}
 		return ret;
 	}
 
-	// Find shortest path from level.start to level.end
-	// Path will be stored in this.solution
 	this.findPath = function(){
+		this.evaluated = [];
+		this.notEvaluated = new Set();
+		this.notEvaluated.add(level.start);
+		this.parent = {}; // For each node, what was the previous node?
+		this.goToCost = {}; // Cost to go from start to this node.
+		this.goToCost[level.start] = 0;
+		level.fillToGoalCosts();
 		// While there are nodes to be evaluated.
-		while(this.openSet.size != 0){
-			// Evaluate the node which has the smallest f-value.
-			var current = this.minimizeF();
-			if(current == level.end){
+		while(this.notEvaluated.size != 0){
+			// Evaluate the node which has the smallest cost.
+			var current = this.minimizeCost();
+			if(current == level.goal){
 				// We are finished.
-				this.makeSolution();
+				this.renderSolution();
 				return true;
 			}
-			// Current is no longer in the to be evaluated. It is instead placed in the closed set (nodes evaluated).
-			this.openSet.delete(current);
-			this.closedSet.add(current);
-			// For each neighbor of current.
-			for(var i = 0; i < level.transitions[current].length; i++){
-				var neighbor = level.transitions[current][i];
-				if(this.closedSet.has(neighbor)){
-					// Don't evaluate anything twice.
-					continue;
+			this.notEvaluated.delete(current);
+			this.evaluated[current] = true;
+
+			var currentXY = level.posToXY(current);
+			var neighbours = [];
+
+			if(currentXY[0]-1 >= 0){
+				if(level.level[current-1][0] != 1){
+					neighbours.push(current-1);
 				}
-				if(!(this.openSet.has(neighbor))){
-					// Add not evaluated nodes into the "to be evaluated" closed set.
-					this.openSet.add(neighbor);
+			}
+			if(currentXY[0]+1 < level.pixelsX){
+				if(level.level[current+1][0] != 1){
+					neighbours.push(current+1);
 				}
-				// The cost of getting from current to next is current cost+1.
-				var gScore = this.gScore[current]+1;
-				if(gScore >= this.gScore[neighbor]){
-					// We found a way to a node which is inefficient and therefore not interesting.
-					continue;
+			}
+			if(currentXY[1]-1 >= 0){
+				if(level.level[current-level.pixelsX][0] != 1){
+					neighbours.push(current-level.pixelsX);
 				}
-				// We found a fast way to a node. Go to the node. Note where we came from. Note score. Note fscore.
-				this.cameFrom[neighbor] = current;
-				this.gScore[neighbor] = gScore;
-				this.fScore[neighbor] = this.gScore[neighbor] + level.level[neighbor][1];
+			}
+			if(currentXY[1]+1 < level.pixelsY){
+				if(level.level[current+level.pixelsX][0] != 1){
+					neighbours.push(current+level.pixelsX);
+				}
+			}
+
+			for(var neighbour of neighbours){
+				if(this.evaluated[neighbour]) continue;
+				if(!(this.notEvaluated.has(neighbour))){
+					this.notEvaluated.add(neighbour);
+				}
+				if(this.goToCost[current]+1 >= this.goToCost[neighbour]){
+					continue; // We already have a better way to neighbour.
+				}
+				// We found a fast way to a neighbour. Go to the square. 
+				this.parent[neighbour] = current;
+				this.goToCost[neighbour] = this.goToCost[current]+1;
 			}
 		}
 		return false;
 	}
 
-	// Create solution array.
-	this.makeSolution = function(){
-		// We are at end. From which position did we come? Go backwards until we are at start.
-		var current = level.end;
-		this.solution.push(current);
-		while(current in this.cameFrom){
-			current = this.cameFrom[current];
-			this.solution.push(current);
-		}
-	}
-
-	// Render player path
-	this.render = function(){
-		for(var i = 0; i < this.solution.length; i++){
-			level.drawRect(this.solution[i], "green");
+	this.renderSolution = function(){
+		// We are at end. From which position did we come? 
+		// Go backwards until we are at start.
+		var current = level.goal;
+		while(current != level.start){
+			level.drawRect(current, "green");
+			current = this.parent[current];
 		}
 	}
 }
 
-function getPos(mx, my){
-	if(mx < 0 || my < 0 || mx >= level.canvasWidth || my >= level.canvasHeight){
-		return -1;
+function handleClick(mx, my){
+	clickX = floor(mx / level.pixelSizeX);
+	clickY = floor(my / level.pixelSizeY);
+	if(clickX < 0 || clickX >= level.pixelsX) return;
+	if(clickY < 0 || clickY >= level.pixelsY) return;
+	var clickPos = level.posFromXY(clickX, clickY);
+	var wall = "";
+	switch(clickSelector.value()){
+		case "Place wall":
+			level.changeSquare(clickPos, 1);
+			break;
+		case "Eraser":
+			level.changeSquare(clickPos, 0);
+			break;
+		case "Place start":
+			level.changeSquare(clickPos, 0);
+			level.start = clickPos;
+			level.render();
+			break;			
+		case "Place goal":
+			level.changeSquare(clickPos, 0);
+			level.goal = clickPos;
+			level.render();
+			break;			
 	}
-	var x = floor(map(mx, 0, level.canvasWidth, 0, level.pixelsX));
-	var y = floor(map(my, 0, level.canvasHeight, 0, level.pixelsY));
-	return(x + y*level.pixelsX);
 }
 
 function mousePressed(){
-	var position = getPos(mouseX, mouseY);
-	if(position != -1){
-		numClicks++;
-		if(numClicks == 1){
-			level.start = position;
-			level.render();
-		} else if(numClicks == 2){
-			level.end = position;
-			level.render();
-		} else{
-			level.addWall(position);
-			level.render();
-		}
-	}
+	handleClick(mouseX, mouseY);
 }
 
 function mouseDragged() {
-	if(numClicks > 2){
-		var position = getPos(mouseX, mouseY);
-		if(position != -1){
-			level.addWall(position);
-			level.render();
-		}
-	}
+	handleClick(mouseX, mouseY);
 }
 
-function keyPressed(){
-	if(keyCode == 32 && numClicks >= 2 && !foundPath){
-		// Add to level available transitions from each spot on grid (which way you can move from a given position).
-		level.addTransitions();
-		// Make pathfinder.
-		pathfinder = new PathFinder();
-		// Find and render path.
-		console.log("FINDING PATH");
-		if(pathfinder.findPath()){
-			pathfinder.render();
-			foundPath = true;
-		}
-		else{
-			alert("NO PATH AVAILABLE");
-		}
+function startPathfinding(){
+	if(level.start != -1 && level.goal != -1){
+		if(!pathfinder.findPath()) alert("No path found");
 	}
-	if(keyCode == 82 && numClicks >= 2){
-		console.log("ADD RANDOM WALLS");
-		level.addWallsRandom();
-		level.render();
-	}
-	if(keyCode == 78){
-		foundPath = false;
-		level = new Level(pixelsX,pixelsY);
-		level.initializeLevel();
-		level.render();
-		numClicks = 0;
-		pathfinder = null;
-	}
-	if(keyCode == 69){
-		eraser = !eraser;
-	}
+	else alert("Error: Must place start and goal to pathfind.");
 }
