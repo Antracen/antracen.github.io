@@ -1,137 +1,201 @@
-// TODO Make it so player can have a startRot.
-
-var walls = [];
-var xSpeed = 15;
-var ySpeed = 15;
-var rotSpeed = 0.05;
+// TODO REFACTORING
 var xSize = 500;
 var ySize = 500;
-var startX = -1000;
-var startY = 0;
-
-var rotMatrixRight;
-var rotMatrixLeft;
+var started = false;
+var placingPlayer = false;
+var level;
+var player;
+var spritePicker;
+var sprites = {};
 
 function setup(){
-	var canvas = createCanvas(xSize, ySize);
-	canvas.position(20, 150);
-	
-	// Rotational matrix depends on rotational speed.
-	rotMatrixRight = [];
-	rotMatrixRight.push([cos(rotSpeed),-sin(rotSpeed),0]);
-	rotMatrixRight.push([sin(rotSpeed),cos(rotSpeed),0]);
-	rotMatrixRight.push([0,0,1]);
-	rotMatrixLeft = [];
-	rotMatrixLeft.push([cos(-rotSpeed),-sin(-rotSpeed),0]);
-	rotMatrixLeft.push([sin(-rotSpeed),cos(-rotSpeed),0]);
-	rotMatrixLeft.push([0,0,1]);
-	
-	// WALLS	
-	walls.push(new StraightWall([0,200],[0,0], 200));
-	walls.push(new StraightWall([0,0],[-400,0], 200));
-	walls.push(new StraightWall([-400,0],[-600,200], 200));
-	walls.push(new StraightWall([-600,200],[-800,200], 200));
-	walls.push(new StraightWall([-800,200],[-800,500], 200));
-	walls.push(new StraightWall([-800,500],[-600,500], 200));
-	walls.push(new StraightWall([-600,500],[-600,700], 200));
-
-	walls.push(new StraightWall([-500,700],[-500,500], 200));
-	walls.push(new StraightWall([-500,500],[-400,400], 200));
-	walls.push(new StraightWall([-400,400],[0,400], 200));
-	walls.push(new StraightWall([0,400],[0,300], 200));
-
-	for(var w of walls) w.move(startX,startY); // Position player
+	var canvasY = 250;
+	var canvas = createCanvas(xSize, ySize).position(20,canvasY);
+	frameRate(30);
+	level = new Level(50,50);
+	player = new Player();
+	var startButton = createButton("Start game");
+	startButton.position(xSize+40, canvasY);
+	startButton.mousePressed(startGame);
+	spritePicker = createSelect();
+	spritePicker.position(xSize+40, canvasY+30);
+	spritePicker.option("Grey brick wall");
+	spritePicker.option("Wooden wall");
+	spritePicker.option("Bush");
+	sprites["Grey brick wall"] = loadImage('../libraries/design/brickWallSprite.jpg');
+	sprites["Wooden wall"] = loadImage('../libraries/design/woodWallSprite.jpg');
+	sprites["Bush"] = loadImage('../libraries/design/bushSprite.png');
 }
 
-function draw(){
-	background(200);
-	
-	// MOVEMENT
-	if(keyIsDown(87)) for(var w of walls) w.move(xSpeed,0); // W
-	else if(keyIsDown(83)) for(var w of walls) w.move(-xSpeed,0); // S
-	if(keyIsDown(65)) for(var w of walls) w.move(0,ySpeed); // A
-	else if(keyIsDown(68)) for(var w of walls) w.move(0,-ySpeed); // D	
-	
-	// CAMERA
-	if(keyIsDown(LEFT_ARROW)) for(var w of walls) w.rotate(-1); 
-	else if(keyIsDown(RIGHT_ARROW)) for(var w of walls) w.rotate(1); 
-	
-	var wallDistances = [];
-	for(var i = 0; i < walls.length; i++) wallDistances.push([i, walls[i].avgDistance()]);
-	
-	wallDistances.sort(function(a,b){ return a[1] - b[1] }); // Sort to render furthest walls first.
-	
-	for(var w of wallDistances) walls[w[0]].render();
-}
+function Level(gridSizeX, gridSizeY){
+	this.gridSizeX = gridSizeX;
+	this.gridSizeY = gridSizeY;
+	this.gridWidth = xSize/gridSizeX;
+	this.gridHeight = ySize/gridSizeY;
 
-function Point3D(x, y, z){
-	this.x = x;
-	this.y = y;
-	this.z = z;
-	
-	// Rotate by matrix multiplication.
-	this.rotate = function(dir){
-		var rotMatrix = (dir == -1) ? rotMatrixLeft : rotMatrixRight;
-		this.x = rotMatrix[0][0]*this.x + rotMatrix[0][1]*this.y + rotMatrix[0][2]*this.z;
-		this.y = rotMatrix[1][1]*this.y + rotMatrix[1][0]*this.x + rotMatrix[1][2]*this.z;
-		this.z = rotMatrix[2][2]*this.z + rotMatrix[2][0]*this.x + rotMatrix[2][1]*this.y;
+	// INITIALIZE WALL GRID
+	this.walls = [];
+	for(var i = 0; i < this.gridSizeY; i++){
+		var row = [];
+		for(var j = 0; j < this.gridSizeX; j++) row.push(0);
+		this.walls.push(row);
 	}
-}
-
-function StraightWall(bottomright, bottomleft, height){
-
-	this.points = [
-		new Point3D(bottomleft[0], bottomleft[1], height-100),
-		new Point3D(bottomright[0], bottomright[1], height-100),
-		new Point3D(bottomright[0], bottomright[1], -100),
-		new Point3D(bottomleft[0], bottomleft[1], -100)
-	];
+	// PLACE OUTER WALLS
+	for(var i = 0; i < this.gridSizeX; i++){
+		this.walls[0][i] = "Bush";
+		this.walls[this.gridSizeY-1][i] = "Bush";
+	}
+	for(var i = 0; i < this.gridSizeY; i++){
+		this.walls[i][0] = "Bush";
+		this.walls[i][this.gridSizeX-1] = "Bush";
+	}
 	
-	this.avgDistance = function(){
-		return (this.points[0].x + this.points[1].x)/2;
-	}
-
-	this.move = function(x, y){
-		for(var p of this.points){
-			p.x += x;
-			p.y += y;
-		}
-	}
-
-	this.rotate = function(angle){
-		for(var p of this.points) p.rotate(angle);
-	}
-
-	this.render = function(){
-		stroke(0);
-		fill('#aeaeae');
-		beginShape();
-		for(var i = 0; i <= 1; i++){
-			for(var j = i; j <= 2*i; j++){
-				var p1 = {x: this.points[j].x, y: this.points[j].y, z: this.points[j].z};
-				var p2 = {x: this.points[j+1].x, y: this.points[j+1].y, z: this.points[j+1].z};
-				if(p1.x > 0 && p2.x > 0) return; // Don't draw behind camera.
-		
-				if(p1.x > 0 && p2.x < 0){ // Starting points behind player.
-					var vector = [p2.x - p1.x, p2.y - p1.y, p2.z - p1.z];
-					var k = -p1.x/vector[0];
-					var point1 = [p1.x + vector[0]*k, p1.y + vector[1]*k, p1.z + vector[2]*k];
-					vertex(xSize/2 + xSize*point1[1], ySize/2 + -ySize*point1[2]);
-					vertex(xSize/2 + xSize*p2.y/-p2.x, ySize/2 + -ySize*p2.z/-p2.x);
-				}
-				else if(p1.x < 0 && p2.x > 0){ // Ending points behind player.
-					var vector = [p1.x - p2.x, p1.y - p2.y, p1.z - p2.z]
-					var k = -p2.x/vector[0];
-					var point2 = [p2.x + vector[0]*k, p2.y + vector[1]*k, p2.z + vector[2]*k];
-					vertex(xSize/2 + xSize*p1.y/-p1.x, ySize/2 + -ySize*p1.z/-p1.x);
-					vertex(xSize/2 + xSize*point2[1], ySize/2 + -ySize*point2[2]);
-				}
-				else{ // Everything in front of player.
-					vertex(xSize/2 + xSize*p1.y/-p1.x, ySize/2 + -ySize*p1.z/-p1.x);
-					vertex(xSize/2 + xSize*p2.y/-p2.x, ySize/2 + -ySize*p2.z/-p2.x);		
+	// RAYCASTING
+	this.shootRay = function(rayX, rayY, rayAngle){
+		while(true){
+			var distToNextPoint = Infinity;
+			var wallX;
+			var wallY;
+			var originalX = rayX;
+			var originalY = rayY;
+			if(cos(rayAngle) != 0){
+				var nextX = (cos(rayAngle) > 0) ? floor(originalX+1) : ceil(originalX-1);
+				var nextWallX = (cos(rayAngle) > 0) ? nextX : nextX - 1;
+				var distToNextX = nextX - originalX;
+				var nextY = originalY + distToNextX * tan(rayAngle);
+				var distToNextY = nextY - originalY;
+				distToNextPoint = distToNextX*distToNextX + distToNextY*distToNextY;
+				rayX = nextX;
+				rayY = nextY;
+				wallX = nextWallX;
+				wallY = floor(rayY);
+			}
+			if(sin(rayAngle) != 0){
+				var nextY = (sin(rayAngle) > 0) ? floor(originalY+1) : ceil(originalY-1);
+				var nextWallY = (sin(rayAngle) > 0) ? nextY : nextY - 1;
+				var distToNextY = nextY - originalY;
+				var nextX = originalX + distToNextY / tan(rayAngle);
+				var distToNextX = nextX - originalX;
+				if(distToNextX*distToNextX + distToNextY*distToNextY < distToNextPoint){
+					if(nextX >= 0 && nextY >= 0 && nextX < this.gridSizeX && nextY < this.gridSizeY){
+						rayX = nextX;
+						rayY = nextY;
+						wallX = floor(rayX);
+						wallY = nextWallY;
+					}
 				}
 			}
+			// Only cast rays within a certain range.
+			if(pow(player.x-rayX, 2) + pow(player.y-rayY, 2) > (pow(this.gridSizeX, 2) + pow(this.gridSizeY, 2))) return -1;
+			// Only look for walls within playing grid.
+			if(rayX < 0 || rayY < 0 || rayX >= this.gridSizeX || rayY >= this.gridSizeY) return -1;
+			if(wallX < 0 || wallY < 0 || wallX >= this.gridSizeX || wallY >= this.gridSizeY) return -1;
+			// If wall found, return distance.
+			if(this.walls[wallY][wallX] != 0){
+				return [sqrt(pow(player.x-rayX, 2) + pow(player.y-rayY, 2)), this.walls[wallY][wallX], abs(rayX+rayY)%1];
+			}
 		}
-		endShape(CLOSE);
+		return -1;
+	}
+}
+
+function Player(){
+	this.x = 2;
+	this.y = 2;
+	this.angle = PI/2;
+	this.FOV = PI/3;
+	
+	// Shoot a ray for every vertical pixel. 
+	// Draw line with height based on ray distance to a wall.
+	this.shootRays = function(){
+		for(var i = 0; i < xSize; i++){
+			var eyeAngle = (this.FOV/2 - this.FOV*(i/xSize)); // Angle from players eye.
+			var rayAngle = (this.angle + eyeAngle); // Total angle of ray.
+			var wallPos = level.shootRay(this.x, this.y, rayAngle);
+			if(wallPos != -1){
+				var distance = wallPos[0]*cos(eyeAngle); // Vertical distance to wall.
+				var height = ySize/distance;
+				image(sprites[wallPos[1]], i, ySize/2-height/2, 1, height, floor(sprites[wallPos[1]].width*wallPos[2]), 0, 1, sprites[wallPos[1]].height);
+				stroke(color('rgba(0,0,0,' + min(distance/20, 0.4) + ')')); // Shade color
+				line(i,ySize/2 - height/2, i, ySize/2 + height/2); // Apply shade
+			}
+		}
+	}
+	
+	this.moveTo = function(newX, newY, speed, angle){
+		var colY = floor(newY + speed*sin(angle));
+		var colX = floor(newX + speed*cos(angle));
+		if(colX >= 0 && colX < level.gridSizeX && level.walls[floor(player.y)][colX] == 0) player.x = newX;
+		if(colY >= 0 && colY < level.gridSizeY && level.walls[colY][floor(player.x)] == 0) player.y = newY;
+	}
+	
+	this.moveY = function(direction){
+		var speed = direction*0.1;
+		var newY = player.y + speed*sin(player.angle);
+		var newX = player.x + speed*cos(player.angle);
+		this.moveTo(newX, newY, speed, player.angle);
+	}
+	
+	this.moveX = function(direction){
+		var speed = 0.1;
+		var angle = player.angle-direction*PI/2;
+		var newY = player.y + speed*sin(angle);
+		var newX = player.x + speed*cos(angle);
+		this.moveTo(newX, newY, speed, angle);
+	}
+}
+
+// DRAW EVERYTHING
+function draw(){
+	// If game not started, draw current state of level editor.
+	if(!started){
+		background(200);
+		for(var i = 0; i < level.gridSizeY; i++){
+			for(var j = 0; j < level.gridSizeX; j++){
+				if(level.walls[i][j] != 0){
+					if(level.walls[i][j] == "Grey brick wall") fill(100);
+					else if(level.walls[i][j] == "Wooden wall") fill('#966F33');
+					else if(level.walls[i][j] == "Bush") fill('green');
+				}
+				else fill(200);
+				rect(level.gridWidth*j,ySize-level.gridHeight-level.gridHeight*i,level.gridWidth,level.gridHeight);
+			}
+		}
+		return;
+	}
+	if(keyIsDown(87)) player.moveY(1);
+	else if(keyIsDown(83)) player.moveY(-1);
+	if(keyIsDown(65)) player.moveX(-1);
+	else if(keyIsDown(68)) player.moveX(1);
+	if(keyIsDown(LEFT_ARROW)) player.angle += 0.06;
+	else if(keyIsDown(RIGHT_ARROW)) player.angle -= 0.06;
+	
+	fill('#00ceff'); // SKY
+	rect(0,0,xSize,ySize/2);
+	fill('#00cc22'); // GROUND
+	rect(0,ySize/2,xSize,ySize/2);
+	player.shootRays();
+}
+
+function startGame(){
+	if(!started){
+		alert("Press where you want to place player!");
+		placingPlayer = true;
+	}
+}
+
+function mousePressed(){
+	if(!started){
+		var x = floor(mouseX/level.gridWidth);
+		var y = floor(level.gridSizeY - mouseY/level.gridHeight);
+		if(placingPlayer){
+			if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY && level.walls[y][x] == 0){
+				player.x = x;
+				player.y = y;
+				started = true;
+				return;
+			}
+		}
+		if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY) level.walls[y][x] = spritePicker.value();
 	}
 }
