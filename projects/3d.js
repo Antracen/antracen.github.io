@@ -11,7 +11,7 @@ var sprites = {};
 function setup(){
 	var canvasY = 250;
 	var canvas = createCanvas(xSize, ySize).position(20,canvasY);
-	frameRate(30);
+	frameRate(20);
 	level = new Level(50,50);
 	player = new Player();
 	var startButton = createButton("Start game");
@@ -22,6 +22,7 @@ function setup(){
 	spritePicker.option("Grey brick wall");
 	spritePicker.option("Wooden wall");
 	spritePicker.option("Bush");
+	spritePicker.option("None");
 	sprites["Grey brick wall"] = loadImage('../libraries/design/brickWallSprite.jpg');
 	sprites["Wooden wall"] = loadImage('../libraries/design/woodWallSprite.jpg');
 	sprites["Bush"] = loadImage('../libraries/design/bushSprite.png');
@@ -37,7 +38,7 @@ function Level(gridSizeX, gridSizeY){
 	this.walls = [];
 	for(var i = 0; i < this.gridSizeY; i++){
 		var row = [];
-		for(var j = 0; j < this.gridSizeX; j++) row.push(0);
+		for(var j = 0; j < this.gridSizeX; j++) row.push("None");
 		this.walls.push(row);
 	}
 	// PLACE OUTER WALLS
@@ -91,7 +92,7 @@ function Level(gridSizeX, gridSizeY){
 			if(rayX < 0 || rayY < 0 || rayX >= this.gridSizeX || rayY >= this.gridSizeY) return -1;
 			if(wallX < 0 || wallY < 0 || wallX >= this.gridSizeX || wallY >= this.gridSizeY) return -1;
 			// If wall found, return distance.
-			if(this.walls[wallY][wallX] != 0){
+			if(this.walls[wallY][wallX] != "None"){
 				return [sqrt(pow(player.x-rayX, 2) + pow(player.y-rayY, 2)), this.walls[wallY][wallX], abs(rayX+rayY)%1];
 			}
 		}
@@ -104,6 +105,7 @@ function Player(){
 	this.y = 2;
 	this.angle = PI/2;
 	this.FOV = PI/3;
+	this.speedMultiplier = 0.2;
 	
 	// Shoot a ray for every vertical pixel. 
 	// Draw line with height based on ray distance to a wall.
@@ -125,19 +127,20 @@ function Player(){
 	this.moveTo = function(newX, newY, speed, angle){
 		var colY = floor(newY + speed*sin(angle));
 		var colX = floor(newX + speed*cos(angle));
-		if(colX >= 0 && colX < level.gridSizeX && level.walls[floor(player.y)][colX] == 0) player.x = newX;
-		if(colY >= 0 && colY < level.gridSizeY && level.walls[colY][floor(player.x)] == 0) player.y = newY;
+		if(colX >= 0 && colX < level.gridSizeX && level.walls[floor(player.y)][colX] == "None") player.x = newX;
+		if(colY >= 0 && colY < level.gridSizeY && level.walls[colY][floor(player.x)] == "None") player.y = newY;
 	}
 	
 	this.moveY = function(direction){
-		var speed = direction*0.1;
+		var speed = direction*this.speedMultiplier;
 		var newY = player.y + speed*sin(player.angle);
 		var newX = player.x + speed*cos(player.angle);
 		this.moveTo(newX, newY, speed, player.angle);
 	}
 	
 	this.moveX = function(direction){
-		var speed = 0.1;
+		console.log("moveX " + direction);
+		var speed = this.speedMultiplier;
 		var angle = player.angle-direction*PI/2;
 		var newY = player.y + speed*sin(angle);
 		var newX = player.x + speed*cos(angle);
@@ -152,7 +155,7 @@ function draw(){
 		background(200);
 		for(var i = 0; i < level.gridSizeY; i++){
 			for(var j = 0; j < level.gridSizeX; j++){
-				if(level.walls[i][j] != 0){
+				if(level.walls[i][j] != "None"){
 					if(level.walls[i][j] == "Grey brick wall") fill(100);
 					else if(level.walls[i][j] == "Wooden wall") fill('#966F33');
 					else if(level.walls[i][j] == "Bush") fill('green');
@@ -189,13 +192,14 @@ function mousePressed(){
 		var x = floor(mouseX/level.gridWidth);
 		var y = floor(level.gridSizeY - mouseY/level.gridHeight);
 		if(placingPlayer){
-			if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY && level.walls[y][x] == 0){
+			if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY && level.walls[y][x] == "None"){
 				player.x = x;
 				player.y = y;
 				started = true;
 				return;
 			}
 		}
-		if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY) level.walls[y][x] = spritePicker.value();
+		if(x >= 0 && y >= 0 && x < level.gridSizeX && y < level.gridSizeY)
+			level.walls[y][x] = spritePicker.value();
 	}
 }
