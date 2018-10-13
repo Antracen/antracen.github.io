@@ -1,13 +1,17 @@
+// TODO
+// Spaced repetition
+// Built in Heisig / HSK packs
+// Show and edit current word list
+
 let file_input;
 let txt = "";
 let current_hanzi;
 let current_hanzi_num = -1;
 
 function setup() {
-	let cookie_data = document.cookie;
-	if(cookie_data != "") {
-		cookie_data = cookie_data.split(";");
-		txt = JSON.parse(cookie_data[0].substring(4, cookie_data[0].length));
+	let saved_txt = localStorage.getItem("hanzi_txt");
+	if(saved_txt != null) {
+		txt = JSON.parse(saved_txt);
 	}
 	textSize(32);
 	let my_canvas = createCanvas(400, 400);
@@ -32,10 +36,7 @@ function file_select_func(file) {
 	txt = txt.split("\n").filter((e) => e != "");
 	txt = txt.map((e) => e.split("\t"));
 
-	let date = new Date();
-    date.setTime(date.getTime() + (50000*24*60*60*1000));
-	let cookie_expires = "; expires=" + date.toUTCString();
-	document.cookie = "txt=" + JSON.stringify(txt) + cookie_expires;
+	localStorage.setItem("hanzi_txt", JSON.stringify(txt));
 }
 
 function new_hanzi() {
