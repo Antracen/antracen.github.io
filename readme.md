@@ -1,3 +1,3 @@
 # My github site.
 
-Here I will upload projects i do in Javascript.
+This site is my platform for showcasing various projects.

@@ -83,5 +83,5 @@ function calculate_eigenvector(e, matrix) {
 	if(v_eq_1[0] == 0 && v_eq_1[1] != 0) {
 		return [1,0];
 	}
-	return [1, v_eq_1[1]/v_eq_1[0]];
+	return [v_eq_q[1], v_eq_1[0]];
 }
