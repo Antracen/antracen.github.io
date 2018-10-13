@@ -4,6 +4,12 @@ let current_hanzi;
 let current_hanzi_num = -1;
 
 function setup() {
+	let cookie_data = document.cookie;
+	if(cookie_data == "") {
+		cookie_data = "hello";
+	} else {
+		alert("Hello cookie!");
+	}
 	textSize(32);
 	let my_canvas = createCanvas(400, 400);
 	current_hanzi = createP("Current hanzi:");
