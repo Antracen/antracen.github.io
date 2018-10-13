@@ -6,7 +6,7 @@ let current_hanzi_num = -1;
 function setup() {
 	let cookie_data = document.cookie;
 	if(cookie_data == "") {
-		cookie_data = "hello";
+		document.cookie = "hello";
 	} else {
 		alert("Hello cookie!");
 	}
