@@ -5,10 +5,9 @@ let current_hanzi_num = -1;
 
 function setup() {
 	let cookie_data = document.cookie;
-	if(cookie_data == "") {
-		document.cookie = "username=John Doe; expires=Thu, 13 Feb 2020 12:00:00 UTC";
-	} else {
-		alert("Hello cookie!");
+	if(cookie_data != "") {
+		cookie_data = cookie_data.split(";");
+		txt = JSON.parse(cookie_data[0].substring(4, cookie_data[0].length));
 	}
 	textSize(32);
 	let my_canvas = createCanvas(400, 400);
@@ -32,6 +31,11 @@ function file_select_func(file) {
 	txt = file.data;
 	txt = txt.split("\n");
 	txt = txt.map((e) => e.split("\t"));
+
+	let date = new Date();
+    date.setTime(date.getTime() + (50000*24*60*60*1000));
+	let cookie_expires = "; expires=" + date.toUTCString();
+	document.cookie = "txt=" + JSON.stringify(txt) + cookie_expires;
 }
 
 function new_hanzi() {
