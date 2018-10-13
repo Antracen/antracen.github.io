@@ -6,7 +6,7 @@ let current_hanzi_num = -1;
 function setup() {
 	let cookie_data = document.cookie;
 	if(cookie_data == "") {
-		document.cookie = "hello";
+		document.cookie = "username=John Doe; expires=Thu, 13 Feb 2020 12:00:00 UTC";
 	} else {
 		alert("Hello cookie!");
 	}
