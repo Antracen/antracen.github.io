@@ -29,7 +29,7 @@ function check_hanzi() {
 
 function file_select_func(file) {
 	txt = file.data;
-	txt = txt.split("\n");
+	txt = txt.split("\n").filter((e) => e != "");
 	txt = txt.map((e) => e.split("\t"));
 
 	let date = new Date();
