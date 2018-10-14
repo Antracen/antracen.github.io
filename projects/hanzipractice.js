@@ -1,6 +1,6 @@
 // TODO
 // Spaced repetition
-// Built in Heisig / HSK packs
+// Generate all Heisig packs with C++
 // Show and edit current word list
 
 let file_input;
@@ -14,17 +14,43 @@ function setup() {
 		txt = JSON.parse(saved_txt);
 	}
 	textSize(32);
-	let my_canvas = createCanvas(400, 400);
+	let my_canvas = createCanvas(500, 500);
 	current_hanzi = createP("Current hanzi:");
 	createElement('br');
-	let clear_canvas_button = createButton("New hanzi (n)");
-	let check_button = createButton("Check answer (c)");
-	background(200);
+	createButton("New hanzi (n)").mousePressed(new_hanzi);
+	createButton("Check answer (c)").mousePressed(check_hanzi);
+	createElement('br');
+	createElement('br');
+	createElement('b', "Lessons from 'Remembering Simplified Hanzi 1' by James W. Heisig:<br>");
 	
-	clear_canvas_button.mousePressed(new_hanzi);
-	check_button.mousePressed(check_hanzi);
+	for(let i = 1; i <= 10; i++) {
+		createButton("Lesson " + i).mousePressed(() => load_pack(i));
+		createElement('br');
+	}
+
+	background(200);	
+	createElement('br');
+	
+	createElement("b", "Choose own file: ");
 	createElement('br');
 	file_input = createFileInput(file_select_func);
+}
+
+function set_current_pack(new_txt) {
+	txt = new_txt.split("\n").filter((e) => e != "").map((e) => e.split("\t"));
+
+	localStorage.setItem("hanzi_txt", JSON.stringify(txt));
+}
+
+function load_pack(num) {
+	let heisig_file = new XMLHttpRequest();
+	heisig_file.open("GET", "../libraries/Hanzipacks/heisig" + num + ".txt", true);
+	heisig_file.send();
+	heisig_file.onreadystatechange = function() {
+        if (heisig_file.readyState== 4 && heisig_file.status == 200) {
+			set_current_pack(heisig_file.responseText);
+        }
+     }
 }
 
 function check_hanzi() {
@@ -32,11 +58,7 @@ function check_hanzi() {
 }
 
 function file_select_func(file) {
-	txt = file.data;
-	txt = txt.split("\n").filter((e) => e != "");
-	txt = txt.map((e) => e.split("\t"));
-
-	localStorage.setItem("hanzi_txt", JSON.stringify(txt));
+	set_current_pack(file.data);
 }
 
 function new_hanzi() {
