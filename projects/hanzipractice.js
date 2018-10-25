@@ -8,7 +8,7 @@ let toggle = 1;
 
 function setup() {
 
-	//load_local_data();
+	load_local_data();
 
 	let my_canvas = createCanvas(500, 500);
 	background(200);
