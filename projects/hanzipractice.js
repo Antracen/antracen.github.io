@@ -8,7 +8,7 @@ let toggle = 1;
 
 function setup() {
 
-	load_local_data();
+	//load_local_data();
 
 	let my_canvas = createCanvas(500, 500);
 	background(200);
@@ -16,11 +16,11 @@ function setup() {
 	createElement('br'); createElement('br');
 
 	// Add buttons which load Heisig-lessons
-	createElement('b', "Lessons from 'Remembering Simplified Hanzi 1' by James W. Heisig:<br>");
-	for(let i = 1; i <= 10; i++) {
-		createButton("Lesson " + i).mousePressed(() => load_heisig(i));
-		createElement('br');
-	}
+	createElement('b', "Lessons from 'Remembering Simplified Hanzi 1' <br> by James W. Heisig:<br>");
+	for(let i = 1; i <= 6; i++) createButton("Lesson " + i).mousePressed(() => load_heisig(i));
+	createElement('br');
+	for(let i = 6; i <= 10; i++) createButton("Lesson " + i).mousePressed(() => load_heisig(i));
+	createElement('br');
 	
 	createElement('br');
 	createElement("b", "Choose own file: ");
@@ -56,6 +56,7 @@ function set_current_pack(new_txt) {
 }
 
 function load_heisig(num) {
+	background(200);
 	let heisig_file = new XMLHttpRequest();
 	heisig_file.open("GET", "../libraries/Hanzipacks/heisig" + num + ".txt", true);
 	heisig_file.send();
@@ -64,6 +65,9 @@ function load_heisig(num) {
 			set_current_pack(heisig_file.responseText);
         }
      }
+	textSize(12);
+	textAlign(LEFT, BOTTOM);
+	text("Loaded lesson " + num, 0, 500);
 }
 
 function show_hanzi() {
