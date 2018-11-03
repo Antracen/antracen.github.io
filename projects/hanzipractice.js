@@ -5,8 +5,10 @@
 
 let current_hanzi_num = 0;
 let toggle = 1;
+let kaiti_font;
 
 function setup() {
+	kaiti_font = loadFont("../libraries/fonts/KaiTi.ttf");
 
 	load_local_data();
 
@@ -31,6 +33,7 @@ function setup() {
 function show_help() {
 	textSize(15);
 	textAlign(LEFT, TOP);
+	textFont('Helvetica');
 	text("This is a website made for practicing writing chinese or japanese characters. To use it; either load an existing lesson or upload your own by supplying a file where each line is a tab-separated pair of first the character and then the explanation / pronounciation / romanization. The site uses local storage to remember the lesson / file you used on your last visit. \n\n After a lesson is properly loaded, these are the controls: \n\n S: Show answer \n N: New character \n Space: Show answer if not present, else show new character \n H: Show help", 40, 40, 420, 420);
 }
 
@@ -67,10 +70,12 @@ function load_heisig(num) {
      }
 	textSize(12);
 	textAlign(LEFT, BOTTOM);
+	textFont('Helvetica');
 	text("Loaded lesson " + num, 0, 500);
 }
 
 function show_hanzi() {
+	textFont(kaiti_font);
 	textSize(50);
 	textAlign(RIGHT, TOP);
 	text(txt[current_hanzi_num][0], 500, 0);
@@ -81,15 +86,16 @@ function file_select_func(file) {
 }
 
 function new_hanzi() {
-	background(200)
+	background(200);
 	if(txt != "") {
 		current_hanzi_num += 1;
 		if(current_hanzi_num >= txt.length) {
 			current_hanzi_num = 0;
 			shuffle_array(txt);
 		}
-		textSize(20);
 		textAlign(LEFT, TOP);
+		textFont('Helvetica');
+		textSize(20);
 		text(txt[current_hanzi_num][1], 0, 0);
 	}
 }
