@@ -1,10 +1,6 @@
 3d.js
 	Refactor
-
-astar.js
-	More efficient data structures
-	Visualize algorithm
-
+	
 chat.html
 	Refactor
 
