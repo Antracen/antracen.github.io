@@ -5,6 +5,7 @@ var pathfinder;
 var canvasWidth;
 var canvasHeight;
 var clickSelector;
+var drawBuffer = [];
 
 function setup(){
 	canvasWidth = 600;
@@ -30,6 +31,14 @@ function setup(){
 	clickSelector.option("Eraser");
 	clickSelector.option("Place start");
 	clickSelector.option("Place goal");
+	frameRate(30);
+}
+
+function draw() {
+	if(drawBuffer.length > 0) {
+		var instruction = drawBuffer.shift();
+		level.drawRect(instruction[0], instruction[1]);
+	}
 }
 
 // The level is represented as an array containing information about
@@ -80,9 +89,8 @@ function Level(pixelsX, pixelsY){
 	this.resetPathfinder = function(){
 		// Remove all walls.
 		for(var i = 0; i < this.level.length; i++){
-			for(var j = 0; j < this.level[i].length; j++){
-				this.level[i][j] = 0;	
-			}
+			this.level[i][0] = 0;
+			this.level[i][1] = 0;
 		}
 		this.start = -1;
 		this.goal = -1;
@@ -118,6 +126,8 @@ function Level(pixelsX, pixelsY){
 // Finds path from start to goal and renders it on canvas.
 function PathFinder(){
 
+	this.init = false;
+
 	// Chooses the value in notEvaluated with smallest
 	// cost from start to node + manhattan distance to end.
 	this.minimizeCost = function(){
@@ -125,7 +135,7 @@ function PathFinder(){
 		var ret = 0;
 		for(let node of this.notEvaluated){
 			var cost = this.goToCost[node] + level.level[node][1];
-			if(cost < minCost){
+			if(cost <= minCost){
 				minCost = cost;
 				ret = node;
 			}
@@ -133,7 +143,12 @@ function PathFinder(){
 		return ret;
 	}
 
-	this.findPath = function(){
+	this.findPath = function() {
+		this.findPathInit();
+		return this.findPathStep();
+	}
+
+	this.findPathInit = function() {
 		this.evaluated = [];
 		this.notEvaluated = new Set();
 		this.notEvaluated.add(level.start);
@@ -141,10 +156,16 @@ function PathFinder(){
 		this.goToCost = {}; // Cost to go from start to this node.
 		this.goToCost[level.start] = 0;
 		level.fillToGoalCosts();
-		// While there are nodes to be evaluated.
-		while(this.notEvaluated.size != 0){
+		this.init = true;
+	}
+
+	this.findPathStep = function(){
+		while(this.notEvaluated.size != 0) {
 			// Evaluate the node which has the smallest cost.
 			var current = this.minimizeCost();
+			if(current != level.start && current != level.goal) {
+				drawBuffer.push([current, "#7fb0ff"]);
+			}
 			if(current == level.goal){
 				// We are finished.
 				this.renderSolution();
@@ -181,6 +202,7 @@ function PathFinder(){
 				if(this.evaluated[neighbour]) continue;
 				if(!(this.notEvaluated.has(neighbour))){
 					this.notEvaluated.add(neighbour);
+					if(neighbour != level.goal) drawBuffer.push([neighbour, "#ff9696"]);
 				}
 				if(this.goToCost[current]+1 >= this.goToCost[neighbour]){
 					continue; // We already have a better way to neighbour.
@@ -196,9 +218,9 @@ function PathFinder(){
 	this.renderSolution = function(){
 		// We are at end. From which position did we come? 
 		// Go backwards until we are at start.
-		var current = level.goal;
+		var current = this.parent[level.goal];
 		while(current != level.start){
-			level.drawRect(current, "green");
+			drawBuffer.push([current, "#c5ff7f"]);
 			current = this.parent[current];
 		}
 	}

@@ -1,60 +1,47 @@
-var xMin;
-var xMax;
-var yMin;
-var yMax;
-
-// Create canvas, set Mandelbrot limits, draw Mandelbrot set.
+// setup() Runs wen website loads.
 function setup(){
-	canvas = createCanvas(500, 300);
-	xMin = -2.5;
-	xMax = 1;
-	yMin = -1;
-	yMax = 1;
-	go();
+	createElement("h1", "MANDELBROT SET");
+	canvas = createCanvas(900, 600);
+	generate_image();
+	createP("The Mandelbrot set is a set of complex numbers C for which the recursive formula Z_{n+1} = Z_n^2 + C does not go to infinity for Z_0 = 0.");
+	createP("In this illustration, a pixel (x,y) is mapped to a complex number C ([-2,1], [-1.2,-1.2]) and the color of the pixel is based on the number of iterations until |Z| > 2.");
 }
 
-// Complex number.
-function Complex(a, b){
-	this.a = a;
-	this.b = b;
-	// z^2
-	this.square = function(){
-		this.newA = this.a*this.a - this.b*this.b;
-		this.newB = 2*this.a*this.b;
-		this.a = this.newA;
-		this.b = this.newB;
-	}
-	// |z|
-	this.value = function(){
-		return this.a*this.a+this.b*this.b
-	}
-	// Add a complex number to this number.
-	this.add = function(complexNum){
-		this.a += complexNum.a;
-		this.b += complexNum.b;
-	}
-}
+// Generate the Mandelbrot image
+function generate_image() {
 
-// Draw the image.
-function go(){
-	for(var px = 0; px < canvas.width; px++){
-		for(var py = 0; py < canvas.height; py++){
-			var c = new Complex(map(px, 0, canvas.width, xMin, xMax), map(py, 0, canvas.height, yMin, yMax));
-			var z = new Complex(0,0);
-			var iteration = 0
-			var max_iteration = 100
-			while(z.value() < 100 && iteration < max_iteration){
-				z.square();
-				z.add(c);
+	for(var x = 0; x < canvas.width; x++){
+		for(var y = 0; y < canvas.height; y++){
+
+			// Scale x and y to lie in [-2,1] and [-1.2,1.2]
+			x_scaled = map(x + x_offset, 0, canvas.width, -2, 1);
+			y_scaled = map(y, 0, canvas.height, -1.2, 1.2);
+
+			// Create C and Z
+			var c_real = x_scaled;
+			var c_comp = y_scaled;
+			var z_real = 0;
+			var z_comp = 0;
+			var z_real_squared = 0;
+			var z_comp_squared = 0;
+
+			var max_iterations = 100;
+			var iteration = 0;
+			// Loop until |Z| > 2 or max_iterations reached
+			// Z_new = Z_old*Z_old + C
+			while(z_real_squared + z_comp_squared < 4 && iteration <= max_iterations) {
+				z_comp = 2*z_real*z_comp + c_comp;
+				z_real = z_real_squared - z_comp_squared + c_real;
+				z_real_squared = z_real*z_real;
+				z_comp_squared = z_comp*z_comp;
 				iteration++;
 			}
-			var color = map(iteration, 0, 100, 0, 255);
-			//stroke(color);
-			var r = color*14%255;
-			var g = color*11%255;
-			var b = color*10%255;
-			stroke(r,g,b);
-			point(px, py);
+			// Map the number of itrations to [0,255] and draw
+			var color = map(iteration, 0, max_iterations, 0, 255);
+			stroke(255 - color);
+			point(x, y);
+
 		}
 	}
+
 }

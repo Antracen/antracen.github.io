@@ -1,0 +1,35 @@
+3d.js
+	Refactor
+
+astar.js
+	More efficient data structures
+	Visualize algorithm
+
+chat.html
+	Refactor
+
+complexdraw.js
+	Refactor
+
+firebasegame.html
+	Refactor
+
+gameoflife.js
+	Refactor
+
+hanzipractice.js
+	Spaced repetition
+	Generate all Heisig packs with C++
+	Show and edit current word list
+
+shooting.js
+	Refactor
+
+sinywings.html
+	Refactor
+
+tetris.js
+	Fix controls
+
+tictac.js
+	Refactor

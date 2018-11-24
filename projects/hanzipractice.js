@@ -1,8 +1,3 @@
-// TODO
-// Spaced repetition
-// Generate all Heisig packs with C++
-// Show and edit current word list
-
 let current_hanzi_num = 0;
 let toggle = 1;
 let kaiti_font;
