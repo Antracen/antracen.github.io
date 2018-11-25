@@ -7,7 +7,7 @@ var drawBuffer = [];
 
 function setup(){
 
-	// CREATE CANVAS
+	// CREATE CANVAS 
 	canvasWidth = 600;
 	canvasHeight = 600;
 	createCanvas(canvasWidth, canvasHeight);

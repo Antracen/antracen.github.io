@@ -1,238 +1,196 @@
-var grid;
-var players;
+var level;
+var difficulty = 3;
+var ai;
 
+// INTIALIZE
 function setup(){
-		// Canvas
-		createCanvas(800, 800);
-		// Objects
-		grid = new Grid("black");
-		players = new PlayerObject();
+	createCanvas(800, 800);
+	level = new Level(4);
 }
 
-function Grid(color){
-	this.color = color;
-	this.render();
-}
-Grid.prototype.render = function(){
-	background(this.color);
-	stroke(255);
-	rect(198, 0, 3, 799);
-	rect(399, 0, 3, 799);
-	rect(600, 0, 3, 799);
-	rect(0, 198, 799, 3);
-	rect(0, 399, 799, 3);
-	rect(0, 600, 799, 3);
-}
+// LEVEL OBJECT HOLDS INFORMATION ABOUT BOARD AND A RENDERER
+class Level {
 
-function PlayerObject(){
-	this.player = 1;
-	this.difficulty = 2;
-	// O = -1, nothing = 0, X = 1
-	this.players = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-	this.render();
-}
-PlayerObject.prototype.AI = function(){
-	if(this.player == -1){
-		var bestPos = bestMove();
-		this.players[bestPos] = -1;
-		this.player = 1;
-		return;
+	constructor(size) {
+		this.size = size;
+
+		this.empty_grids = size*size;
+
+		this.state = new Array(size);
+		for(var i = 0; i < size; i++) {
+			this.state[i] = new Array(size);
+			for(var j = 0; j < size; j++) {
+				this.state[i][j] = 0;
+			}
+		}
+
+		this.render();		
 	}
-}
-PlayerObject.prototype.render = function(){
-	for(var i = 0; i < 16; i++){
-		if(this.players[i] != 0){
-			x = i % 4;
-			y = Math.floor(i / 4);
-			this.draw(this.players[i], x, y)
+
+	render() {
+		background(0);
+		stroke("red");
+		for(var i = 1; i < this.size; i++) {
+			line(0, i*canvas.height/this.size, canvas.width, i*canvas.height/this.size);
+			line(i*canvas.width/this.size, 0, i*canvas.width/this.size, canvas.height);
 		}
 	}
 }
-PlayerObject.prototype.draw = function(shape, x, y){
-	if(shape == -1){
-		strokeWeight(3);
+
+// DRAW AN X OR AN O AT (i,j)
+function draw_shape(shape, i, j) {
+	if(shape == 'O') {
 		fill(0);
-		ellipse(100 + x * 200, 100 + y * 200, 160, 160);
-	} else if(shape == 1){
-		strokeWeight(3);
-		fill(0);
-		line(10 + x * 200, 10 + y * 200, 188 + x * 200, 188 + y * 200);
-		line(10 + x * 200, 188 + y * 200, 188 + x * 200, 10 + y * 200);
+		ellipse((j+0.5) * canvas.width/level.size, (i+0.5) * canvas.height/level.size, canvas.width/level.size, canvas.height/level.size);
+	} else if(shape == 'X') {
+		line(j * canvas.width/level.size, i * canvas.height/level.size, (j+1) * canvas.width/level.size, (i+1) * canvas.height/level.size);
+		line(j * canvas.width/level.size, (i+1) * canvas.height/level.size, (j+1) * canvas.height/level.size, i * canvas.width/level.size);
 	}
 }
 
-function bestMove(){
+// MAKE A MOVE
+function AI_move() {
 	var sum = -Infinity;
-	var bestMove = 0;
-	for(var i = 0; i < 16; i++){
-		if(players.players[i] == 0){
-			var minimaxsum = minimax(i, players.difficulty);
-			players.players[i] = 0;
-			players.player *= -1;
-			if(minimaxsum > sum){
-				sum = minimaxsum;
-				bestMove = i;
+	var bestMove;
+	for(var i = 0; i < level.size; i++) {
+		for(var j = 0; j < level.size; j++) {
+			if(level.state[i][j] == 0) {
+				var move_value = minimax(i, j, difficulty, 'O');
+				level.empty_grids++;
+				level.state[i][j] = 0;
+				if(move_value > sum) {
+					sum = move_value;
+					bestMove = [i,j];
+				}
 			}
 		}
 	}
-	players.player = 1;
-	return bestMove;
+	level.state[bestMove[0]][bestMove[1]] = 'O';
+	level.empty_grids--;
+	draw_shape('O', bestMove[0], bestMove[1]);
 }
 
-// Calculate the sum of all possible outcomes of this move.
-function minimax(placement, depth){
+// MINIMAX USED TO MAKE OPTIMAL AI MOVE i,j
+function minimax(i, j, depth, player) {
+	level.state[i][j] = player;
+	level.empty_grids--;
 
-	players.players[placement] = players.player;
-	players.player *= -1;
+	var winInfo = endState();
 
-	if(checkWin() || depth == 0){
-		return endState();
+	var empty = 0;
+	for(var i = 0; i < level.size; i++)
+	for(var j = 0; j < level.size; j++)
+		if(level.state[i][j] == 0) empty++;
+
+	if(depth == 0 || level.empty_grids == 0 || winInfo != 0) return winInfo;
+
+	if(player == 'O') {
+		// Choose optimal value for player X
+		var optVal = Infinity;
+
+		for(var i = 0; i < level.size; i++) {
+			for(var j = 0; j < level.size; j++) {
+				if(level.state[i][j] == 0){
+					var minimaxSum = minimax(i, j, depth-1, 'X');
+					level.state[i][j] = 0;
+					level.empty_grids++;
+					optVal = (minimaxSum < optVal) ? minimaxSum : optVal;
+				}
+			}
+		}
+		return optVal;	
 	}
+	else {
+		// Choose optimal value for player X
+		var optVal = -Infinity;
 
-	if(players.player == -1){
-		// Choose the move which has the maximum value.
-		var maxSum = -Infinity;
-
-		for(var  i = 0; i < 16; i++){
-			if(players.players[i] == 0){
-				var minimaxSum = minimax(i, depth-1);
-				players.players[i] = 0;
-				players.player *= -1;
-				maxSum = Math.max(maxSum, minimaxSum);
+		for(var i = 0; i < level.size; i++) {
+			for(var j = 0; j < level.size; j++) {
+				if(level.state[i][j] == 0) {
+					var minimaxSum = minimax(i, j, depth-1, 'O');
+					level.state[i][j] = 0;
+					level.empty_grids++;
+					optVal = (minimaxSum > optVal) ? minimaxSum : optVal;
+				}
 			}
 		}
-		return maxSum;
-		
-	} else{
-		// Choose minimum value
-		var minSum = Infinity;
-
-		for(var  i = 0; i < 16; i++){
-			if(players.players[i] == 0){
-				var minimaxSum = minimax(i, depth-1);
-				players.players[i] = 0;
-				players.player *= -1;
-				minSum = Math.min(minSum, minimaxSum);
-			}
-		}
-		return minSum;
+		return optVal;	
 	}
 }
 
+// CHECK IF SOMEONE WON
 function endState(){
 
-	// Check if someone won.
-	
-	// Horizontal win X
-	if(players.players[0] == 1 && players.players[1] == 1 && players.players[2] == 1 && players.players[3] == 1 || players.players[4] == 1 && players.players[5] == 1 && players.players[6] == 1 && players.players[7] == 1 || players.players[8] == 1 && players.players[9] == 1 && players.players[10] == 1 && players.players[11] == 1 || players.players[12] == 1 && players.players[13] == 1 && players.players[14] == 1 && players.players[15] == 1){
-		return -10;
+	// Row wins
+	X_row = [];
+	O_row = [];
+	X_col = [];
+	O_col = [];
+	for(var k = 0; k < level.size; k++) {
+		X_row.push(0);
+		X_col.push(0);
+		O_row.push(0);
+		O_col.push(0);
+	}
+	for(var i = 0; i < level.size; i++) {
+		for(var j = 0; j < level.size; j++) {
+			if(level.state[i][j] == 'X') {
+				X_row[i]++;
+				X_col[j]++;
+			}
+			else if(level.state[i][j] == 'O') {
+				O_row[i]++;
+				O_col[j]++;
+			}
+		}
+	}
+	for(var k = 0; k < level.size; k++) {
+		if(X_row[k] == level.size || X_col[k] == level.size) return -1;
+		if(O_row[k] == level.size || O_col[k] == level.size) return 1;
 	}
 
-	// Horizontal win 0
-	if(players.players[0] == -1 && players.players[1] == -1 && players.players[2] == -1 && players.players[3] == -1 || players.players[4] == -1 && players.players[5] == -1 && players.players[6] == -1 && players.players[7] == -1 || players.players[8] == -1 && players.players[9] == -1 && players.players[10] == -1 && players.players[11] == -1 || players.players[12] == -1 && players.players[13] == -1 && players.players[14] == -1 && players.players[15] == -1){
-		return 10;
-	}
+	// Diagonal win
+	X_diag = [0,0];
+	O_diag = [0,0];
+	for(var k = 0; k < level.size; k++) {
+		if(level.state[k][k] == 'X') X_diag[0]++;
+		else if(level.state[k][k] == 'O') O_diag[0]++;
 
-	// Vertical win X
-	if(players.players[0] == 1 && players.players[4] == 1 && players.players[8] == 1 && players.players[12] == 1 || players.players[1] == 1 && players.players[5] == 1 && players.players[9] == 1 && players.players[13] == 1 || players.players[2] == 1 && players.players[6] == 1 && players.players[10] == 1 && players.players[14] == 1 || players.players[3] == 1 && players.players[7] == 1 && players.players[11] == 1 && players.players[15] == 1){
-		return -10;
+		if(level.state[level.size-k-1][k] == 'X') X_diag[1]++;
+		else if(level.state[level.size-k-1][k] == 'O') O_diag[1]++;
 	}
+	if(X_diag[0] == level.size || X_diag[1] == level.size) return -1;
+	if(O_diag[0] == level.size || O_diag[1] == level.size) return 1;
 
-	// Vertical win O
-	if(players.players[0] == -1 && players.players[4] == -1 && players.players[8] == -1 && players.players[12] == -1 || players.players[1] == -1 && players.players[5] == -1 && players.players[9] == -1 && players.players[13] == -1 || players.players[2] == -1 && players.players[6] == -1 && players.players[10] == -1 && players.players[14] == -1 || players.players[3] == -1 && players.players[7] == -1 && players.players[11] == -1 && players.players[15] == -1){
-		return 10;
-	}
-
-	// Diagonal win X
-	if(players.players[0] == 1 && players.players[5] == 1 && players.players[10] == 1 && players.players[15] == 1 || players.players[3] == 1 && players.players[6] == 1 && players.players[9] == 1 && players.players[12] == 1){
-		return -10;
-	}
-	
-	// Diagonal win 0
-	if(players.players[0] == -1 && players.players[5] == -1 && players.players[10] == -1 && players.players[15] == -1 || players.players[3] == -1 && players.players[6] == -1 && players.players[9] == -1 && players.players[12] == -1){
-		return 10;
-	}
-	
 	return 0;
-
 }
 
-function checkWin(){
-	if(endState() != 0){
-		return true;
-	}
-	// Tie
-	var empty = 0;
-	for(var i = 0; i < 16; i++){
-		if(players.players[i] == 0){
-			empty++;
-		}
-	}
-	
-	if(empty == 0){
-		return true;
-	}
-}
+// PUT AN X AT MOUSE PRESS (mx,my) AND LET AI MAKE A MOVE
+function makeMove(mx, my) {
 
-function drawGrid(x, y){
+	if(endState() != 0 || level.empty_grids == 0) return;
 
-	if(players.player != 1){
-		return;
-	}
-	xx = -1;
-	yy = -1;
-	
-	if(x > 10 && x < 188){
-		xx = 0;
-	} else if(x > 208 && x < 386){
-		xx = 1;
-	} else if(x > 406 && x < 584){
-		xx = 2;
-	} else if(x > 604 && x < 782){
-		xx = 3;
-	}
-	
-	if(y > 10 && y < 188){
-		yy = 0;
-	} else if(y > 208 && y < 386){
-		yy = 1;
-	} else if(y > 406 && y < 584){
-		yy = 2;
-	} else if(y > 604 && y < 782){
-		yy = 3;
-	}
-	
-	
-	if(xx != -1 && yy != -1){
-		gridNum = yy*4 + xx;
-		if(players.players[gridNum] == 0){
-			players.players[gridNum] = players.player;
-			players.player *= -1;
-		}
+	j = floor(mx/(canvas.width/level.size));
+	i = floor(my/(canvas.height/level.size));
+
+	if(j >= 0 && j < level.size && i >= 0 && i < level.size && level.state[i][j] == 0) {
+		level.state[i][j] = 'X';
+		draw_shape('X', i, j);
+		level.empty_grids--;
+		if(endState() != 0 || level.empty_grids == 0) return;
+		AI_move();
 	}
 }
 
-// Update game every time we press mouse.
-function mousePressed(){
-	if(checkWin()){
-		return;
-	}
-	drawGrid(mouseX, mouseY);
-	grid.render();
-	if(checkWin()){
-		players.render();
-		return;
-	}
-	players.AI();
-	players.render();
-	return false;
+// EVERY TIME WE PRESS MOUSE, MAKE A MOVE
+function mousePressed() {
+	makeMove(mouseX, mouseY);
 }
 
 function keyPressed(){
-	// Change difficulty.
+	// CHANGE DIFFICULTY
 	if(keyCode >= 48 && keyCode <= 53){
-		diff = keyCode - 48;
-		players.difficulty = diff;
-		document.getElementById("currDiff").innerHTML = "Current difficulty: " + diff;
+		difficulty = keyCode - 48;
+		document.getElementById("currDiff").innerHTML = "Current difficulty: " + difficulty;
 	}
 }
