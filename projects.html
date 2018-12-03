@@ -2,9 +2,28 @@
 <head>
   <link rel="stylesheet" type="text/css" href="libraries/design/style.css">
 </head>
+
 <body>
+
+	<script>
+		var i = 0;
+		var x = document.getElementsByClassName("slide");
+		function next_slide() {
+			x[i].style.display = "none";
+			i++;
+			i %= 3;
+			console.log(i);
+			x[i].style.display = "block";
+		}
+		setInterval(next_slide, 3000);
+	</script>
+
   <a href="index.html"><img src="libraries/design/logo.png"></img></a>
   <br><br>
+		<a href="projects/3d.html"><img class="slide" style="display: block" width=300 src="libraries/3d_screenshot.png"/><a href="projects/3d.html"></a>
+		<a href="projects/astar.html"><img class="slide" style="display: none" width=300 src="libraries/astar_screenshot.png"/><a href="projects/astar.html"></a>
+		<a href="projects/gameoflife.html"><img class="slide" style="display: none" width=300 src="libraries/gameoflife_screenshot.png"/><a href="projects/gameoflife.html"></a>
+  <br>
   <table>
     <tr><th><center>Games / Simulations</center></th></tr>
     <tr><td><a href="projects/3d.html">3D Engine using RayCasting!</a></td></tr>

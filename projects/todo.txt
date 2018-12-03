@@ -26,6 +26,3 @@ sinywings.html
 
 tetris.js
 	Fix controls
-
-tictac.js
-	Refactor
