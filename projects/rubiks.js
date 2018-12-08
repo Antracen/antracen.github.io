@@ -989,9 +989,9 @@ function keyPressed() {
   } else if (keyCode == 66) { // B
     cube.turns.push("X'");
   } else if (keyCode == 65) { // A
-    cube.turns.push("Y");
-  } else if (keyCode == 192) { // Ö
     cube.turns.push("Y'");
+  } else if (keyCode == 192) { // Ö
+    cube.turns.push("Y");
   } else if (keyCode == 85) { // U
     cube.turns.push("M'");
   } else if (keyCode == 77) { // M
