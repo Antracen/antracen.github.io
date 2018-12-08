@@ -452,6 +452,348 @@ class Cube {
         blocks[15] = blocks_backup_25;
         blocks[24] = blocks_backup_26;
       }
+    } else if (this.turning == "X") {
+      var rot_blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
+      for (var i of rot_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateX(PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_0 = blocks[0];
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_2 = blocks[2];
+        var blocks_backup_3 = blocks[3];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_5 = blocks[5];
+        var blocks_backup_6 = blocks[6];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_8 = blocks[8];
+		var blocks_backup_9 = blocks[9];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_11 = blocks[11];
+        var blocks_backup_12 = blocks[12];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_14 = blocks[14];
+        var blocks_backup_15 = blocks[15];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_17 = blocks[17];
+		var blocks_backup_18 = blocks[18];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_20 = blocks[20];
+        var blocks_backup_21 = blocks[21];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_23 = blocks[23];
+        var blocks_backup_24 = blocks[24];
+        var blocks_backup_25 = blocks[25];
+        var blocks_backup_26 = blocks[26];
+        blocks[0] = blocks_backup_18;
+        blocks[1] = blocks_backup_19;
+        blocks[2] = blocks_backup_20;
+        blocks[3] = blocks_backup_9;
+        blocks[4] = blocks_backup_10;
+        blocks[5] = blocks_backup_11;
+        blocks[6] = blocks_backup_0;
+        blocks[7] = blocks_backup_1;
+        blocks[8] = blocks_backup_2;
+		blocks[9] = blocks_backup_21;
+        blocks[10] = blocks_backup_22;
+        blocks[11] = blocks_backup_23;
+        blocks[12] = blocks_backup_12;
+        blocks[13] = blocks_backup_13;
+        blocks[14] = blocks_backup_14;
+        blocks[15] = blocks_backup_3;
+        blocks[16] = blocks_backup_4;
+        blocks[17] = blocks_backup_5;
+		blocks[18] = blocks_backup_24;
+        blocks[19] = blocks_backup_25;
+        blocks[20] = blocks_backup_26;
+        blocks[21] = blocks_backup_15;
+        blocks[22] = blocks_backup_16;
+        blocks[23] = blocks_backup_17;
+        blocks[24] = blocks_backup_6;
+        blocks[25] = blocks_backup_7;
+        blocks[26] = blocks_backup_8;
+      }
+    } else if (this.turning == "X'") {
+      var rot_blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
+      for (var i of rot_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateX(-PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_0 = blocks[0];
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_2 = blocks[2];
+        var blocks_backup_3 = blocks[3];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_5 = blocks[5];
+        var blocks_backup_6 = blocks[6];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_8 = blocks[8];
+		var blocks_backup_9 = blocks[9];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_11 = blocks[11];
+        var blocks_backup_12 = blocks[12];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_14 = blocks[14];
+        var blocks_backup_15 = blocks[15];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_17 = blocks[17];
+		var blocks_backup_18 = blocks[18];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_20 = blocks[20];
+        var blocks_backup_21 = blocks[21];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_23 = blocks[23];
+        var blocks_backup_24 = blocks[24];
+        var blocks_backup_25 = blocks[25];
+        var blocks_backup_26 = blocks[26];
+        blocks[18] = blocks_backup_0;
+        blocks[19] = blocks_backup_1;
+        blocks[20] = blocks_backup_2;
+        blocks[9] = blocks_backup_3;
+        blocks[10] = blocks_backup_4;
+        blocks[11] = blocks_backup_5;
+        blocks[0] = blocks_backup_6;
+        blocks[1] = blocks_backup_7;
+        blocks[2] = blocks_backup_8;
+		blocks[21] = blocks_backup_9;
+        blocks[22] = blocks_backup_10;
+        blocks[23] = blocks_backup_11;
+        blocks[12] = blocks_backup_12;
+        blocks[13] = blocks_backup_13;
+        blocks[14] = blocks_backup_14;
+        blocks[3] = blocks_backup_15;
+        blocks[4] = blocks_backup_16;
+        blocks[5] = blocks_backup_17;
+		blocks[24] = blocks_backup_18;
+        blocks[25] = blocks_backup_19;
+        blocks[26] = blocks_backup_20;
+        blocks[15] = blocks_backup_21;
+        blocks[16] = blocks_backup_22;
+        blocks[17] = blocks_backup_23;
+        blocks[6] = blocks_backup_24;
+        blocks[7] = blocks_backup_25;
+        blocks[8] = blocks_backup_26;
+      }
+    } else if (this.turning == "Y") {
+      var rot_blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
+      for (var i of rot_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateY(-PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_0 = blocks[0];
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_2 = blocks[2];
+        var blocks_backup_3 = blocks[3];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_5 = blocks[5];
+        var blocks_backup_6 = blocks[6];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_8 = blocks[8];
+		var blocks_backup_9 = blocks[9];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_11 = blocks[11];
+        var blocks_backup_12 = blocks[12];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_14 = blocks[14];
+        var blocks_backup_15 = blocks[15];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_17 = blocks[17];
+		var blocks_backup_18 = blocks[18];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_20 = blocks[20];
+        var blocks_backup_21 = blocks[21];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_23 = blocks[23];
+        var blocks_backup_24 = blocks[24];
+        var blocks_backup_25 = blocks[25];
+        var blocks_backup_26 = blocks[26];
+        blocks[0] = blocks_backup_2;
+        blocks[1] = blocks_backup_5;
+        blocks[2] = blocks_backup_8;
+        blocks[3] = blocks_backup_1;
+        blocks[4] = blocks_backup_4;
+        blocks[5] = blocks_backup_7;
+        blocks[6] = blocks_backup_0;
+        blocks[7] = blocks_backup_3;
+        blocks[8] = blocks_backup_6;
+		blocks[9] = blocks_backup_11;
+        blocks[10] = blocks_backup_14;
+        blocks[11] = blocks_backup_17;
+        blocks[12] = blocks_backup_10;
+        blocks[13] = blocks_backup_13;
+        blocks[14] = blocks_backup_16;
+        blocks[15] = blocks_backup_9;
+        blocks[16] = blocks_backup_12;
+        blocks[17] = blocks_backup_15;
+		blocks[18] = blocks_backup_20;
+        blocks[19] = blocks_backup_23;
+        blocks[20] = blocks_backup_26;
+        blocks[21] = blocks_backup_19;
+        blocks[22] = blocks_backup_22;
+        blocks[23] = blocks_backup_25;
+        blocks[24] = blocks_backup_18;
+        blocks[25] = blocks_backup_21;
+        blocks[26] = blocks_backup_24;
+      }
+    } else if (this.turning == "Y'") {
+      var rot_blocks = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
+      for (var i of rot_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateY(PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_0 = blocks[0];
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_2 = blocks[2];
+        var blocks_backup_3 = blocks[3];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_5 = blocks[5];
+        var blocks_backup_6 = blocks[6];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_8 = blocks[8];
+		var blocks_backup_9 = blocks[9];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_11 = blocks[11];
+        var blocks_backup_12 = blocks[12];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_14 = blocks[14];
+        var blocks_backup_15 = blocks[15];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_17 = blocks[17];
+		var blocks_backup_18 = blocks[18];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_20 = blocks[20];
+        var blocks_backup_21 = blocks[21];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_23 = blocks[23];
+        var blocks_backup_24 = blocks[24];
+        var blocks_backup_25 = blocks[25];
+        var blocks_backup_26 = blocks[26];
+        blocks[2] = blocks_backup_0;
+        blocks[5] = blocks_backup_1;
+        blocks[8] = blocks_backup_2;
+        blocks[1] = blocks_backup_3;
+        blocks[4] = blocks_backup_4;
+        blocks[7] = blocks_backup_5;
+        blocks[0] = blocks_backup_6;
+        blocks[3] = blocks_backup_7;
+        blocks[6] = blocks_backup_8;
+		blocks[11] = blocks_backup_9;
+        blocks[14] = blocks_backup_10;
+        blocks[17] = blocks_backup_11;
+        blocks[10] = blocks_backup_12;
+        blocks[13] = blocks_backup_13;
+        blocks[16] = blocks_backup_14;
+        blocks[9] = blocks_backup_15;
+        blocks[12] = blocks_backup_16;
+        blocks[15] = blocks_backup_17;
+		blocks[20] = blocks_backup_18;
+        blocks[23] = blocks_backup_19;
+        blocks[26] = blocks_backup_20;
+        blocks[19] = blocks_backup_21;
+        blocks[22] = blocks_backup_22;
+        blocks[25] = blocks_backup_23;
+        blocks[18] = blocks_backup_24;
+        blocks[21] = blocks_backup_25;
+        blocks[24] = blocks_backup_26;
+      }
+    } else if (this.turning == "M'") {
+      var middle_blocks = [1,4,7,10,13,16,19,22,25];
+      for (var i of middle_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateX(PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_25 = blocks[25];
+        blocks[1] = blocks_backup_19;
+        blocks[4] = blocks_backup_10;
+        blocks[7] = blocks_backup_1;
+        blocks[10] = blocks_backup_22;
+        blocks[13] = blocks_backup_13;
+        blocks[16] = blocks_backup_4;
+        blocks[19] = blocks_backup_25;
+        blocks[22] = blocks_backup_16;
+        blocks[25] = blocks_backup_7;
+      }
+    } else if (this.turning == "M") {
+      var middle_blocks = [1,4,7,10,13,16,19,22,25];
+      for (var i of middle_blocks) {
+        for (var m_sq of blocks[i]) {
+          m_sq.rotateX(PI / 4);
+          m_sq.rotateX(-PI / 20);
+          m_sq.rotateX(-PI / 4);
+          draw_change = true;
+        }
+      }
+      this.turntick++;
+      if (this.turntick > 9) {
+        this.turntick = 0;
+        this.turning = "none";
+        var blocks_backup_1 = blocks[1];
+        var blocks_backup_4 = blocks[4];
+        var blocks_backup_7 = blocks[7];
+        var blocks_backup_10 = blocks[10];
+        var blocks_backup_13 = blocks[13];
+        var blocks_backup_16 = blocks[16];
+        var blocks_backup_19 = blocks[19];
+        var blocks_backup_22 = blocks[22];
+        var blocks_backup_25 = blocks[25];
+        blocks[19] = blocks_backup_1;
+        blocks[10] = blocks_backup_4;
+        blocks[1] = blocks_backup_7;
+        blocks[22] = blocks_backup_10;
+        blocks[13] = blocks_backup_13;
+        blocks[4] = blocks_backup_16;
+        blocks[25] = blocks_backup_19;
+        blocks[16] = blocks_backup_22;
+        blocks[7] = blocks_backup_25;
+      }
     } else if (this.turning == "init") {
       draw_change = true;
       this.turning = "none";
@@ -642,7 +984,17 @@ function keyPressed() {
     cube.turns.push("B'");
   } else if (keyCode == 87) { // W
     cube.turns.push("B");
+  } else if (keyCode == 89) { // Y
+    cube.turns.push("X");
+  } else if (keyCode == 66) { // B
+    cube.turns.push("X'");
+  } else if (keyCode == 65) { // A
+    cube.turns.push("Y");
+  } else if (keyCode == 192) { // Ö
+    cube.turns.push("Y'");
+  } else if (keyCode == 85) { // U
+    cube.turns.push("M'");
+  } else if (keyCode == 77) { // M
+    cube.turns.push("M");
   }
-
-  //y/b (89/66) camera a/ö (65/192) camera u/m (85/77) M
 }
