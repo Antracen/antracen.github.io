@@ -10,7 +10,7 @@ function setup() {
 
   pretty = false; // pretty = true gives better looking cube
   var param = location.search;
-  if(param == "?pretty=true") pretty = true;
+  if(param.substr(0,12) == "?pretty=true") pretty = true;
 	draw_change = true; // If true: draw to canvas
 	bg_color = "#ffffff";
 	blocks = []; // The cube has 26 blocks. 8 corners, 12 edges, 6 centers
