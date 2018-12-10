@@ -44,8 +44,12 @@ function setup() {
 	// I push two "init" into the turns, this will make the canvas update twice
 	// WEBGL has some strange behaviour where it looks bad until I update the
 	// canvas a couple of times
-	cube.turns.push("init");
-	cube.turns.push("init");
+	var turn_values = ["R","U","F","L","D","M","B","X","Y"];
+	for(var i = 0; i < 50; i++) {
+		var random_turn = int(random(0, turn_values.length));
+		cube.turns.push(turn_values[random_turn]);
+	}
+	//cube.turns = ["R","U","U","D","B","L","L","F","D'","L'","F","U","L","L","B","L","L","B","U","U","B'","L","L","U","U","F'","L","L","F"];
 	
 }
 
