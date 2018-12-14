@@ -5,6 +5,14 @@ class Cube {
       this.turning = "none";
       this.turntick = 0;
     }
+
+    scramble() {
+      var turn_values = ["R","U","F","L","D","M","B","X","Y"];
+      for(var i = 0; i < 50; i++) {
+        var random_turn = int(random(0, turn_values.length));
+        cube.turns.push(turn_values[random_turn]);
+      }
+    }
   
     update() {
       if (this.turning == "none" && this.turns.length > 0) {

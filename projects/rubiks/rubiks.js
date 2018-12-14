@@ -44,11 +44,6 @@ function setup() {
 	// I push two "init" into the turns, this will make the canvas update twice
 	// WEBGL has some strange behaviour where it looks bad until I update the
 	// canvas a couple of times
-	var turn_values = ["R","U","F","L","D","M","B","X","Y"];
-	for(var i = 0; i < 50; i++) {
-		var random_turn = int(random(0, turn_values.length));
-		cube.turns.push(turn_values[random_turn]);
-	}
 	//cube.turns = ["R","U","U","D","B","L","L","F","D'","L'","F","U","L","L","B","L","L","B","U","U","B'","L","L","U","U","F'","L","L","F"];
 	
 }
@@ -149,7 +144,8 @@ function rotate_square(axis, points, theta) {
 
 function draw() {
 
-  cube.update();
+	cube.update();
+
   if (draw_change) {
     background(bg_color);
 	for (var b of blocks) {
@@ -181,7 +177,8 @@ function keyPressed() {
     else if (keyCode == 192) turn = "Y"; // Ö
     else if(keyCode == 65) turn = "Y'"; // A
     else if (keyCode == 77) turn = "M"; // M
-    else if (keyCode == 85) turn = "M'"; // U
+		else if (keyCode == 85) turn = "M'"; // U
+		else if(keyCode == 32) cube.scramble(); // SPACE
 
     cube.turns.push(turn);
 }
