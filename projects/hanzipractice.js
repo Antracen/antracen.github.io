@@ -1,6 +1,7 @@
 let current_hanzi_num = 0;
 let toggle = 1;
 let kaiti_font;
+var txt;
 
 function setup() {
 	kaiti_font = loadFont("../libraries/fonts/KaiTi.ttf");
