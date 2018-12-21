@@ -27,6 +27,7 @@ function setup() {
     for(var i = 0; i < 27; i++) blocks.push([]);
 
     createCanvas(800, 800, WEBGL);
+	background(bg_color);
 
     make_face("#0000ff", "BACK", spacing);
     make_face("#ff9000", "LEFT", spacing);

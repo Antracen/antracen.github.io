@@ -22,10 +22,10 @@ class Series {
 
     render() {
         let mid_x = 200;
-        let mid_y = canvas.height / 2;
+        let mid_y = 700 / 2;
         let val = 0;
         let b_tot = 0;
-        let pos_y = canvas.height / 2;
+        let pos_y = 700 / 2;
         for (let n = 1; n <= b_n.length; n++) {
             val += b_n[n - 1] * sin(n * PI * this.x / this.L);
             ellipse(mid_x, mid_y, abs(2 * b_n[n - 1]), abs(2 * b_n[n - 1]));
@@ -34,9 +34,9 @@ class Series {
             mid_y += b_n[n - 1] * sin(n * PI * this.x / this.L);
         }
         stroke("red");
-        line(this.x, canvas.height / 2 + val, mid_x, mid_y);
+        line(this.x, 700 / 2 + val, mid_x, mid_y);
         stroke("black");
-        this.points.push([this.x, canvas.height / 2 + val]);
+        this.points.push([this.x, 700 / 2 + val]);
         let old_point = this.points[0];
         for (let p of this.points) {
             line(old_point[0], old_point[1], p[0], p[1]);
