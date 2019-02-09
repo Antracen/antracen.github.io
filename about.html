@@ -2,9 +2,15 @@
 <head>
 	<title> About </title>
 	<link rel="stylesheet" type="text/css" href="libraries/design/style.css">
+	<script src="../libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(window).on('load', function() { 
+			$("#navbar").load("navbar.html"); 
+		});
+    </script> 
 </head>
 <body>
-	<a href="index.html"><img src="libraries/design/logo.png"></img></a>
+	<div class="navbar"></div>
 	<br><br>
 	<p>
 		My name is Martin Wass. I am currently studying computer science at KTH Royal Institute of Technology.
