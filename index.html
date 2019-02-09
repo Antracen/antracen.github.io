@@ -2,13 +2,13 @@
 <head>
 	<title> antracen </title>
 	<link rel="stylesheet" type="text/css" href="libraries/design/style.css">
+	<script src="libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(function(){
+			$("#navbar").load("navbar.html"); 
+		});
+    </script> 
 </head>
 <body>
-	<img src="libraries/design/logo.png"></img>
-	<br> <br>
-	<biglinks>
-		<a href="projects.html">Projects</a><br>
-		<a href="blog.html">Blog</a><br>
-		<a href="about.html">About</a><br>
-	</biglinks>
+	<div id="navbar"></div>
 </body>

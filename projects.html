@@ -1,65 +1,250 @@
 <!DOCTYPE html>
 <head>
 	<title> Projects </title>
-  <link rel="stylesheet" type="text/css" href="libraries/design/style.css">
+	<link rel="stylesheet" type="text/css" href="libraries/design/style.css">
+	<script src="../libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(function(){
+			$("#navbar").load("navbar.html"); 
+		});
+    </script> 
 </head>
 
 <body>
-
-	<script>
-		var i = 0;
-		var x = document.getElementsByClassName("slide");
-		function next_slide() {
-			x[i].style.display = "none";
-			i++;
-			i %= 4;
-			x[i].style.display = "block";
-		}
-		setInterval(next_slide, 2000);
-	</script>
-
-  <a href="index.html"><img src="libraries/design/logo.png"></img></a>
-  <br><br><br>
-		<font size="+3"><b> Featured projects </b><br></font>
-		<a href="projects/3d.html"><img class="slide" style="display: block" width=400 height=400 src="libraries/3d_screenshot.png"/><a href="projects/3d.html"></a>
-		<a href="projects/rubiks.html"><img class="slide" style="display: none" width=400 height=400 src="libraries/rubiks_screenshot.png"/><a href="projects/rubiks.html"></a>
-		<a href="projects/astar.html"><img class="slide" style="display: none" width=400 height=400 src="libraries/astar_screenshot.png"/><a href="projects/astar.html"></a>
-		<a href="projects/gameoflife.html"><img class="slide" style="display: none" width=400 height=400 src="libraries/gameoflife_screenshot.png"/><a href="projects/gameoflife.html"></a>
-  <br><br>
-  <table>
-    <tr><th><center>Games / Simulations</center></th></tr>
-    <tr><td><a href="projects/3d.html">3D Engine using RayCasting!</a></td></tr>
-	<tr><td><a href="projects/rubiks.html">Virtual rubiks cube</a></td></tr>
-    <tr><td><a href="projects/tetris.html">Tetris clone</a></td></tr>
-    <tr><td><a href="projects/sinywings.html">Tiny Wings clone</a></td></tr>
-	<tr><td><a href="projects/2048.html">2048 clone</a></td></tr>
-    <tr><td><a href="projects/tictac.html">Tic Tac Toe - MiniMax AI</a></td></tr>
-    <tr><td><a href="projects/shooting.html">Shooting space-game</a></td></tr>
-	<tr><td><a href="projects/hanzipractice.html">Hanzi practice</a></td></tr>
-  </table>
-  <br>
-  <table>
-    <tr><th><center> Maths / Algorithms</center></th></tr>
-    <tr><td><a href="projects/astar.html">A* Pathfinding Algorithm</a></td></tr>
-	<tr><td><a href="projects/gameoflife.html">Simulation of Conway's "Game of Life"</a></td></tr>
-	<tr><td><a href="projects/fourier.html"> Fourier series visualization of a square wave </a></td></tr>
-	<tr><td><a href="https://github.com/Antracen/Rubiks-Cube-Solver">Rubik's Cube Solver</a></td></tr>
-    <tr><td><a href="projects/mandelbrot.html">Mandelbrot image generation</a></td></tr>
-    <tr><td><a href="projects/complexdraw.html">Complex number drawing test</a></td></tr>
-	<tr><td><a href="https://github.com/Antracen/Project-Euler-Solutions">Some solutions for "Project Euler" problems.</a></td></tr>
-  </table>
-  <br>
-  <table>
-    <tr><th><center>Python projects</center></th></tr>
-    <tr><td><a href="https://github.com/Antracen/Maze-Generator">Graphical maze generator</a></td></tr>
-    <tr><td><a href="https://github.com/Antracen/Markov-chains-Python">Markov chain random string generator</a></td></tr>
-    <tr><td><a href="https://github.com/Antracen/Recursive-Descent-Calculator">Calculator using recursive descent parsing</a></td></tr>
-  </table>
-  <br>
-  <table> 
-    <tr><th><center>Database related + PHP</center></th></tr>
-    <tr><td><a href="projects/chat.html">Chat using Google's "Firebase" database</a></td></tr>
-    <tr><td><a href="projects/firebasegame.html">Test of multiplayer gaming with Firebase</a></td></tr>
-    <tr><td><a href="https://github.com/Antracen/PHP-forum">Forum with PHP and PostgreSQL</a></td></tr>
-  </table>
+	<div id="navbar"></div>
+	<div class="page-content">
+		<div class="project-display">
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/rubiks.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Virtual Rubik's cube</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/3d.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>3D Raycasting engine</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/2048.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>2048 clone</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/tictac.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Tic-Tac-Toe MiniMax AI</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/astar.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>A* Pathfinding algorithm</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/gameoflife.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Conway's Game of life</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/tetris.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Tetris clone</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/sinywings.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Tiny Wings clone</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/shooting.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Local multiplayer<br>game</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/mandelbrot.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Mandelbrot image generation</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/complexdraw.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Complex numbers drawing</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/hanzipractice.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Hanzi practice</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/fourier.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Fourier series visualization</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/chat.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Online chat</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="projects/firebasegame.html">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Multiplayer game</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/Maze-Generator">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Maze generator</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/Markov-chains-Python">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Markov chain string generator</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/Recursive-Descent-Calculator">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Recursive descent calculator</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/Project-Euler-Solutions">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Some Project Euler solutions</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/PHP-forum">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Forum using PHP and SQL</h1>
+			</div>
+			<div class="project-box">
+				<div class="project-image">
+					<img src="../libraries/images/placeholder.png"></img>
+					<a href="https://github.com/Antracen/Rubiks-Cube-Solver">
+						<div class="project-linker">
+							<h3>Click to go to project!</h3>
+						</div>
+					</a>
+				</div>
+				<h4>Rubik's cube solver</h1>
+			</div>
+		</div>
+	</div>
 </body>
