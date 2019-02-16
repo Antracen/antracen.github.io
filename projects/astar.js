@@ -8,9 +8,10 @@ var drawBuffer = [];
 function setup(){
 
 	// CREATE CANVAS 
-	canvasWidth = 600;
-	canvasHeight = 600;
-	createCanvas(canvasWidth, canvasHeight);
+	canvasWidth = 500;
+	canvasHeight = 500;
+	var cnv = createCanvas(canvasWidth, canvasHeight);
+	cnv.parent("canvascontainer");
 	frameRate(50);
 	
 	// CREATE LEVEL AND RENDER IT ON THE CANVAS
@@ -22,15 +23,15 @@ function setup(){
 	
 	// CREATE BUTTONS AND DROPDOWN MENUS
 	var startButton = createButton("Find path");
-	startButton.position(10,canvasHeight+160);
+	startButton.position(10,canvasHeight+40);
 	startButton.mousePressed(startPathfinding);
 	
 	var resetButton = createButton("Reset");
-	resetButton.position(85,canvasHeight+160);
+	resetButton.position(85,canvasHeight+ 40);
 	resetButton.mousePressed(() => level.resetPathfinder());
 	
 	clickSelector = createSelect();
-	clickSelector.position(140,canvasHeight+160);
+	clickSelector.position(140,canvasHeight+40);
 	clickSelector.option("Place wall");
 	clickSelector.option("Eraser");
 	clickSelector.option("Place start");

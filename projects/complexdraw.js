@@ -2,7 +2,8 @@ var complex;
 
 function setup(){
 		// Canvas
-		createCanvas(500, 500);
+		var cnv = createCanvas(500, 500);
+		cnv.parent("canvascontainer");
 		// Objects
 		points = [];
 }

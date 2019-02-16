@@ -9,6 +9,7 @@ function setup() {
 	load_local_data();
 
 	let my_canvas = createCanvas(500, 500);
+	my_canvas.parent("canvascontainer");
 	background(200);
 	show_help();
 	createElement('br'); createElement('br');

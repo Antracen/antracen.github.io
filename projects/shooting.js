@@ -8,8 +8,8 @@ var keyLayouts;
 var playerColors;
 
 function setup(){
-	var xSize = 800;
-	var ySize = 800;
+	var xSize = 500;
+	var ySize = 500;
 	started = false;
 	keyLayouts = [
 		[49,50,51], [52,53,54], [55,56,57], // 123 456 789
@@ -59,7 +59,7 @@ function introScreen(){
 	}
 	fill(255);
 	textSize(10);
-	text("Choose number of players with arrows up, down and confirm with enter.", 300, 100);
+	text("Choose number of players with arrows up, down and confirm with enter.", 50, 50);
 	text(level.players, 300, 200);
 }
 

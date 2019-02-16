@@ -24,6 +24,7 @@ for site in ['about', 'blog', 'index', 'projects']:
 
 # Create the project files
 with open('Projects.csv') as csvfile:
+	next(csvfile) # Skip first
 	csvreader = csv.reader(csvfile)
 	projectlinks = ""
 	for row in csvreader:

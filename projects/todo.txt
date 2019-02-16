@@ -28,3 +28,4 @@ sinywings.html
 
 tetris.js
 	Fix controls
+	Make it a square screen with score etc

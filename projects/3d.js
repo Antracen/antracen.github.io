@@ -10,7 +10,8 @@ var sprites = {};
 
 function setup(){
 	var canvasY = 250;
-	var canvas = createCanvas(xSize, ySize).position(20,canvasY);
+	var cnv = createCanvas(xSize, ySize);
+	cnv.parent("canvascontainer");
 	frameRate(20);
 	level = new Level(50,50);
 	player = new Player();

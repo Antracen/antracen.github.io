@@ -2,6 +2,7 @@ var grid;
 
 function setup() {
 	var canvas = createCanvas(500, 500);
+	canvas.parent("canvascontainer");
     grid = new Grid();
     render_grid();
     grid.render();

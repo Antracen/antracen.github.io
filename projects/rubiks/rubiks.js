@@ -9,6 +9,7 @@ var blocks;
 var faces;
 var sq_size;
 var cube; // Note: 986 rows pre refactoring
+var cnv;
 
 function setup() {
 
@@ -26,7 +27,7 @@ function setup() {
 
     for(var i = 0; i < 27; i++) blocks.push([]);
 
-    createCanvas(800, 800, WEBGL);
+    createCanvas(700, 700, WEBGL);
 	background(bg_color);
 
     make_face("#0000ff", "BACK", spacing);

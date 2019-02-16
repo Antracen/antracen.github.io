@@ -1,10 +1,8 @@
 // setup() Runs wen website loads.
 function setup(){
-	createElement("h1", "MANDELBROT SET");
-	canvas = createCanvas(900, 600);
+	var canvas = createCanvas(500, 500);
+	canvas.parent("canvascontainer");
 	generate_image();
-	createP("The Mandelbrot set is a set of complex numbers C for which the recursive formula Z_{n+1} = Z_n^2 + C does not go to infinity for Z_0 = 0.");
-	createP("In this illustration, a pixel (x,y) is mapped to a complex number C ([-2,1], [-1.2,-1.2]) and the color of the pixel is based on the number of iterations until |Z| > 2.");
 }
 
 // Generate the Mandelbrot image

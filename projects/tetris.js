@@ -5,11 +5,12 @@ var score;
 var justMoved = false;
 
 function setup(){
-	var canvasX = 200;
-	var canvasY = 400;
+	var canvasX = 300;
+	var canvasY = 600;
 	var pixelsX = 10;
 	var pixelsY = 20;
-	createCanvas(canvasX, canvasY); // Pixels 10*10
+	var cnv = createCanvas(canvasX, canvasY); // Pixels 10*10
+	cnv.parent("canvascontainer");
 	level = new Level(canvasX, canvasY, pixelsX, pixelsY);
 	block = new Block();
 	gameOver = false;

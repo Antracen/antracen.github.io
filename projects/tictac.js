@@ -4,7 +4,8 @@ var ai;
 
 // INTIALIZE
 function setup(){
-	createCanvas(800, 800);
+	var cnv = createCanvas(500, 500);
+	cnv.parent("canvascontainer");
 	level = new Level(4);
 }
 
@@ -186,12 +187,4 @@ function makeMove(mx, my) {
 // EVERY TIME WE PRESS MOUSE, MAKE A MOVE
 function mousePressed() {
 	makeMove(mouseX, mouseY);
-}
-
-function keyPressed(){
-	// CHANGE DIFFICULTY
-	if(keyCode >= 48 && keyCode <= 53){
-		difficulty = keyCode - 48;
-		document.getElementById("currDiff").innerHTML = "Current difficulty: " + difficulty;
-	}
 }

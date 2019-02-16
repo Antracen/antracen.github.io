@@ -7,29 +7,30 @@ function setup(){
 	var ySize = 500;
 	var pixelsX = 50; // Should be at least 3.
 	var pixelsY = 50; // Should be at least 3.
-	createCanvas(xSize, ySize);
+	var cnv = createCanvas(xSize, ySize);
+	cnv.parent("canvascontainer");
 	level = new Level(xSize, ySize, pixelsX, pixelsY);
 	level.populate("random");
 	frameRate(10);
 	
 	var clearButton = createButton("Clear board");
-	clearButton.position(10+xSize, 130);
+	clearButton.position(30+xSize, 130);
 	clearButton.mousePressed(clearLevel);
 	
 	var randomButton = createButton("Spawn random");
-	randomButton.position(10+xSize, 180);
+	randomButton.position(30+xSize, 180);
 	randomButton.mousePressed(populateLevel);
 	
 	var gliderButton = createButton("Spawn glider");
-	gliderButton.position(10+xSize, 230);
+	gliderButton.position(30+xSize, 230);
 	gliderButton.mousePressed(spawnGlider);
 	
 	var spinnerButton = createButton("Spawn spinner");
-	spinnerButton.position(10+xSize, 280);
+	spinnerButton.position(30+xSize, 280);
 	spinnerButton.mousePressed(spawnSpinner);
 	
 	pauseButton = createButton("Pause");
-	pauseButton.position(10+xSize, 330);
+	pauseButton.position(30+xSize, 330);
 	pauseButton.mousePressed(pause);
 }
 
