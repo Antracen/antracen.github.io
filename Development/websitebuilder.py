@@ -27,7 +27,8 @@ with open('Projects.csv') as csvfile:
 	csvreader = csv.reader(csvfile)
 	projectlinks = ""
 	for row in csvreader:
-		filedata = generalfiledata.replace('IMPORT_PROJECT_TITLE', format(row[0]))
+		filedata = generalfiledata.replace('IMPORT_PROJECT_TITLE', row[0])
+		filedata = filedata.replace('IMPORT_DESCRIPTION', row[4])
 		# Import project files
 		projectfiles = row[1].split('&')
 		projectstring = ""
