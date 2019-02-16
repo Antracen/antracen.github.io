@@ -14,8 +14,8 @@ function generate_image() {
 		for(var y = 0; y < canvas.height; y++){
 
 			// Scale x and y to lie in [-2,1] and [-1.2,1.2]
-			x_scaled = map(x + x_offset, 0, canvas.width, -2, 1);
-			y_scaled = map(y, 0, canvas.height, -1.2, 1.2);
+			var x_scaled = map(x, 0, canvas.width, -2, 1);
+			var y_scaled = map(y, 0, canvas.height, -1.2, 1.2);
 
 			// Create C and Z
 			var c_real = x_scaled;

@@ -1,14 +1,22 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<title> Tic Tac Toe </title>
-		<script src="../libraries/p5/p5.js"></script>
-		<script src="tictac.js"></script>
-		<link rel="stylesheet" type="text/css" href="../libraries/design/style.css">
-	</head>
-	<body>
-		<a href="../index.html"><img src="../libraries/design/logo.png"></img></a>
-		<br><br>
-		AI using minimax algorithm. Change difficulty with keyboard 0-5. Play with mouse.<br> <b style="margin: 0;" id="currDiff">Current difficulty: 3 </b><br>
-	</body>
+
+<head>
+	<title> Tic-Tac-Toe MiniMax AI </title>
+	<meta charset="UTF-8">
+	<script src="../libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(window).on('load', function() { 
+			$("#navbar").load("../navbar.html"); 
+		});
+    </script> 
+	<script src="../libraries/p5/p5.js"></script>
+	<script src="tictac.js"></script>
+	<link rel="stylesheet" type="text/css" href="../libraries/design/style.css">
+</head>
+
+<body>
+	<div id="navbar"></div>
+	<br><br>
+</body>
+
 </html>

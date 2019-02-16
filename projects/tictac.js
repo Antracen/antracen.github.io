@@ -29,7 +29,8 @@ class Level {
 
 	render() {
 		background(0);
-		stroke("red");
+		stroke("white");
+		strokeWeight(3);
 		for(var i = 1; i < this.size; i++) {
 			line(0, i*canvas.height/this.size, canvas.width, i*canvas.height/this.size);
 			line(i*canvas.width/this.size, 0, i*canvas.width/this.size, canvas.height);

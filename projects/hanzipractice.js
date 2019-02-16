@@ -37,19 +37,22 @@ function show_help() {
 function load_local_data() {
 	let saved_txt = localStorage.getItem("hanzi_txt");
 	if(saved_txt != null) {
-		txt = JSON.parse(saved_txt);
+		txt = JSON.parse(saved_txt); 
 		shuffle_array(txt);
-	} 
-	else return;
+		toggle = 1;
+	}
+	else load_heisig(1);
 
 	let saved_hanzi_num = localStorage.getItem("hanzi_num");
 	if(saved_hanzi_num != null) current_hanzi_num = saved_hanzi_num;
+	else current_hanzi_num = 0;
 }
 
 // Generate the txt-array from a string
 function set_current_pack(new_txt) {
 	txt = new_txt.split("\n").filter((e) => e != "").map((e) => e.split("\t"));
 	shuffle_array(txt);
+	toggle = 1;
 
 	localStorage.setItem("hanzi_txt", JSON.stringify(txt));
 }
@@ -108,6 +111,7 @@ function shuffle_array(arr) {
 }
 
 function draw() {
+	strokeWeight(3);
 	if(mouseIsPressed) line(mouseX, mouseY, pmouseX, pmouseY);
 }
 

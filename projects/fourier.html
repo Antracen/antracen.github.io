@@ -1,15 +1,21 @@
 <html>
 
 <head>
-	<title> Fourier Square Wave </title>
+	<title> Fourier Series Visualization </title>
 	<meta charset="UTF-8">
+	<script src="../libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(window).on('load', function() { 
+			$("#navbar").load("../navbar.html"); 
+		});
+    </script> 
 	<script src="../libraries/p5/p5.js"></script>
 	<script src="fourier.js"></script>
 	<link rel="stylesheet" type="text/css" href="../libraries/design/style.css">
 </head>
 
 <body>
-	<a href="../index.html"><img src="../libraries/design/logo.png"></img></a>
+	<div id="navbar"></div>
 	<br><br>
 </body>
 

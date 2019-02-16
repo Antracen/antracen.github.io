@@ -1,16 +1,21 @@
 <html>
 
 <head>
-	<title> Game of life </title>
+	<title> Conway's Game of Life </title>
 	<meta charset="UTF-8">
+	<script src="../libraries/jquery/jquery.js"></script> 
+    <script> 
+		$(window).on('load', function() { 
+			$("#navbar").load("../navbar.html"); 
+		});
+    </script> 
 	<script src="../libraries/p5/p5.js"></script>
-	<script src="../libraries/p5/p5.dom.js"></script>
 	<script src="gameoflife.js"></script>
 	<link rel="stylesheet" type="text/css" href="../libraries/design/style.css">
 </head>
 
 <body>
-	<a href="../index.html"><img src="../libraries/design/logo.png"></img></a>
+	<div id="navbar"></div>
 	<br><br>
 </body>
 

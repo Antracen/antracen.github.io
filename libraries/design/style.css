@@ -97,7 +97,7 @@ hr {
 	width: 100%;
 	opacity: 0;
 	transition: .5s ease;
-	background-color: #855151;
+	background-color: #272727;
 }
 
 .project-linker h3 {
@@ -106,7 +106,12 @@ hr {
 }
 
 .project-image:hover .project-linker {
-	opacity: 1;
+	opacity: 0.9;
+}
+
+.project-image a {
+	text-decoration:none;
+	color: white;
 }
 
 .project-box h4 {
