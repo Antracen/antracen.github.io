@@ -34,6 +34,9 @@ hr {
     padding: 0;
     overflow: hidden; /* Hide elements which overflow their containers */
     background-color: #393939;
+	background-image: url(logo.png);
+	background-repeat: no-repeat;
+	background-position: center; 
 }
 
 .navbar_ul li a {
