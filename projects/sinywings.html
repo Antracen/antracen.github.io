@@ -1,160 +1,25 @@
-<title> Siny Wings </title>
+<html>
 
-<a href="../index.html"><img src="../libraries/design/logo.png"></img></a>
-<br><br>
-<canvas id="canvas" width="1150", height="600"></canvas>
-Control with space.
-<script>
+<head>
+	<title> Tiny Wings Clone </title>
+	<meta charset="UTF-8">
+	<script src=../libraries/p5/p5.js></script>
+	<script src=sinywings.js></script>
+	<link rel="stylesheet" type="text/css" href="../libraries/design/style.css">
+</head>
 
-	var background;
-	var player;
-	var canvas;
-	var ctx;
+<body>
+	<ul class="navbar_ul">
+		<li style="float:left"><a href="/index.html">Home</a></li>
+		<li style="float:left"><a href="/projects.html">Projects</a></li>
+		<li style="float:left"><a href="/blog.html">Blog</a></li>
+		<li style="float:right"><a href="/about.html">About</a></li>
+	</ul>
 
-	window.onload = function(){
-		//Canvas
-		
-		canvas = document.getElementById("canvas");
-		ctx=canvas.getContext("2d");
-		// Objects
-		player = new Player();
-		background = new Background();
-		// Key listeners
-		document.addEventListener("keydown", keydown);
-		document.addEventListener("mousedown", mousedown);
-		document.addEventListener("mouseup", mouseup);
-		document.addEventListener("keyup", keyup);
-		// Game loop
-    	setInterval(game,1000/30);
-	}
+	<div class="page-content">
+		<div id="canvascontainer" class="canvascontainer"></div>
+		<p> Clone of the game Tiny Wings. Control with the z key. </p>
+	</div>
+</body>
 
-	function Player(){
-
-		this.inAir = true;
-		this.radius = 5;
-		this.x = 0;
-		this.y = 0;
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.gravity = 1;
-
-		// Draws player to canvas
-		this.render = function(){
-			ctx.fillStyle = "red";
-			ctx.beginPath();
-			ctx.arc(40, 350, this.radius, 0, 2*Math.PI);
-			ctx.fill();
-		}
-
-		// Updates player position.
-		this.update = function(){
-			// Always keep x-speed positive and at least 1.
-			if(this.xSpeed < 2){
-				this.xSpeed = 2;
-			}
-
-			// Update position
-			this.x += this.xSpeed;
-			this.y += this.ySpeed;
-
-			// Let gravity affect player.
-			this.ySpeed += this.gravity;
-
-			// Ground collision check.
-			if(this.y >= background.y(this.x)){
-
-				var slope = background.slope(this.x);
-
-				// Hill affects player speed.
-				if(this.inAir){
-					if(this.xSpeed >= 0){
-						if(slope >= 0){
-							this.xSpeed -= 3*this.ySpeed * slope/((1+slope*slope)*(1+slope*slope));
-						} else{
-							this.xSpeed -= this.ySpeed * slope/((1+slope*slope)*(1+slope*slope));
-						}
-					}
-					this.inAir = false;
-				}
-
-				this.ySpeed = 9999;
-				this.y = background.y(this.x);
-
-				this.xSpeed -= this.gravity * slope/((1+slope*slope)*(1+slope*slope));
-				
-				// If player goes quickly in X-direction and hill is descending, we fly away.
-				if(this.xSpeed > 10 && background.slope(this.x) > 0 && background.slopeslope(this.x) < 0){
-					this.ySpeed = this.xSpeed*-1;
-					this.xSpeed -= 0.1*this.xSpeed;
-					this.inAir = true;
-				}
-			}
-		}
-	}
-
-	function Background(){
-
-		this.y = function(x){
-			return 400+130*Math.sin(0.008*x);
-		}
-
-		// First derivative gives us slope.
-		this.slope = function(x){
-			return (-1)*130*0.008*Math.cos(0.008*x);
-		}
-
-		// Second derivative
-		this.slopeslope = function(x){
-			return 130*0.01*0.008*Math.sin(0.008*x);
-		}
-
-		this.render = function(){
-			ctx.fillStyle = "green";
-			for(i = 0; i < canvas.width; i++){
-				ctx.fillRect(i, 350-player.y + Math.floor(this.y(i - 40 + player.x)), 1, 999);
-			}
-		}
-	}
-
-	// Update player positions.
-	function updateState(){
-		player.update();
-	}
-
-	// Clear screen. Draw background. Draw player.
-	function render(){
-		ctx.fillStyle = "#8fb4ef";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-		background.render();
-		player.render();
-	}
-
-	// Update game state, then render.
-	function game(){
-		updateState();
-		render();
-	}
-
-	function keydown(evt){
-		switch(evt.keyCode){
-			case 32: //space
-				player.gravity = 3;
-				break;
-		}
-	}
-
-	function keyup(evt){
-		switch(evt.keyCode){
-			case 32: //space
-				player.gravity = 1;
-				break;
-		}
-	}
-	function mousedown(evt){
-		player.gravity = 3;
-	}
-	function mouseup(evt){
-		player.gravity = 1;
-	}
-</script>
+</html>

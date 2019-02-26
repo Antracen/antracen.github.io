@@ -53,7 +53,13 @@ hr {
 
 .page-content {
 	padding: 20px;
+/*
 	margin:auto;
+*/
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
 }
 
 .project-display {
@@ -136,4 +142,6 @@ hr {
 .page-content p {
 	border:1px solid black;
 	width:500px;
+	margin-left:auto;
+	margin-right:auto;
 }
