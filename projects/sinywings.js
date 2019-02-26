@@ -2,7 +2,8 @@ let map;
 let player;
 
 function setup() {
-  	createCanvas(500,500);
+	let cnv = createCanvas(500,500);
+	cnv.parent("canvascontainer");
 	map = new Map();
     player = new Player();
 }
