@@ -11,3 +11,4 @@ Complex Numbers Drawing,complexdraw,complexdraw,p5/p5,This drawing program uses 
 Hanzi Practice,hanzipractice,hanzipractice,p5/p5&p5/p5.dom,Use this website to practice the writing of chinese or japanese character (or whatever else you might want). Either load an existing lesson or upload your own file where each line is a tab-separated pair of keyword and answer. The site uses local storage to remember the state of your last visit. Use S to show answer; N to get a new character; space to show answer or show new character and H to show help.
 Fourier Series Visualization,fourier,fourier,p5/p5,Visualization of a sine series square wave. Each circle comes from a term in the series.
 Tiny Wings Clone,sinywings,sinywings,p5/p5,Clone of the game Tiny Wings. Control with the z key.
+World Clocks,clocks,clocks,p5/p5,Clocks from around the world
