@@ -3,9 +3,9 @@ let aus, hk, sea, swe;
 function setup() {
 	let cnv = createCanvas(400, 400);
 	cnv.parent("canvascontainer");
-	aus = new Clock("Austin", 100, 100, 80, -7);
+	aus = new Clock("Austin", 100, 100, 80, 17);
 	hk = new Clock("Hong Kong", 300, 100, 80, 7);
-	sea = new Clock("Seattle", 100, 280, 80, -9);
+	sea = new Clock("Seattle", 100, 280, 80, 15);
     swe = new Clock("Sweden", 300, 280, 80, 0);
 	frameRate(1);
 }
