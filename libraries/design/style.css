@@ -53,13 +53,10 @@ hr {
 
 .page-content {
 	padding: 20px;
-/*
-	margin:auto;
-*/
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
+	max-width: 100%;
+	margin-left: 0px;
+	margin-right: 0px;
+	text-align: center;
 }
 
 .project-display {
