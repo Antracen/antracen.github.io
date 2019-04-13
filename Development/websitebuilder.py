@@ -1,5 +1,4 @@
 # TODO:
-	# Selective library importing
 
 import csv, shutil, fileinput
 
