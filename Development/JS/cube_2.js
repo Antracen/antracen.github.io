@@ -13,7 +13,7 @@ var current_turn_ticks;
 function setup() {
 
 	var cs = 70; // cubie size
-	var o = 1; // offset
+	var o = 2; // offset
 
 	cube_points = [
 		// TOP LAYER (9 cubies)
