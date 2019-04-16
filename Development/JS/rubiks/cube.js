@@ -9,7 +9,7 @@ class Cube {
         this.turns = [];
         this.turning = "none";
         this.turntick = 0;
-        this.turn_size = 10; // How many frames it takes for a move to render
+        this.turn_size = 6; // How many frames it takes for a move to render
     }
 
     scramble() {
