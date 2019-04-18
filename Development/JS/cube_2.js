@@ -238,6 +238,12 @@ function keyPressed() {
 	else if(keyCode == 89)		turn_code = 15;	// Y = X
 	else if(keyCode == 85)		turn_code = 16;	// U = M'
 	else if(keyCode == 77)		turn_code = 17;	// M = M
+	else if(keyCode == 32) {
+		for(var i = 0; i < 60; i++) {
+			turns_performed.push(floor(random(18)));
+		}
+		return;
+	}
 	else return;
 	turns_performed.push(turn_code);
 }
