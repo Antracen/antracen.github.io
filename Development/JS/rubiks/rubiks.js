@@ -18,7 +18,7 @@ function setup() {
     if(param.substr(0,12) == "?pretty=true") pretty = true;
     
     draw_change = true; // If true: draw to canvas
-    bg_color = "#ffffff";
+    bg_color = "#DDDDDD";
     blocks = []; // The cube has 26 blocks. 8 corners, 12 edges, 6 centers
     faces = []; // The cube has 6 sides. Right, left, top, bottom, back, front
     sq_size = 100; // The size of one square, including spacing
