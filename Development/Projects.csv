@@ -1,5 +1,5 @@
 NAME	JS-FILES	OUTPUT-HTML-FILE	LIBRARIES	DESCRIPTION
-Virtual Rubik's Cube,../Development/JS/rubiks/cube&../Development/JS/rubiks/square&../Development/JS/rubiks/rubiks,rubiks,p5/p5&p5/p5.dom,Control the puzzle with (G/H) (F/J) (K/I) (D/E) (V/N) (W/O) (B/Y) (A/Ö) (U/M) (Spacebar to scramble) <br> The graphics are optimal for speedcubing. For a more traditional experience check out my other cube project.
+Virtual Rubik's Cube,../Development/JS/rubiks/cube&../Development/JS/rubiks/square&../Development/JS/rubiks/rubiks,rubiks,p5/p5&p5/p5.dom,Control the puzzle with (G/H) (F/J) (K/I) (D/E) (V/N) (W/O) (B/Y) (A/Ö) (U/M) (Spacebar to scramble) (Enter to start/stop timer) <br> The graphics are optimal for speedcubing. For a more traditional experience check out my other cube project.
 3D Raycasting Engine,../Development/JS/3d,3d,p5/p5&p5/p5.dom,This 3D engine uses Raycasting. Build a map and start the game to walk around on it. Walk with WASD and move camera with arrow keys.
 2048 Clone,../Development/2048,2048,p5/p5,This is a clone of the popular game 2048. Move with arrow keys to combine bricks and try to get as large of a number as possible.
 Tic-Tac-Toe MiniMax AI,../Development/JS/tictac,tictac,p5/p5,Take turns trying to beat the MiniMax AI at the game. Play with mouse.

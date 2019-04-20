@@ -10,12 +10,15 @@ var faces;
 var sq_size;
 var cube; // Note: 986 rows pre refactoring
 var cnv;
+var startTime;
+var endTime;
 
 function setup() {
 
     pretty = false; // pretty = true gives better looking cube
-    var param = location.search;
-    if(param.substr(0,12) == "?pretty=true") pretty = true;
+
+	startTime = 0;
+	endTime = 0;
     
     draw_change = true; // If true: draw to canvas
     bg_color = "#DDDDDD";
@@ -48,6 +51,18 @@ function setup() {
     }
 
     cube = new Cube();
+}
+
+function toggleTimer() {
+	if(startTime == 0) {
+		startTime = performance.now();
+		endTime = 0;
+	}
+	else {
+		endTime = performance.now();
+		alert("Time = " + round((endTime-startTime)/10)/100 + " seconds");
+		startTime = 0;
+	}
 }
 
 // Create all stickers for the given face and place them in 3D space
@@ -176,6 +191,7 @@ function keyPressed() {
     else if (keyCode == 77) turn = "M"; // M
     else if (keyCode == 85) turn = "M'"; // U
     else if(keyCode == 32) cube.scramble(); // SPACE
+	else if(keyCode == 13) toggleTimer(); // ENTER
 
     cube.turns.push(turn);
 }
