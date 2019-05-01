@@ -16,7 +16,10 @@ class Cube {
         var turn_values = ["R","U","F","L","D","B"];
         for(var i = 0; i < 60; i++) {
             var random_turn = int(random(0, turn_values.length));
-            cube.turns.push(turn_values[random_turn]);
+			var degree = int(random(1,3));
+			for(var j = 0; j < degree; j++) {
+				cube.turns.push(turn_values[random_turn]);
+			}
         }
     }
   
